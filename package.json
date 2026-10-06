@@ -1,0 +1,25 @@
+{
+  "name": "hamanomachi",
+  "version": "2.0.0",
+  "description": "Hamanomachi: a directions practice game",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test test/*.test.mjs",
+    "convert-old-map": "node scripts/convert-old-map.mjs legacy/map_data.json maps/hamanomachi",
+    "fetch-lpc": "node scripts/fetch-lpc.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fontsource/fredoka": "^5.3.0",
+    "@fontsource/m-plus-rounded-1c": "^5.3.0",
+    "fflate": "^0.8.3",
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.21"
+  },
+  "private": true
+}
