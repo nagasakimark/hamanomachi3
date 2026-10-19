@@ -12,6 +12,7 @@ import { generateMissions, TIERS } from '../engine/missions.js';
 import { idbGet, idbSet } from './idb.js';
 import { h } from '../ui/dom.js';
 import { MAPS } from '../data/maps.js';
+import { openComposer, composerOpen } from './composer.js';
 
 // ---------------- state ----------------
 const S = {
@@ -58,6 +59,7 @@ const audioInput = h('input', { type: 'file', accept: 'audio/*', style: { displa
 
 const menu = h('div.ed-menu', {},
   h('div.ed-brand', {}, '🗺️ Map Editor'),
+  mbtn('🎨 Compose map', openCompose, 'Draw a new map picture from roads and building images'),
   mbtn('📂 Open…', () => fileInput.click(), 'Open a map picture, a map pack (.zip), or an old map_data.json'),
   builtInSelect(),
   mbtn('↶ Undo', undo), mbtn('↷ Redo', redo),
@@ -67,6 +69,22 @@ const menu = h('div.ed-menu', {},
   h('a.ed-help', { href: '#', onclick: e => { e.preventDefault(); showHelp(); } }, '❓ Help'),
 );
 root.append(menu, h('div.ed-main', {}, toolbar, h('div.ed-canvas-wrap', {}, canvas, status), side), fileInput, audioInput);
+
+// The Composer builds the map picture (and can trace the roads and places);
+// this receives the result and loads it like any other map.
+function openCompose() {
+  openComposer({
+    onUse: async ({ dataUrl, name, trace }) => {
+      if (!confirmLose()) return false;
+      const m = blankMap();
+      if (name) { m.name = name; m.id = name.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || m.id; }
+      if (trace) { m.points = trace.points; m.roads = trace.roads; }
+      await loadState(m, dataUrl, 'map.png', {});
+      if (trace) { tab = 'check'; renderSide(); }
+      showToast(trace ? 'Picture, roads, places and bus stops loaded. Fix anything in the Checker, then auto-generate missions.' : 'Map picture loaded. Now trace the roads on it.');
+    },
+  });
+}
 
 function mbtn(text, fn, title = '', cls = '') { return h('button.ed-btn' + (cls ? '.' + cls : ''), { onclick: fn, title }, text); }
 
@@ -233,6 +251,7 @@ canvas.addEventListener('wheel', e => {
   S.view.z = z; draw();
 }, { passive: false });
 window.addEventListener('keydown', e => {
+  if (composerOpen()) return;
   if (e.target.closest('input,textarea,select')) return;
   if (e.code === 'Space') { spaceDown = true; e.preventDefault(); }
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
@@ -671,6 +690,9 @@ async function testPlay() {
   if (!S.image) return alert('Open a map first.');
   if (!S.map.missions.length) { snapshot(); S.map.missions = generateMissions(S.map); changed(); }
   await idbSet('testpack', { map: S.map, image: S.imageData, audio: S.audio });
+  // The standalone editor has no game next to it; the full project does.
+  const hasGame = await fetch('./index.html', { method: 'HEAD' }).then(r => r.ok).catch(() => false);
+  if (!hasGame) { showToast('Test play needs the game next to the editor. It will work once this is back in the game folder.'); return; }
   window.open('./index.html?test=1', '_blank');
 }
 
@@ -683,7 +705,7 @@ function showHelp() {
   const back = h('div.ed-modal-back', { onclick: e => { if (e.target === back) back.remove(); } }, h('div.ed-modal', {},
     h('h2', {}, 'Making a new town'),
     h('ol', {},
-      h('li', {}, 'Click ', h('b', {}, 'Open…'), ' and choose your map picture (PNG or JPG).'),
+      h('li', {}, 'Click ', h('b', {}, 'Open…'), ' and choose your map picture (PNG or JPG), or press ', h('b', {}, 'Compose map'), ' to draw the picture from roads and building images, then ', h('b', {}, 'Use picture + trace roads'), '.'),
       h('li', {}, 'Use ', h('b', {}, 'Draw roads (R)'), ': click along the middle of each road. Click at every crossing and bend. Press Esc to stop a line. Click an existing point to join roads. Hold Shift for straight lines.'),
       h('li', {}, 'Use ', h('b', {}, 'Little-bit point (L)'), ' on a road where "go straight for a little bit" should stop, usually beside a place.'),
       h('li', {}, 'Use ', h('b', {}, 'Place (D)'), ' on each building, name it, then click the road point it joins. Add its voice clip in the Selected tab.'),

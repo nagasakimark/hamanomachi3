@@ -1,0 +1,25 @@
+.cp { position: fixed; inset: 0; z-index: 15; display: flex; flex-direction: column; background: #eef4f2; }
+.cp[hidden] { display: none; }
+.cp .ed-menu { flex-wrap: wrap; row-gap: 6px; }
+.cp .ed-brand { margin: 0 8px; }
+.cp-tools { overflow-y: auto; width: 196px; }
+.cp-sep { height: 1px; background: #dbe6e3; margin: 6px 0; }
+.cp-roadkind { display: flex; flex-direction: column; gap: 6px; }
+.cp-roadkind > span { font-size: 13px; color: #5c6178; }
+.cp-tools .ed-check { font-size: 14px; align-items: center; }
+.cp-lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.cp-thumb { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 6px 6px; border-radius: 12px; background: #f6f9f8; border: 2px solid transparent; cursor: pointer; font-size: 12px; text-align: center; overflow: hidden; }
+.cp-thumb.on { border-color: #2a9d8f; background: #e6f6f3; }
+.cp-thumb img { width: 84px; height: 72px; object-fit: contain; background: repeating-conic-gradient(#e6eeeb 0 25%, #fff 0 50%) 0 0 / 12px 12px; border-radius: 6px; }
+.cp-thumb span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #5c6178; }
+.cp-x { position: absolute; top: 3px; right: 3px; border: 0; border-radius: 50%; width: 20px; height: 20px; line-height: 20px; padding: 0; font-size: 10px; background: rgba(255,255,255,.9); cursor: pointer; }
+.cp-range { display: flex; align-items: center; gap: 10px; }
+.cp-range input { flex: 1; min-width: 0; }
+.cp-rv { min-width: 52px; text-align: right; font-size: 13px; color: #2d3142; }
+.cp-swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+.cp-swatch { width: 28px; height: 28px; border-radius: 8px; border: 2px solid #cfdcd8; cursor: pointer; padding: 0; }
+.ed-field input[type=color] { width: 100%; height: 38px; padding: 2px; }
+
+/* building sets */
+.cp-sets { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 6px 0 10px; }
+.cp-sets select { flex: 1 1 140px; min-width: 0; padding: 6px; border-radius: 8px; border: 1px solid #c9bfa8; font: inherit; }

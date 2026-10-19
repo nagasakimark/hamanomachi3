@@ -68,10 +68,15 @@ LPC art is CC-BY-SA / GPL / OGA-BY (it varies by item), so the credits must stay
 | `src/progress/` | Saving in the browser (localStorage) and stickers. |
 | `src/avatar/` | The LPC layer compositor and the item catalogue. |
 | `src/audio/sfx.js` | All sound effects, synthesised, so there are no sound files. |
-| `src/tools/` | The map editor. |
+| `src/tools/` | The map editor, including the Composer (`composer.js`, `buildingPacks.js`; see `COMPOSER.md`). |
 | `maps/` | Map packs, found automatically. |
 | `scripts/` | `convert-old-map.mjs` (the old `map_data.json` to a map pack) and `fetch-lpc.mjs`. |
 
 ## Replacing the QR code
 
 Swap `src/assets/qrcode.png` for a new picture with the same name.
+
+
+## Themed maps
+
+`composer-maps/` has seven ready-made themed maps (Bikini Bottom, Minecraft, Mario, Pokémon, Doraemon, Sanrio, Matsuri): a PNG and an editable `.compose.json` each. In the map editor press **Compose map → Open project…** to load one, tweak it, then **Use picture + trace roads**.
