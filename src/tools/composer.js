@@ -395,7 +395,17 @@ export function renderDoc(g, doc, o = {}) {
   if (showOv) { g.save(); g.globalAlpha = ov.op ?? 1; g.drawImage(OV.img, 0, 0, doc.w, doc.h); g.restore(); }
   const hideImgs = showOv && ov.hide !== false;
   for (const it of doc.items) if (it.type === 'image' && it.under && !hideImgs) drawImageItem(g, it);
-  drawPaths(g, doc);
+  if (hideImgs) {
+    // Buildings are baked into the overlay, so cut walkways out wherever one of
+    // my own building/decoration pictures stands: paths always sit below buildings.
+    const k = (g.getTransform ? g.getTransform().a : 1) || 1;
+    const off = document.createElement('canvas'); off.width = Math.ceil(doc.w * k); off.height = Math.ceil(doc.h * k);
+    const og = off.getContext('2d'); og.scale(k, k);
+    drawPaths(og, doc);
+    og.globalCompositeOperation = 'destination-out';
+    for (const it of doc.items) if (it.type === 'image' && !it.under) drawImageItem(og, it);
+    g.drawImage(off, 0, 0, doc.w, doc.h);
+  } else drawPaths(g, doc);
   drawRoads(g, doc);
   for (const it of doc.items) {
     if (it.type === 'image' && !it.under) { if (!hideImgs) drawImageItem(g, it); }
