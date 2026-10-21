@@ -12,6 +12,7 @@ import { composeLook, previewCanvas, portraitCanvas, randomLook } from '../avata
 import { coinPill, iconBtn, ICONS, showQR, showSettings, showBadges } from '../ui/hud.js';
 import { checkBadges } from '../progress/badges.js';
 import { sfx } from '../audio/sfx.js';
+import { say } from '../audio/lines.js';
 
 const TOP_H = 68, PANEL_W = 460;
 
@@ -195,7 +196,8 @@ export async function playScreen({ mapId, missionId, free }) {
       if (!alive) return;
       editor.mark(step.block, 'active');
       sfx.play('pick');
-      await mv.delay(220);
+      await say(prog[step.block]);
+      await mv.delay(120);
       for (const sub of step.sub) {
         if (sub.kind === 'move') await mv.walk(sub.path);
         else if (sub.kind === 'turn') await mv.turn(sub.from, sub.by);
@@ -209,7 +211,7 @@ export async function playScreen({ mapId, missionId, free }) {
     }
     if (!alive) return;
     runBtn.classList.remove('going');
-    if (result.won) return win(prog);
+    if (result.won) { say('arrive'); return win(prog); }
     if (result.dizzy) {
       await mv.dizzy();
       s.stats.dizzy++; save.write();
@@ -219,6 +221,7 @@ export async function playScreen({ mapId, missionId, free }) {
       // walked everything but not at the place
       await mv.bump();
     }
+    say('fail');
     sfx.play('fail');
     showTryAgain(result.dizzy ? '目がまわった〜！もういちど。' : (result.failIndex >= 0 ? 'あれ？そのブロックはできなかったよ。' : 'うーん、ここじゃないみたい。'));
   }

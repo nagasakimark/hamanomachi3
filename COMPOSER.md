@@ -41,3 +41,7 @@ To put it back into the game: copy those files over, add the devDependency (only
 `src/tools/buildingPacks.js` (generated) holds 7 sets of 18 front-facing buildings (Bikini Bottom, Blocky sandbox, Mushroom Kingdom, Monster world, Doraemon-style town, Kawaii pastel town, Matsuri festival), named exactly after the Hamanomachi places. In the Composer's Images tab, pick a set and press "Add this set".
 
 Each of the 7 themes has three sets: Buildings (18), Decorations (12) and Water (6: round pond, kidney pond, straight river, river bend, river end, bridge). Water and ground pieces are flagged "under roads" (toggle in the Selected tab) so roads draw over them; the bridge draws on top. Straight/bend/end pieces share one scale so river widths match; use Rotate and Flip to join them.
+
+## Overlay picture (AI-restyled background)
+
+Map tab → **Choose overlay picture…**. Workflow: build the map, **Save PNG**, have an AI restyle it, load the result as the overlay. It is stretched to the map size and drawn over the background; roads, walkways, pins, bus stops and labels stay on top. By default your own building/decoration pictures are hidden (the overlay already has them); untick that to keep them. Opacity and Remove are in the same panel. The overlay is saved in the project file and used by **Use picture + trace roads**, so road tracing still follows your drawn roads.

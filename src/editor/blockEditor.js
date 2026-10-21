@@ -2,6 +2,7 @@
 // Blocks snap into place with a gap preview, a clack and a bounce.
 import { h, toStage, rectInStage, toast } from '../ui/dom.js';
 import { sfx } from '../audio/sfx.js';
+import { say } from '../audio/lines.js';
 import { BLOCK_DEFS, PALETTE } from './blocks.js';
 import { blockLabel, TERMINAL } from '../engine/engine.js';
 
@@ -153,6 +154,7 @@ export class BlockEditor {
       const el = this.els.get(id);
       if (!el) return;
       sfx.play('snap');
+      say(this.model.find(x => x.id === id));
       el.animate([{ transform: 'scale(1.08, .88)' }, { transform: 'scale(.97, 1.04)' }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
     }, delay);
   }
@@ -174,7 +176,7 @@ export class BlockEditor {
     for (let n = 1; n <= 10; n++) {
       pop.append(h('button.numbtn' + (n === (b.n || 1) ? '.on' : ''), {
         onclick: () => {
-          b.n = n; this.refreshEl(b); sfx.play('snap'); close(); this.onChange(this.program());
+          b.n = n; this.refreshEl(b); sfx.play('snap'); say(b); close(); this.onChange(this.program());
           const el = this.els.get(id);
           el?.querySelector('.num')?.animate([{ transform: 'scale(1.5)' }, { transform: 'none' }], { duration: 250 });
         },

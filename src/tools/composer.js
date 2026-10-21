@@ -176,7 +176,7 @@ function libPlain() {
 }
 function autosave() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { idbSet('compose-v1', { doc: C.doc, lib: libPlain() }).catch(() => {}); }, 500);
+  saveTimer = setTimeout(() => { idbSet('compose-v1', { doc: C.doc, lib: libPlain(), overlay: OV.src }).catch(() => {}); }, 500);
 }
 
 // ---------------------------------------------------------------- images
@@ -379,13 +379,26 @@ function drawArrow(g, it, selected) {
   g.fillStyle = '#f48a4a'; g.fill(); g.lineWidth = 3; g.strokeStyle = selected ? '#ff3d00' : '#b3541b'; g.stroke();
   g.restore();
 }
+// The overlay is a picture (e.g. an AI-restyled version of this map) drawn over
+// the background but under roads and labels. The picture itself lives here, not
+// in the doc, so Undo history stays small; the doc only keeps its settings.
+const OV = { src: null, img: null };
+function setOverlay(src) {
+  OV.src = src || null; OV.img = null;
+  if (src) { const i = new Image(); i.onload = () => { OV.img = i; draw(); }; i.src = src; }
+}
+function overlayReady() { return OV.src && !OV.img ? new Promise(r => { const t = setInterval(() => { if (OV.img) { clearInterval(t); r(); } }, 30); setTimeout(() => { clearInterval(t); r(); }, 4000); }) : Promise.resolve(); }
+
 export function renderDoc(g, doc, o = {}) {
   g.fillStyle = doc.bg; g.fillRect(0, 0, doc.w, doc.h);
-  for (const it of doc.items) if (it.type === 'image' && it.under) drawImageItem(g, it);
+  const ov = doc.overlay, showOv = !!(ov && ov.on !== false && OV.img);
+  if (showOv) { g.save(); g.globalAlpha = ov.op ?? 1; g.drawImage(OV.img, 0, 0, doc.w, doc.h); g.restore(); }
+  const hideImgs = showOv && ov.hide !== false;
+  for (const it of doc.items) if (it.type === 'image' && it.under && !hideImgs) drawImageItem(g, it);
   drawPaths(g, doc);
   drawRoads(g, doc);
   for (const it of doc.items) {
-    if (it.type === 'image' && !it.under) drawImageItem(g, it);
+    if (it.type === 'image' && !it.under) { if (!hideImgs) drawImageItem(g, it); }
     else if (it.type === 'bus') drawShelter(g, it.x, it.y);
     else if (it.type === 'arrow') drawArrow(g, it);
   }
@@ -833,6 +846,7 @@ function renderPanel() {
   panelEl.replaceChildren(tabs, body);
   body.scrollTop = keepScroll;
 }
+function chk(v, fn) { const i = h('input', { type: 'checkbox' }); i.checked = v; i.addEventListener('change', fn); return i; }
 function field(label, input) { return h('label.ed-field', {}, h('span', {}, label), input); }
 // A text/number input that edits live and records one undo step per edit session.
 function liveInput(value, set, attrs = {}) {
@@ -951,6 +965,20 @@ function mapPanel() {
     h('p.ed-small', {}, 'Changing the size crops or extends the picture. 1587 × 1123 matches the Hamanomachi map.'),
     field('Background colour', color('bg')),
     h('div.cp-swatches', {}, ...['#fbf3df', '#ffffff', '#e8f1e4', '#dcefff', '#f6e7cf', '#f1e0ff', '#fff3a8'].map(swatch)),
+    h('h3', {}, 'Overlay picture'),
+    h('p.ed-small', {}, 'Save your map as a PNG, have an AI restyle the background, then load the result here. It is drawn over the background; your roads, walkways, pins and labels stay on top.'),
+    btn(OV.src ? 'Replace overlay picture…' : 'Choose overlay picture…', () => {
+      const i = h('input', { type: 'file', accept: 'image/*' });
+      i.addEventListener('change', async () => { const f = i.files[0]; if (!f) return; snapshot(); setOverlay(await readURL(f)); d.overlay = { on: true, op: 1, hide: true }; changed(); renderPanel(); });
+      i.click();
+    }, 'Pick the restyled picture (any size; it is stretched to the map size)'),
+    ...(OV.src ? [
+      h('label.ed-field', {}, h('span', {}, 'Show overlay'), chk(d.overlay?.on !== false, e => { snapshot(); d.overlay = { ...(d.overlay || {}), on: e.target.checked }; changed(); })),
+      h('label.ed-field', {}, h('span', {}, 'Hide my building/decoration pictures (the overlay already has them)'), chk(d.overlay?.hide !== false, e => { snapshot(); d.overlay = { ...(d.overlay || {}), hide: e.target.checked }; changed(); })),
+      field('Overlay opacity', liveRange(Math.round((d.overlay?.op ?? 1) * 100), 10, 100, 1, v => { d.overlay = { ...(d.overlay || {}), op: v / 100 }; }, v => v + '%')),
+      btn('Remove overlay', () => { snapshot(); setOverlay(null); d.overlay = null; changed(); renderPanel(); }),
+    ] : []),
+    h('h3', {}, 'Roads'),
     field('Road colour', color('roadColor')),
     field('Street width', liveRange(d.rwStreet, 20, 90, 1, v => { d.rwStreet = v; }, v => v + ' px')),
     field('Wide road width', liveRange(d.rwMain, 24, 120, 1, v => { d.rwMain = v; }, v => v + ' px')),
@@ -961,6 +989,7 @@ function mapPanel() {
 
 // ---------------------------------------------------------------- export
 async function ready() {
+  await overlayReady();
   try { await Promise.all([document.fonts.load(`600 26px "Fredoka"`), document.fonts.load(`400 26px "Fredoka"`)]); } catch { /* fonts are optional */ }
 }
 export async function renderToCanvas(scale = 1) {
@@ -983,7 +1012,7 @@ async function downloadPng(scale) {
   c.toBlob(b => { download(b, `${slug(C.doc.name)}${scale > 1 ? '@' + scale + 'x' : ''}.png`); toast(`Saved ${slug(C.doc.name)}.png`); }, 'image/png');
 }
 function saveProject() {
-  const data = JSON.stringify({ format: 'hamanomachi-compose', doc: C.doc, lib: libPlain() });
+  const data = JSON.stringify({ format: 'hamanomachi-compose', doc: C.doc, lib: libPlain(), overlay: OV.src });
   download(new Blob([data], { type: 'application/json' }), `${slug(C.doc.name)}.compose.json`);
   toast('Project saved. Open it again with Open project.');
 }
@@ -992,7 +1021,7 @@ async function openProject(f) {
     const d = JSON.parse(await f.text());
     if (d.format !== 'hamanomachi-compose') throw new Error('not a project');
     snapshot();
-    C.doc = { ...newDoc(), ...d.doc }; C.lib = {};
+    C.doc = { ...newDoc(), ...d.doc }; C.lib = {}; setOverlay(d.overlay);
     for (const [id, l] of Object.entries(d.lib || {})) addLib(id, l.name, l.url, l);
     C.sel = null; C.from = null; fitView(); changed();
   } catch { alert('That file is not a map project (.compose.json).'); }
@@ -1001,7 +1030,7 @@ function newProject() {
   if ((C.doc.nodes.length || C.doc.items.length) && !confirm('Start a new map? The current one is replaced (Undo brings it back).')) return;
   snapshot();
   const keep = C.doc;
-  C.doc = newDoc(); C.doc.bg = keep.bg; C.doc.roadColor = keep.roadColor;
+  setOverlay(null); C.doc = newDoc(); C.doc.bg = keep.bg; C.doc.roadColor = keep.roadColor;
   C.sel = null; C.from = null; changed();
 }
 
@@ -1175,7 +1204,7 @@ export async function openComposer(opts = {}) {
     try {
       const saved = await idbGet('compose-v1');
       if (saved?.doc) {
-        C.doc = { ...newDoc(), ...saved.doc };
+        C.doc = { ...newDoc(), ...saved.doc }; setOverlay(saved.overlay);
         for (const [id, l] of Object.entries(saved.lib || {})) addLib(id, l.name, l.url, l);
       }
     } catch { /* nothing saved yet */ }
