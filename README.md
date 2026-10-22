@@ -69,7 +69,7 @@ LPC art is CC-BY-SA / GPL / OGA-BY (it varies by item), so the credits must stay
 | `src/avatar/` | The LPC layer compositor and the item catalogue. |
 | `src/audio/lines.js` | Block voice lines (go straight N blocks, turn left/right, you can see it…, here it is, uh oh). Always read from `maps/hamanomachi/audio/`, so every town uses them. |
 | `src/audio/sfx.js` | All sound effects, synthesised, so there are no sound files. |
-| `src/tools/` | The map editor, including the Composer (`composer.js`, `buildingPacks.js`; see `COMPOSER.md`). |
+| `src/tools/` | The map editor, including the Composer (28 art sets: Buildings, Buildings 2 with 29 extra landmarks, Decorations, Water per theme) (`composer.js`, `buildingPacks.js`; see `COMPOSER.md`). |
 | `maps/` | Map packs, found automatically. |
 | `scripts/` | `convert-old-map.mjs` (the old `map_data.json` to a map pack) and `fetch-lpc.mjs`. |
 
