@@ -81,3 +81,6 @@ Swap `src/assets/qrcode.png` for a new picture with the same name.
 ## Themed maps
 
 `composer-maps/` has seven ready-made themed maps (Bikini Bottom, Minecraft, Mario, Pokémon, Doraemon, Sanrio, Matsuri): a PNG and an editable `.compose.json` each. In the map editor press **Compose map → Open project…** to load one, tweak it, then **Use picture + trace roads**.
+
+## Pet art credits
+Pets in `src/pets/sheets` come from free itch.io / CraftPix packs (farm animals, slimes, hunt animals, cats). Check each pack's licence before redistributing.

@@ -492,3 +492,6 @@ button { font-family: inherit; }
 .asker-stage .talk-bubble { right: 18%; top: 10px; font-size: 34px; }
 .asker-face-wrap .talk-bubble { left: 36px; top: -8px; font-size: 18px; padding: 0 5px; border-radius: 12px; }
 .asker-face-wrap .talk-bubble::after { left: 6px; bottom: -9px; border-width: 6px; }
+
+.w-stage .pet-canvas { position: absolute; right: 8%; bottom: 12%; image-rendering: pixelated; pointer-events: none; filter: drop-shadow(0 4px 0 rgba(0,0,0,.12)); }
+.w-thumb { image-rendering: auto; }

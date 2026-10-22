@@ -13,6 +13,7 @@ import { coinPill, iconBtn, ICONS, showQR, showSettings, showBadges } from '../u
 import { checkBadges } from '../progress/badges.js';
 import { sfx } from '../audio/sfx.js';
 import { say } from '../audio/lines.js';
+import { petById, loadPetImage } from '../pets/pets.js';
 
 const TOP_H = 68, PANEL_W = 460;
 
@@ -351,10 +352,15 @@ export async function playScreen({ mapId, missionId, free }) {
     if (e.key === 'Enter' && !e.target.closest('textarea,input')) { e.preventDefault(); run(); }
   };
 
+  async function petInfo() {
+    const pt = petById(s.look.pet); if (!pt || !(save.owns('pet-' + pt.id))) return null;
+    const img = await loadPetImage(pt.id); return img ? { img, frames: pt.frames, scale: pt.scale } : null;
+  }
+
   return {
     el,
     async mounted() {
-      mv = new MapView(mapBox, map, { width: mapW, height: mapH, renderScale: R, hero: heroSheet, asker: askerSheet });
+      mv = new MapView(mapBox, map, { width: mapW, height: mapH, renderScale: R, hero: heroSheet, asker: askerSheet, pet: await petInfo() });
       mv.speed = s.settings.speed || 1;
       await mv.ready();
       window.addEventListener('keydown', onKey);

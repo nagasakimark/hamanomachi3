@@ -7,6 +7,8 @@
 // badge = only unlocked by earning that sticker.
 // feminine = can be used for the (always female) person asking the way.
 
+import { PETS } from '../pets/petsData.js';
+
 export const SLOTS = [
   { id: 'skin', name: 'はだ', icon: '🖐️' },
   { id: 'face', name: 'タイプ', icon: '🙂' },
@@ -18,6 +20,10 @@ export const SLOTS = [
   { id: 'glasses', name: 'めがね', icon: '👓' },
   { id: 'neck', name: 'アクセ', icon: '🧣' },
   { id: 'back', name: 'せなか', icon: '🦸' },
+  { id: 'beard', name: 'ひげ', icon: '🧔' },
+  { id: 'ears', name: 'みみ', icon: '🐱' },
+  { id: 'arms', name: 'うで', icon: '🧤' },
+  { id: 'pet', name: 'ペット', icon: '🐾' },
 ];
 
 // Which slots must always have something on.
@@ -176,6 +182,87 @@ export const ITEMS = [
   { id: 'back-cape', slot: 'back', name: 'ヒーローマント', price: 500, color: 'cloth', layers: [L('cape/solid/bg/walk.png', Z.capeBg), L('cape/solid/fg/walk.png', Z.capeFg)] },
   { id: 'back-tattered', slot: 'back', name: 'ボロボロマント', price: 400, color: 'cloth', layers: [L('cape/tattered/bg/walk.png', Z.capeBg), L('cape/tattered/fg/walk.png', Z.capeFg)] },
 ];
+
+// More LPC wearables (no weapons).
+ITEMS.push(
+  { id: "hair-bangs_bun", slot: "hair", name: "おだんごバング", price: 120, color: 'hair', layers: [L("hair/bangs_bun/adult/walk.png", Z.hair)] },
+  { id: "hair-braid2", slot: "hair", name: "みつあみ2", price: 120, color: 'hair', layers: [L("hair/braid2/adult/bg/walk.png", Z.hairBg), L("hair/braid2/adult/fg/walk.png", Z.hair)] },
+  { id: "hair-flat_top_fade", slot: "hair", name: "フラットトップ", price: 120, color: 'hair', layers: [L("hair/flat_top_fade/adult/walk.png", Z.hair)] },
+  { id: "hair-high_and_tight", slot: "hair", name: "ベリーショート", price: 60, color: 'hair', layers: [L("hair/high_and_tight/adult/walk.png", Z.hair)] },
+  { id: "hair-long_messy", slot: "hair", name: "ロングぼさぼさ", price: 120, color: 'hair', layers: [L("hair/long_messy/adult/walk.png", Z.hair)] },
+  { id: "hair-ponytail2", slot: "hair", name: "ポニーテール2", price: 120, color: 'hair', layers: [L("hair/ponytail2/adult/bg/walk.png", Z.hairBg), L("hair/ponytail2/adult/fg/walk.png", Z.hair)] },
+  { id: "hair-shorthawk", slot: "hair", name: "ショートモヒカン", price: 250, color: 'hair', layers: [L("hair/shorthawk/adult/walk.png", Z.hair)] },
+  { id: "hair-spiked_beehive", slot: "hair", name: "ツンツンハイ", price: 250, color: 'hair', layers: [L("hair/spiked_beehive/adult/walk.png", Z.hair)] },
+  { id: "hair-curls_large", slot: "hair", name: "おおきなカール", price: 250, color: 'hair', layers: [L("hair/curls_large/adult/bg/walk.png", Z.hairBg), L("hair/curls_large/adult/fg/walk.png", Z.hair)] },
+  { id: "hair-bob_side_part", slot: "hair", name: "ボブ2", price: 60, color: 'hair', layers: [L("hair/bob_side_part/adult/walk.png", Z.hair)] },
+  { id: "hair-parted2", slot: "hair", name: "わけめ2", price: 60, color: 'hair', layers: [L("hair/parted2/adult/walk.png", Z.hair)] },
+  { id: "hair-natural", slot: "hair", name: "ナチュラル", price: 120, color: 'hair', layers: [L("hair/natural/adult/walk.png", Z.hair)] },
+  { id: "hair-loose", slot: "hair", name: "ゆるふわ", price: 120, color: 'hair', layers: [L("hair/loose/adult/walk.png", Z.hair)] },
+  { id: "hair-dreadlocks_short", slot: "hair", name: "ドレッド", price: 250, color: 'hair', layers: [L("hair/dreadlocks_short/adult/walk.png", Z.hair)] },
+  { id: "hair-curtains_long", slot: "hair", name: "ながいセンターわけ", price: 120, color: 'hair', layers: [L("hair/curtains_long/adult/walk.png", Z.hair)] },
+  { id: "hair-relm_ponytail", slot: "hair", name: "ポニーテール3", price: 120, color: 'hair', layers: [L("hair/relm_ponytail/adult/bg/walk.png", Z.hairBg), L("hair/relm_ponytail/adult/fg/walk.png", Z.hair)] },
+  { id: "beard-basic", slot: "beard", name: "ひげ", price: 150, color: 'hair', layers: [L("beards/beard/basic/walk.png", Z.head + 2)] },
+  { id: "beard-medium", slot: "beard", name: "ながいひげ", price: 200, color: 'hair', layers: [L("beards/beard/medium/walk.png", Z.head + 2)] },
+  { id: "beard-trimmed", slot: "beard", name: "きれいなひげ", price: 150, color: 'hair', layers: [L("beards/beard/trimmed/walk.png", Z.head + 2)] },
+  { id: "beard-winter", slot: "beard", name: "もじゃもじゃひげ", price: 300, color: 'hair', layers: [L("beards/beard/winter/female/walk.png", Z.head + 2)] },
+  { id: "beard-5oclock_shadow", slot: "beard", name: "ぶしょうひげ", price: 120, color: 'hair', layers: [L("beards/beard/5oclock_shadow/walk.png", Z.head + 2)] },
+  { id: "beard-basic", slot: "beard", name: "ちょびひげ", price: 120, color: 'hair', layers: [L("beards/mustache/basic/walk.png", Z.head + 2)] },
+  { id: "beard-bigstache", slot: "beard", name: "おおきなヒゲ", price: 200, color: 'hair', layers: [L("beards/mustache/bigstache/walk.png", Z.head + 2)] },
+  { id: "beard-chevron", slot: "beard", name: "ハの字ひげ", price: 150, color: 'hair', layers: [L("beards/mustache/chevron/walk.png", Z.head + 2)] },
+  { id: "beard-french", slot: "beard", name: "フレンチひげ", price: 150, color: 'hair', layers: [L("beards/mustache/french/walk.png", Z.head + 2)] },
+  { id: "beard-handlebar", slot: "beard", name: "カールひげ", price: 250, color: 'hair', layers: [L("beards/mustache/handlebar/walk.png", Z.head + 2)] },
+  { id: "beard-horseshoe", slot: "beard", name: "Uの字ひげ", price: 150, color: 'hair', layers: [L("beards/mustache/horseshoe/walk.png", Z.head + 2)] },
+  { id: "beard-lampshade", slot: "beard", name: "ランプひげ", price: 200, color: 'hair', layers: [L("beards/mustache/lampshade/walk.png", Z.head + 2)] },
+  { id: "beard-walrus", slot: "beard", name: "セイウチひげ", price: 250, color: 'hair', layers: [L("beards/mustache/walrus/walk.png", Z.head + 2)] },
+  { id: "hat-helmet_barbarian_viking", slot: "hat", name: "バイキング", price: 400, layers: [L("hat/helmet/barbarian_viking/adult/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_kettle", slot: "hat", name: "てつぼうし", price: 350, layers: [L("hat/helmet/kettle/adult/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_greathelm", slot: "hat", name: "ナイトヘルム", price: 500, layers: [L("hat/helmet/greathelm/female/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_horned", slot: "hat", name: "つのヘルム", price: 450, layers: [L("hat/helmet/horned/adult/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_spangenhelm", slot: "hat", name: "ぎんのかぶと", price: 400, layers: [L("hat/helmet/spangenhelm/adult/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_pointed", slot: "hat", name: "とがりかぶと", price: 350, layers: [L("hat/helmet/pointed/adult/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_morion", slot: "hat", name: "モリオン", price: 400, layers: [L("hat/helmet/morion/adult/walk.png", Z.hatFg)] },
+  { id: "hat-helmet_sugarloaf", slot: "hat", name: "まるかぶと", price: 350, layers: [L("hat/helmet/sugarloaf/female/walk.png", Z.hatFg)] },
+  { id: "hat-magic_celestial_moon", slot: "hat", name: "つきのぼうし", price: 500, layers: [L("hat/magic/celestial_moon/adult/walk.png", Z.hatFg)] },
+  { id: "hat-pirate_bandana_skull", slot: "hat", name: "ドクロバンダナ", price: 250, layers: [L("hat/pirate/bandana/skull/adult/walk.png", Z.hatFg)] },
+  { id: "hat-pirate_bonnie_feather", slot: "hat", name: "はねつきベレー", price: 350, layers: [L("hat/pirate/bonnie/feather/adult/walk.png", Z.hatFg)] },
+  { id: "hat-cloth_hood_sack", slot: "hat", name: "ずきん", price: 200, layers: [L("hat/cloth/hood_sack/adult/walk.png", Z.hatFg)] },
+  { id: "hat-headband_hairtie", slot: "hat", name: "ヘアタイ", price: 100, layers: [L("hat/headband/hairtie/adult/walk.png", Z.hatFg)] },
+  { id: "ears-cat", slot: "ears", name: "ねこみみ", price: 300, layers: [L("head/ears/cat/adult/bg/walk.png", Z.hairBg), L("head/ears/cat/adult/fg/walk.png", Z.hatFg)] },
+  { id: "ears-wolf", slot: "ears", name: "おおかみみみ", price: 300, layers: [L("head/ears/wolf/adult/bg/walk.png", Z.hairBg), L("head/ears/wolf/adult/fg/walk.png", Z.hatFg)] },
+  { id: "ears-elven", slot: "ears", name: "エルフみみ", price: 300, layers: [L("head/ears/elven/adult/walk.png", Z.hatFg)] },
+  { id: "ears-long", slot: "ears", name: "うさみみ", price: 300, layers: [L("head/ears/long/adult/walk.png", Z.hatFg)] },
+  { id: "ears-dragon", slot: "ears", name: "ドラゴンみみ", price: 350, layers: [L("head/ears/dragon/adult/walk.png", Z.hatFg)] },
+  { id: "ears-big", slot: "ears", name: "おおきなみみ", price: 250, layers: [L("head/ears/big/adult/walk.png", Z.hatFg)] },
+  { id: "top-jacket_santa", slot: "top", name: "サンタふく", price: 300, layers: [L("torso/jacket/santa/male/walk.png", Z.top)] },
+  { id: "top-armour_leather", slot: "top", name: "かわのよろい", price: 400, layers: [L("torso/armour/leather/teen/walk.png", Z.top)] },
+  { id: "top-chainmail", slot: "top", name: "くさりかたびら", price: 450, layers: [L("torso/chainmail/female/walk.png", Z.top)] },
+  { id: "bottom-hose", slot: "bottom", name: "タイツ", price: 100, color: 'cloth', layers: [L("legs/hose/thin/walk.png", Z.bottom)] },
+  { id: "shoes-socks_ankle", slot: "shoes", name: "くつした", price: 60, color: 'cloth', layers: [L("feet/socks/ankle/thin/walk.png", Z.shoes + 1)] },
+  { id: "shoes-socks_high", slot: "shoes", name: "ハイソックス", price: 80, color: 'cloth', layers: [L("feet/socks/high/thin/walk.png", Z.shoes + 1)] },
+  { id: "shoes-socks_tabi", slot: "shoes", name: "たび", price: 100, color: 'cloth', layers: [L("feet/socks/tabi/thin/walk.png", Z.shoes + 1)] },
+  { id: "shoes-hoofs", slot: "shoes", name: "ひづめ", price: 200, color: 'cloth', layers: [L("feet/hoofs/thin/walk.png", Z.shoes + 1)] },
+  { id: "neck-tie_necktie", slot: "neck", name: "ネクタイ", price: 120, layers: [L("neck/tie/necktie/female/walk.png", Z.neck)] },
+  { id: "neck-cravat", slot: "neck", name: "クラバット", price: 150, layers: [L("neck/cravat/thin/walk.png", Z.neck)] },
+  { id: "neck-jabot", slot: "neck", name: "ジャボ", price: 200, layers: [L("neck/jabot/thin/walk.png", Z.neck)] },
+  { id: "neck-necklace_chain", slot: "neck", name: "チェーン", price: 200, layers: [L("neck/necklace/chain/female/walk.png", Z.neck)] },
+  { id: "neck-amulet_star", slot: "neck", name: "ほしのおまもり", price: 250, layers: [L("neck/amulet/star/female/walk.png", Z.neck)] },
+  { id: "neck-amulet_dangle", slot: "neck", name: "ペンダント", price: 250, layers: [L("neck/amulet/dangle/female/walk.png", Z.neck)] },
+  { id: "neck-gem_pearl", slot: "neck", name: "パールのくびかざり", price: 300, layers: [L("neck/gem/pearl/female/walk.png", Z.neck)] },
+  { id: "neck-gem_emerald", slot: "neck", name: "エメラルド", price: 350, layers: [L("neck/gem/emerald/female/walk.png", Z.neck)] },
+  { id: "neck-earrings_emerald", slot: "neck", name: "エメラルドイヤリング", price: 250, layers: [L("facial/earrings/emerald/female/walk.png", Z.glasses)] },
+  { id: "neck-earrings_moon", slot: "neck", name: "つきイヤリング", price: 250, layers: [L("facial/earrings/moon/female/walk.png", Z.glasses)] },
+  { id: "neck-earrings_pear", slot: "neck", name: "しずくイヤリング", price: 250, layers: [L("facial/earrings/pear/female/walk.png", Z.glasses)] },
+  { id: "neck-earrings_princess", slot: "neck", name: "プリンセスイヤリング", price: 300, layers: [L("facial/earrings/princess/female/walk.png", Z.glasses)] },
+  { id: "neck-earrings_stud", slot: "neck", name: "ピアス", price: 150, layers: [L("facial/earrings/stud/female/walk.png", Z.glasses)] },
+  { id: "glasses-masks_plain", slot: "glasses", name: "マスク", price: 150, layers: [L("facial/masks/plain/adult/walk.png", Z.glasses)] },
+  { id: "arms-hands_gloves", slot: "arms", name: "てぶくろ", price: 150, color: 'cloth', layers: [L("arms/hands/gloves/thin/walk.png", Z.overTop)] },
+  { id: "arms-bracers", slot: "arms", name: "ブレーサー", price: 200, color: 'cloth', layers: [L("arms/bracers/thin/walk.png", Z.overTop)] },
+  { id: "arms-wrists_cuffs", slot: "arms", name: "カフス", price: 150, color: 'cloth', layers: [L("arms/wrists/cuffs/thin/walk.png", Z.overTop)] },
+  { id: "arms-wrists_lace", slot: "arms", name: "レースカフス", price: 200, color: 'cloth', layers: [L("arms/wrists/lace/thin/walk.png", Z.overTop)] },
+);
+
+// Pets follow you on the map; they have no avatar layers.
+ITEMS.push(...PETS.map(p => ({ id: 'pet-' + p.id, slot: 'pet', name: p.name, price: p.price, layers: [] })));
 
 export const BODY_LAYER = L('body/bodies/teen/walk.png', Z.body);
 

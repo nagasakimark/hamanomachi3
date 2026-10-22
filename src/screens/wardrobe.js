@@ -6,6 +6,7 @@ import { composeLook, previewCanvas, FRAME } from '../avatar/compositor.js';
 import { BADGES, checkBadges } from '../progress/badges.js';
 import { coinPill, showBadges } from '../ui/hud.js';
 import { sfx } from '../audio/sfx.js';
+import { petCanvas, loadPetImage, petById } from '../pets/pets.js';
 
 export async function wardrobeScreen({ create = false } = {}) {
   const s = save.get();
@@ -14,7 +15,8 @@ export async function wardrobeScreen({ create = false } = {}) {
   const coins = coinPill();
   const preview = previewCanvas(300, { dir: 2 });
   let dir = 2;
-  const refresh = async () => preview.setSheet(await composeLook(look));
+  const petEl = petCanvas(110);
+  const refresh = async () => { preview.setSheet(await composeLook(look)); petEl.setPet(look.pet); };
   await refresh();
 
   const available = item => item.price === 0 && !item.badge || save.owns(item.id) || (item.badge && s.badges[item.badge]);
@@ -33,6 +35,7 @@ export async function wardrobeScreen({ create = false } = {}) {
 
   async function thumb(itemId) {
     const c = document.createElement('canvas'); c.width = FRAME; c.height = FRAME; c.className = 'w-thumb';
+    if (slot === 'pet') { const p = petById(itemId); loadPetImage(itemId).then(im => im && c.getContext('2d').drawImage(im, 0, 2 * FRAME, FRAME, FRAME, 0, 0, FRAME, FRAME)); return c; }
     const l = { ...look, [slot]: itemId };
     composeLook(l).then(sheet => c.getContext('2d').drawImage(sheet, 0, 2 * FRAME, FRAME, FRAME, 0, 0, FRAME, FRAME));
     return c;
@@ -141,7 +144,7 @@ export async function wardrobeScreen({ create = false } = {}) {
     ),
     h('div.w-body', {},
       h('div.w-left', {},
-        h('div.w-stage', {}, h('div.w-spot'), preview),
+        h('div.w-stage', {}, h('div.w-spot'), preview, petEl),
         h('div.w-turns', {}, turnBtn(-1), turnBtn(1)),
         buyBar,
       ),

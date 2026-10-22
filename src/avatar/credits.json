@@ -929,5 +929,558 @@
   "authors": "Nila122,JaidynReiman",
   "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
   "urls": "https://opengameart.org/content/lpc-curly-hair-elven-ears-white-cape-with-blue-trim-and-more,https://opengameart.org/content/lpc-roman-armor"
+ },
+ {
+  "file": "hair/bangs_bun/adult/walk.png",
+  "notes": "Original by bluecarrot16, animated by ElizaWy.",
+  "authors": "ElizaWy,bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-hair,https://github.com/ElizaWy/LPC/blob/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "hair/braid2/adult/bg/walk.png",
+  "notes": "(lidia)",
+  "authors": "Yamilian,bluecarrot16",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-heroine,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/braid2/adult/fg/walk.png",
+  "notes": "(lidia)",
+  "authors": "Yamilian,bluecarrot16",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-heroine,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/flat_top_fade/adult/walk.png",
+  "notes": "Original by bluecarrot16, animated by ElizaWy.",
+  "authors": "ElizaWy,bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-hair,https://github.com/ElizaWy/LPC/blob/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "hair/high_and_tight/adult/walk.png",
+  "notes": "",
+  "authors": "Skorpio,bluecarrot16",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-skorpios-scifi-sprite-pack,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/long_messy/adult/walk.png",
+  "notes": "(puck)",
+  "authors": "Mandi Paugh,bluecarrot16",
+  "licenses": "GPL 2.0,GPL 3.0,CC-BY 3.0",
+  "urls": "https://opengameart.org/content/puck-overland,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/ponytail2/adult/bg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman,Manuel Riecke (MrBeast),Joe White",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles,https://opengameart.org/content/ponytail-and-plain-hairstyles,https://opengameart.org/content/lpc-expanded-hair"
+ },
+ {
+  "file": "hair/ponytail2/adult/fg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman,Manuel Riecke (MrBeast),Joe White",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles,https://opengameart.org/content/ponytail-and-plain-hairstyles,https://opengameart.org/content/lpc-expanded-hair"
+ },
+ {
+  "file": "hair/shorthawk/adult/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman,Manuel Riecke (MrBeast)",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles,https://opengameart.org/content/lpc-expanded-hair"
+ },
+ {
+  "file": "hair/spiked_beehive/adult/walk.png",
+  "notes": "",
+  "authors": "Fabzy,bluecarrot16",
+  "licenses": "CC-BY-SA 3.0",
+  "urls": "https://opengameart.org/content/the-revolution-hair,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/curls_large/adult/bg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0+",
+  "urls": "https://opengameart.org/content/lpc-expanded-xlong-hair"
+ },
+ {
+  "file": "hair/curls_large/adult/fg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0+",
+  "urls": "https://opengameart.org/content/lpc-expanded-xlong-hair"
+ },
+ {
+  "file": "hair/bob_side_part/adult/walk.png",
+  "notes": "Original by Thecilekli. Touchups by BlueCarrot16. Edited and animated by ElizaWy.",
+  "authors": "thecilekli,bluecarrot16,ElizaWy",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-pink-short-hair,https://opengameart.org/content/lpc-hair,https://github.com/ElizaWy/LPC/blob/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "hair/parted2/adult/walk.png",
+  "notes": "",
+  "authors": "Skorpio,bluecarrot16",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-skorpios-scifi-sprite-pack,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/natural/adult/walk.png",
+  "notes": "Original by bluecarrot16, animations by ElizaWy.",
+  "authors": "ElizaWy,bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-hair,https://github.com/ElizaWy/LPC/blob/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "hair/loose/adult/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman,Manuel Riecke (MrBeast)",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles,https://opengameart.org/content/lpc-expanded-hair"
+ },
+ {
+  "file": "hair/dreadlocks_short/adult/walk.png",
+  "notes": "Original by bluecarrot16. Animated by ElizaWy.",
+  "authors": "ElizaWy,bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-hair,https://github.com/ElizaWy/LPC/blob/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "hair/curtains_long/adult/walk.png",
+  "notes": "(trevor)",
+  "authors": "Mandi Paugh,bluecarrot16",
+  "licenses": "GPL 2.0,GPL 3.0,CC-BY 3.0",
+  "urls": "https://opengameart.org/content/trevor-overland,https://opengameart.org/content/lpc-hair"
+ },
+ {
+  "file": "hair/relm_ponytail/adult/bg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-relm-hair-xlong-ponytail,https://opengameart.org/content/lpc-expanded-xlong-hair"
+ },
+ {
+  "file": "hair/relm_ponytail/adult/fg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-relm-hair-xlong-ponytail,https://opengameart.org/content/lpc-expanded-xlong-hair"
+ },
+ {
+  "file": "beards/beard/basic/walk.png",
+  "notes": "Original by Nemisys, repositioning by JaidynReiman.",
+  "authors": "JaidynReiman,Carlo Enrico Victoria (Nemisys)",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-white-beard"
+ },
+ {
+  "file": "beards/beard/medium/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "beards/beard/trimmed/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "beards/beard/winter/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-santa"
+ },
+ {
+  "file": "beards/beard/5oclock_shadow/walk.png",
+  "notes": "Original by Pennomi, repositioning by JaidynReiman.",
+  "authors": "JaidynReiman,Thane Brimhall (pennomi),laetissima",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-base-character-expressions"
+ },
+ {
+  "file": "beards/mustache/basic/walk.png",
+  "notes": "Original by Nemisys, repositioning by JaidynReiman.",
+  "authors": "JaidynReiman,Carlo Enrico Victoria (Nemisys)",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-brunet-mustache"
+ },
+ {
+  "file": "beards/mustache/bigstache/walk.png",
+  "notes": "Original by Pennomi, repositioning by JaidynReiman.",
+  "authors": "JaidynReiman,Thane Brimhall (pennomi),laetissima",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-base-character-expressions"
+ },
+ {
+  "file": "beards/mustache/chevron/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "beards/mustache/french/walk.png",
+  "notes": "Original by Pennomi, repositioning by JaidynReiman.",
+  "authors": "JaidynReiman,Thane Brimhall (pennomi),laetissima",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-base-character-expressions"
+ },
+ {
+  "file": "beards/mustache/handlebar/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "beards/mustache/horseshoe/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "beards/mustache/lampshade/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "beards/mustache/walrus/walk.png",
+  "notes": "",
+  "authors": "ElizaWy",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Hair,https://opengameart.org/content/lpc-expanded-sit-run-jump-more"
+ },
+ {
+  "file": "hat/helmet/barbarian_viking/adult/walk.png",
+  "notes": "original version by bluecarrot16, color reduction by Napsio (Vitruvian Studio)",
+  "authors": "bluecarrot16,JaidynReiman,Napsio (Vitruvian Studio)",
+  "licenses": "CC-BY 3.0,CC-BY 4.0,OGA-BY 3.0,GPL 2.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-helmets,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/kettle/adult/walk.png",
+  "notes": "previously referred to as chain-hat, color reduction by Napsio (Vitruvian Studio)",
+  "authors": "Johannes Sjölund (wulax),JaidynReiman,Napsio (Vitruvian Studio)",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/greathelm/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "OGA-BY 3.0,CC-BY 3.0,CC-BY 4.0,GPL 2.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-helmets,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/horned/adult/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16,Shaun Williams,Matthew Krohn (makrohn),Johannes Sjölund (wulax),Sander Frenken (castelonia)",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites,https://opengameart.org/content/lpc-full-plate-golden-armor,https://opengameart.org/content/lpc-full-plate-golden-armor-0,https://opengameart.org/content/lpc-helmets-mega-pack,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/spangenhelm/adult/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC-BY 3.0,CC-BY 4.0,OGA-BY 3.0,GPL 2.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-helmets,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/pointed/adult/walk.png",
+  "notes": "original version by bluecarrot16, color reduction by JaidynReiman",
+  "authors": "bluecarrot16,JaidynReiman",
+  "licenses": "CC-BY 3.0,CC-BY 4.0,OGA-BY 3.0,GPL 2.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-helmets,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/morion/adult/walk.png",
+  "notes": "",
+  "authors": "ElizaWy,Sander Frenken (castelonia)",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 4.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-realistic-helmet-pack,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/helmet/sugarloaf/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC-BY 3.0,CC-BY 4.0,OGA-BY 3.0,GPL 2.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-helmets,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/magic/celestial_moon/adult/walk.png",
+  "notes": "sheet_definitions/hat_magic_celestial.json",
+  "authors": "Napsio (Vitruvian Studio),Michael Whitlock (bigbeargames),Tracy",
+  "licenses": "CC-BY 3.0",
+  "urls": "https:/opengameart.org/content/lpc-celestial-wizard-hats,https:/opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/pirate/bandana/skull/adult/walk.png",
+  "notes": "Original Bandana by Fabzy, Pirate Version by Bluecarrot16, layers and added animations by JaidynReiman",
+  "authors": "bluecarrot16,Fabzy",
+  "licenses": "CC-BY-SA 3.0",
+  "urls": "https://opengameart.org/content/the-revolution-hair,https://opengameart.org/content/lpc-pirates,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/pirate/bonnie/feather/adult/walk.png",
+  "notes": "Bonnie Hat by Bluecarrot16, layers and added animations by JaidynReiman",
+  "authors": "bluecarrot16,JaidynReiman",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://opengameart.org/content/lpc-pirates,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/cloth/hood_sack/adult/walk.png",
+  "notes": "original by Nila122, adapted to human heads by JaidynReiman",
+  "authors": "Nila122,JaidynReiman",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-lizard-headgear,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "hat/headband/hairtie/adult/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-relm-hair-xlong-ponytail,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "head/ears/cat/adult/bg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-furry-ears-tails-for-rpg-sprites"
+ },
+ {
+  "file": "head/ears/cat/adult/fg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-furry-ears-tails-for-rpg-sprites"
+ },
+ {
+  "file": "head/ears/wolf/adult/bg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-furry-ears-tails-for-rpg-sprites"
+ },
+ {
+  "file": "head/ears/wolf/adult/fg/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-furry-ears-tails-for-rpg-sprites"
+ },
+ {
+  "file": "head/ears/elven/adult/walk.png",
+  "notes": "adapted to v3 base by bluecarrot16; expanded to other animations and child by JaidynReiman",
+  "authors": "JaidynReiman,bluecarrot16,Thane Brimhall (pennomi),laetissima,Matthew Krohn (makrohn),JaidynReiman",
+  "licenses": "GPL 3.0,CC-BY-SA 3.0",
+  "urls": "https://opengameart.org/content/lpc-base-character-expressions,http://opengameart.org/content/lpc-clothing-updates"
+ },
+ {
+  "file": "head/ears/long/adult/walk.png",
+  "notes": "adapted to v3 base by bluecarrot16; expanded to other animations and child by JaidynReiman",
+  "authors": "JaidynReiman,bluecarrot16,Nila122",
+  "licenses": "OGA-BY 3.0,GPL 3.0,CC-BY-SA 3.0",
+  "urls": "https://opengameart.org/content/lpc-long-ears,http://opengameart.org/content/lpc-clothing-updates"
+ },
+ {
+  "file": "head/ears/dragon/adult/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-new-elven-ear-variants"
+ },
+ {
+  "file": "head/ears/big/adult/walk.png",
+  "notes": "adapted to v3 base by bluecarrot16; expanded to other animations and child by JaidynReiman",
+  "authors": "JaidynReiman,bluecarrot16,Thane Brimhall (pennomi),laetissima,Matthew Krohn (makrohn)",
+  "licenses": "GPL 3.0,CC-BY-SA 3.0",
+  "urls": "https://opengameart.org/content/lpc-base-character-expressions,http://opengameart.org/content/lpc-clothing-updates"
+ },
+ {
+  "file": "torso/jacket/santa/male/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "OGA-BY 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-gentleman,https://opengameart.org/content/lpc-santa"
+ },
+ {
+  "file": "torso/chainmail/female/walk.png",
+  "notes": "minor edits by bluecarrot16, reduced colors by Napsio, adjusted Male colors and Idle/Sit/Emote/Climb/Run by JaidynReiman",
+  "authors": "Johannes Sjölund (wulax),Napsio (Vitruvian Studio),JaidynReiman",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"
+ },
+ {
+  "file": "legs/hose/thin/walk.png",
+  "notes": "Original bases by Redshrike, thrust/shoot bases by Wulax, original by ElizaWy, remaining frames by JaidynReiman",
+  "authors": "ElizaWy,JaidynReiman,Johannes Sjölund (wulax),Stephen Challener (Redshrike)",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing,https://opengameart.org/content/lpc-expanded-sit-run-jump-more,https://opengameart.org/content/lpc-expanded-pants"
+ },
+ {
+  "file": "feet/socks/ankle/thin/walk.png",
+  "notes": "original by ElizaWy, remaining frames by JaidynReiman",
+  "authors": "ElizaWy,JaidynReiman",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing,https://opengameart.org/content/lpc-expanded-sit-run-jump-more,https://opengameart.org/content/lpc-expanded-socks-shoes"
+ },
+ {
+  "file": "feet/socks/high/thin/walk.png",
+  "notes": "original by ElizaWy, remaining frames by JaidynReiman",
+  "authors": "ElizaWy,JaidynReiman",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://github.com/ElizaWy/LPC/tree/main/Characters/Clothing,https://opengameart.org/content/lpc-expanded-sit-run-jump-more,https://opengameart.org/content/lpc-expanded-socks-shoes"
+ },
+ {
+  "file": "feet/socks/tabi/thin/walk.png",
+  "notes": "",
+  "authors": "JaidynReiman,Stephen Challener (Redshrike),Johannes Sjölund (wulax)",
+  "licenses": "OGA-BY 3.0+,CC-BY 3.0+,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-kimono-relm,https://opengameart.org/content/lpc-expanded-socks-shoes"
+ },
+ {
+  "file": "feet/hoofs/thin/walk.png",
+  "notes": "original by Evert, color cleanup/minor fixes/climb/jump/sit/emote by JaidynReiman",
+  "authors": "JaidynReiman,Evert",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-faun-and-minotaur"
+ },
+ {
+  "file": "neck/tie/necktie/female/walk.png",
+  "notes": "Originally by pennomi/laetissima/Makrohn, edited by bluecarrot16, animations and recolors by JaidynReiman",
+  "authors": "JaidynReiman,bluecarrot16,Thane Brimhall (pennomi),laetissima,Makrohn",
+  "licenses": "CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-2-characters,https://opengameart.org/content/lpc-gentleman"
+ },
+ {
+  "file": "neck/cravat/thin/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "OGA-BY 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-pirates"
+ },
+ {
+  "file": "neck/jabot/thin/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "OGA-BY 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-pirates"
+ },
+ {
+  "file": "neck/necklace/chain/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "neck/amulet/star/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16,AntumDeluge,7Soul",
+  "licenses": "CC0",
+  "urls": "https://www.deviantart.com/7soul1/art/129892453,https://opengameart.org/content/cc0-jewelry-icons,https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "neck/amulet/dangle/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16,AntumDeluge",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/dungeon-crawl-32x32-tiles,https://opengameart.org/content/cc0-jewelry-icons,https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "neck/gem/pearl/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "neck/gem/emerald/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "facial/earrings/emerald/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "facial/earrings/moon/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "facial/earrings/pear/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "facial/earrings/princess/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "facial/earrings/stud/female/walk.png",
+  "notes": "",
+  "authors": "bluecarrot16",
+  "licenses": "CC0",
+  "urls": "https://opengameart.org/content/lpc-jewelry"
+ },
+ {
+  "file": "facial/masks/plain/adult/walk.png",
+  "notes": "",
+  "authors": "Nila122",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 2.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-masks,https://opengameart.org/content/lpc-expanded-hats-facial-helmets"
+ },
+ {
+  "file": "arms/hands/gloves/thin/walk.png",
+  "notes": "metal gloves by wulax, extended to female base by makrohn, recolors by bigbeargames, adapted to v3 bases by bluecarrot16, added to expanded animations by JaidynReiman",
+  "authors": "Michael Whitlock (bigbeargames),Matthew Krohn (makrohn),Johannes Sjölund (wulax),bluecarrot16,JaidynReiman",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites,http://opengameart.org/content/lpc-clothing-updates"
+ },
+ {
+  "file": "arms/bracers/thin/walk.png",
+  "notes": "original by wulax, adjustments by Makrohn, climb/emote/jump/sit/run by JaidynReiman",
+  "authors": "Matthew Krohn (makrohn),Johannes Sjölund (wulax),JaidynReiman",
+  "licenses": "OGA-BY 3.0,CC-BY-SA 3.0,GPL 3.0",
+  "urls": "https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"
+ },
+ {
+  "file": "arms/wrists/cuffs/thin/walk.png",
+  "notes": "Original by bluecarrot16, female/teen version by JaidynReiman",
+  "authors": "bluecarrot16,JaidynReiman",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://opengameart.org/content/lpc-pirates"
+ },
+ {
+  "file": "arms/wrists/lace/thin/walk.png",
+  "notes": "Original by bluecarrot16, female/teen version by JaidynReiman",
+  "authors": "bluecarrot16,JaidynReiman",
+  "licenses": "OGA-BY 3.0",
+  "urls": "https://opengameart.org/content/lpc-pirates"
  }
 ]

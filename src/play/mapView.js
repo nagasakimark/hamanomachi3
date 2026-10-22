@@ -64,6 +64,17 @@ class TownScene extends Phaser.Scene {
     this.shadowP = this.add.ellipse(0, 0, 30, 10, 0x000000, 0.18).setDepth(8);
     this.shadowA = this.add.ellipse(0, 0, 30, 10, 0x000000, 0.18).setDepth(8);
     this.makeAnims('hero'); this.makeAnims('asker');
+    const pi = this.ctl.petInfo;
+    if (pi?.img) {
+      if (this.textures.exists('pet')) this.textures.remove('pet');
+      this.textures.addSpriteSheet('pet', pi.img, { frameWidth: 64, frameHeight: 64 });
+      for (let row = 0; row < 4; row++) {
+        const k = `pet-walk-${row}`; if (this.anims.exists(k)) this.anims.remove(k);
+        this.anims.create({ key: k, frames: this.anims.generateFrameNumbers('pet', { start: row * pi.frames, end: row * pi.frames + pi.frames - 1 }), frameRate: 10, repeat: -1 });
+      }
+      this.pet = this.add.sprite(-999, -999, 'pet', 2 * pi.frames).setOrigin(0.5, 0.85).setDepth(8.5).setScale(pi.scale * 1.15);
+      this.petRow = 2; this.petStill = 0;
+    }
     this.trail = [];
     this.facing = 0;
     this.ready = true;
@@ -140,6 +151,21 @@ class TownScene extends Phaser.Scene {
         a.setFrame((this.askerRow ?? 2) * 9);
       }
     }
+    if (this.pet) {
+      // The pet trails 72px behind along the same path.
+      let pd = 0, pt = this.trail[0];
+      for (let i = this.trail.length - 1; i > 0; i--) {
+        const seg = Math.hypot(this.trail[i].x - this.trail[i - 1].x, this.trail[i].y - this.trail[i - 1].y);
+        if (pd + seg >= 72) { const k = (72 - pd) / seg; pt = { x: this.trail[i].x + (this.trail[i - 1].x - this.trail[i].x) * k, y: this.trail[i].y + (this.trail[i - 1].y - this.trail[i].y) * k }; break; }
+        pd += seg;
+      }
+      const pe = this.pet, pdx = pt.x - pe.x, pdy = pt.y - pe.y;
+      if (Math.hypot(pdx, pdy) > 0.4) {
+        pe.x = pt.x; pe.y = pt.y; this.petRow = dirRow(Math.atan2(pdy, pdx)); this.petStill = 0;
+        pe.play(`pet-walk-${this.petRow}`, true);
+      } else if (++this.petStill > 6 && pe.anims.isPlaying) { pe.stop(); pe.setFrame(this.petRow * this.ctl.petInfo.frames); }
+      pe.setDepth(pe.y < p.y ? 8.5 : 11.5);
+    }
     this.shadowP.setPosition(p.x, p.y + 1);
     this.shadowA.setPosition(a.x, a.y + 1);
     a.setDepth(a.y < p.y ? 9 : 11);
@@ -154,9 +180,10 @@ class TownScene extends Phaser.Scene {
 }
 
 export class MapView {
-  constructor(parent, pack, { width, height, renderScale = 1, hero, asker }) {
+  constructor(parent, pack, { width, height, renderScale = 1, hero, asker, pet = null }) {
     this.pack = pack;
     this.sheets = { hero, asker };
+    this.petInfo = pet; // { img, frames, scale } or null
     this.W = width; this.H = height; this.R = renderScale;
     this.speed = 1;
     this.readyP = new Promise(r => (this._ready = r));
@@ -195,6 +222,11 @@ export class MapView {
     s.asker.stop(); s.asker.setFrame(dirRow(angle) * 9);
     s.askerRow = dirRow(angle); s.askerStill = 0;
     s.trail = [{ x: s.asker.x, y: s.asker.y }, { x: sp.x, y: sp.y }];
+    if (s.pet) {
+      const bx = s.asker.x - Math.cos(angle) * 40 + Math.sin(angle) * 22, by = s.asker.y - Math.sin(angle) * 40 - Math.cos(angle) * 22;
+      s.pet.stop(); s.pet.setPosition(bx, by); s.petRow = dirRow(angle); s.petStill = 0; s.pet.setFrame(s.petRow * s.ctl.petInfo.frames);
+      s.trail.unshift({ x: bx, y: by });
+    }
     s.askerFollows = true;
     s.marker.setPosition(dp.x, dp.y).setVisible(marker);
     s.routeG.clear();
