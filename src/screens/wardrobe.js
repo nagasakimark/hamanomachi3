@@ -1,12 +1,12 @@
 import { h, btn, toast } from '../ui/dom.js';
 import { app } from '../app.js';
 import { save } from '../progress/save.js';
-import { TYPE_DEFAULTS, ITEMS, SLOTS, SKIN_TONES, HAIR_COLORS, CLOTH_COLORS, REQUIRED, itemById } from '../avatar/items.js';
+import { TYPE_DEFAULTS, ITEMS, SLOTS, SKIN_TONES, HAIR_COLORS, CLOTH_COLORS, REQUIRED, itemById, colorItem } from '../avatar/items.js';
 import { composeLook, previewCanvas, FRAME } from '../avatar/compositor.js';
 import { BADGES, checkBadges } from '../progress/badges.js';
 import { coinPill, showBadges } from '../ui/hud.js';
 import { sfx } from '../audio/sfx.js';
-import { petCanvas, loadPetImage, petById } from '../pets/pets.js';
+import { petCanvas, loadPetImage, petById, petColorById, PET_COLORS } from '../pets/pets.js';
 
 export async function wardrobeScreen({ create = false } = {}) {
   const s = save.get();
@@ -16,11 +16,39 @@ export async function wardrobeScreen({ create = false } = {}) {
   const preview = previewCanvas(300, { dir: 2 });
   let dir = 2;
   const petEl = petCanvas(110);
-  const refresh = async () => { preview.setSheet(await composeLook(look)); petEl.setPet(look.pet); };
+  const petCap = h('div.pet-cap');
+  const owned = id => save.owns(id);
+  const petColor = () => petColorById(look.petColor || 'natural');
+  const capText = () => { const p = petById(look.pet); const c = petColor(); petCap.textContent = p ? (c.id === 'natural' ? p.en : `${c.en} ${p.en}`) : ''; };
+  const refresh = async () => { preview.setSheet(await composeLook(look)); petEl.setPet(look.pet, look.petColor || 'natural'); capText(); };
+  // Colours the student already chose before colours cost coins stay free.
+  for (const [k, v] of Object.entries(s.look)) {
+    if (/Color2?$/.test(k) && k !== 'skinColor' && v > 0) { const id = colorItem(k === 'hairColor' ? 'hair' : 'cloth', v).id; if (!s.owned.includes(id)) s.owned.push(id); }
+  }
+  save.write();
   await refresh();
 
   const available = item => item.price === 0 && !item.badge || save.owns(item.id) || (item.badge && s.badges[item.badge]);
-  const unpaid = () => SLOTS.map(sl => itemById(look[sl.id])).filter(it => it && !available(it));
+  // Things being tried on that still cost coins: items, hair/cloth colours, pet colour.
+  const unpaid = () => {
+    const out = SLOTS.map(sl => itemById(look[sl.id])).filter(it => it && !available(it));
+    const seen = new Set();
+    const addCol = (kind, key) => {
+      const i = look[key] ?? 0, c = colorItem(kind, i);
+      if (i > 0 && !seen.has(c.id) && !owned(c.id)) { seen.add(c.id); out.push({ ...c, name: kind === 'hair' ? 'かみのいろ' : 'ふくのいろ', revert: () => { look[key] = s.look[key] ?? 0; } }); }
+    };
+    for (const sl of SLOTS) {
+      const it = itemById(look[sl.id]);
+      if (it?.color === 'hair') addCol('hair', 'hairColor');
+      else if (it?.color === 'cloth') { addCol('cloth', sl.id + 'Color'); if (it.color2) addCol('cloth', sl.id + 'Color2'); }
+    }
+    const pc = petColor();
+    if (look.pet && pc.price) {
+      const id = `pc-${look.pet.replace('pet-', '')}-${pc.id}`;
+      if (!owned(id)) out.push({ id, slot: 'pet', name: `${pc.jp} (${pc.en})`, price: pc.price, revert: () => { look.petColor = s.look.petColor || 'natural'; } });
+    }
+    return out;
+  };
 
   const tabs = h('div.w-tabs');
   const grid = h('div.w-grid');
@@ -60,7 +88,7 @@ export async function wardrobeScreen({ create = false } = {}) {
           if (lockedBadge) { sfx.play('error'); toast(`「${badge.name}」シールをゲットすると つかえるよ！`, 'warn'); return; }
           wear(it.id);
         },
-      }, await thumb(it.id), h('div.w-name', {}, it.name), tag);
+      }, await thumb(it.id), h('div.w-name', {}, it.name), it.en ? h('div.w-en', {}, it.en) : null, tag);
       cards.push(card);
     }
     grid.replaceChildren(...cards);
@@ -72,10 +100,24 @@ export async function wardrobeScreen({ create = false } = {}) {
     if (slot === 'skin') { list = SKIN_TONES; key = 'skin'; }
     else if (it?.color === 'hair') { list = HAIR_COLORS; key = 'hairColor'; }
     else if (it?.color === 'cloth') { list = CLOTH_COLORS; key = slot + 'Color'; if (it.color2) key2 = slot + 'Color2'; }
-    const row = (k, label) => h('div.sw-row', {}, label ? h('span.sw-label', {}, label) : null, ...list.map((c, i) => h('button.swatch' + ((look[k] ?? 0) === i ? '.on' : ''), {
-      style: { background: c },
-      onclick: () => { look[k] = i; sfx.play('pick'); refresh(); renderSwatches(); renderGrid(); },
-    })));
+    const kind = key === 'hairColor' ? 'hair' : 'cloth';
+    const row = (k, label) => h('div.sw-row', {}, label ? h('span.sw-label', {}, label) : null, ...list.map((c, i) => {
+      const paid = slot === 'skin' || owned(colorItem(kind, i).id) || !colorItem(kind, i).price;
+      return h('button.swatch' + ((look[k] ?? 0) === i ? '.on' : '') + (paid ? '' : '.locked'), {
+        style: { background: c },
+        onclick: () => { look[k] = i; sfx.play('pick'); refresh(); renderAll(); },
+      }, paid ? null : h('span.sw-price', {}, String(colorItem(kind, i).price)));
+    }));
+    if (slot === 'pet') {
+      const pid = look.pet && look.pet.replace('pet-', '');
+      swatches.replaceChildren(...(pid ? [h('div.sw-row.pet-colors', {}, ...PET_COLORS.map(c => {
+        const own = !c.price || owned(`pc-${pid}-${c.id}`);
+        return h('button.pcol' + ((look.petColor || 'natural') === c.id ? '.on' : ''), {
+          onclick: () => { look.petColor = c.id; sfx.play('pick'); refresh(); renderAll(); },
+        }, h('span.pcol-dot', { style: { background: c.dot } }), h('span.pcol-en', {}, c.en), h('span.pcol-jp', {}, c.jp), own ? (c.price ? h('span.pcol-own', {}, '✔') : null) : h('span.pcol-price', {}, String(c.price)));
+      }))] : [h('div.sw-empty', {}, 'ペットをえらぶと いろもえらべるよ！')]));
+      return;
+    }
     swatches.replaceChildren(...(list ? [row(key, key2 ? 'いろ1' : null), key2 ? row(key2, 'いろ2') : null].filter(Boolean) : [h('div.sw-empty', {}, slot === 'face' ? '男の子か女の子をえらんでね！' : '')]));
   }
 
@@ -124,7 +166,7 @@ export async function wardrobeScreen({ create = false } = {}) {
 
   const done = () => {
     // Anything not paid for goes back to what was worn before.
-    for (const it of unpaid()) look[it.slot] = s.look[it.slot] && available(itemById(s.look[it.slot])) ? s.look[it.slot] : ITEMS.find(i => i.slot === it.slot && i.price === 0 && !i.badge)?.id || null;
+    for (const it of unpaid()) if (it.revert) it.revert(); else look[it.slot] = s.look[it.slot] && available(itemById(s.look[it.slot])) ? s.look[it.slot] : ITEMS.find(i => i.slot === it.slot && i.price === 0 && !i.badge)?.id || null;
     if (!REQUIRED.has('hat')) { /* optional slots may stay empty */ }
     s.look = { ...look };
     if (create) s.madeCharacter = true;
@@ -144,7 +186,7 @@ export async function wardrobeScreen({ create = false } = {}) {
     ),
     h('div.w-body', {},
       h('div.w-left', {},
-        h('div.w-stage', {}, h('div.w-spot'), preview, petEl),
+        h('div.w-stage', {}, h('div.w-spot'), preview, petEl, petCap),
         h('div.w-turns', {}, turnBtn(-1), turnBtn(1)),
         buyBar,
       ),

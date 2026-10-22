@@ -495,3 +495,19 @@ button { font-family: inherit; }
 
 .w-stage .pet-canvas { position: absolute; right: 8%; bottom: 12%; image-rendering: pixelated; pointer-events: none; filter: drop-shadow(0 4px 0 rgba(0,0,0,.12)); }
 .w-thumb { image-rendering: auto; }
+
+/* paid colours + pet colours */
+.swatch { position: relative; }
+.swatch.locked { opacity: .92; }
+.sw-price { position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%); background: #fff3c4; color: #9a6400; font-size: 12px; font-weight: 700; border-radius: 9px; padding: 0 5px; white-space: nowrap; }
+.w-en { font-size: 12px; color: #5a6b6a; font-weight: 600; margin-top: -2px; }
+.pet-cap { position: absolute; right: 4%; bottom: 3%; font-weight: 700; font-size: 16px; color: #26524d; background: rgba(255,255,255,.8); border-radius: 10px; padding: 1px 10px; }
+.pet-colors { gap: 8px; }
+.pcol { display: flex; align-items: center; gap: 6px; background: #fff; border: 3px solid #fff; border-radius: 14px; padding: 4px 10px; cursor: pointer; font-family: inherit; box-shadow: 0 3px 0 rgba(0,0,0,.12); }
+.pcol.on { border-color: var(--sea); }
+.pcol-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); }
+.pcol-en { font-weight: 700; font-size: 15px; }
+.pcol-jp { font-size: 11px; color: #667; }
+.pcol-price { background: #fff3c4; color: #9a6400; font-size: 13px; font-weight: 700; border-radius: 9px; padding: 0 6px; }
+.pcol-own { color: var(--green); font-weight: 700; }
+.w-swatches { padding-bottom: 8px; }

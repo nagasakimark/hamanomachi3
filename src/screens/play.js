@@ -354,7 +354,8 @@ export async function playScreen({ mapId, missionId, free }) {
 
   async function petInfo() {
     const pt = petById(s.look.pet); if (!pt || !(save.owns('pet-' + pt.id))) return null;
-    const img = await loadPetImage(pt.id); return img ? { img, frames: pt.frames, scale: pt.scale } : null;
+    const col = save.owns(`pc-${pt.id}-${s.look.petColor}`) ? s.look.petColor : 'natural';
+    const img = await loadPetImage(pt.id, col); return img ? { img, frames: pt.frames, scale: pt.scale } : null;
   }
 
   return {

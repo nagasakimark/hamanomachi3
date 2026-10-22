@@ -262,7 +262,28 @@ ITEMS.push(
 );
 
 // Pets follow you on the map; they have no avatar layers.
-ITEMS.push(...PETS.map(p => ({ id: 'pet-' + p.id, slot: 'pet', name: p.name, price: p.price, layers: [] })));
+ITEMS.push(...PETS.map(p => ({ id: 'pet-' + p.id, slot: 'pet', name: p.name, en: p.en, price: p.price, layers: [] })));
+
+// ---- Price balance -------------------------------------------------------
+// Kids earn coins fast, so the cool stuff is the long-term goal. Cheap items
+// are small treats; the best items are big saves. Edit COOL to tune.
+const COOL = {
+  'hat-tiara': 5000, 'hat-admiral': 5000, 'hat-captain': 4500, 'back-cape': 4500, 'hat-wings': 4000,
+  'hat-celestial': 4000, 'hat-magic_celestial_moon': 4000, 'ears-dragon': 3500, 'hat-helmet_greathelm': 4500,
+  'hat-helmet_horned': 3500, 'back-tattered': 3000, 'hair-longhawk': 2500, 'hair-porcupine': 2500, 'top-chainmail': 3000,
+  'neck-gem_emerald': 2500, 'neck-gem_pearl': 2000, 'hat-cavalier': 3000, 'hat-pirate': 2500, 'hat-horns': 2500,
+};
+for (const it of ITEMS) {
+  if (!it.price || it.badge || it.slot === 'pet') continue;
+  const p = it.price, k = p < 150 ? 1.5 : p < 250 ? 3 : p < 350 ? 5 : p < 450 ? 6 : 8;
+  it.price = COOL[it.id] ?? Math.round(p * k / 10) * 10;
+}
+
+// Colours are bought once and then work on every item of that kind
+// (id 'col-hair-7' / 'col-cloth-9'). The first colour of each list is free.
+export const HAIR_PRICES = [0, 100, 100, 150, 200, 300, 500, 800, 800, 800];
+export const CLOTH_PRICES = [0, 100, 150, 150, 150, 150, 200, 150, 250, 250, 100, 200];
+export const colorItem = (kind, i) => ({ id: `col-${kind}-${i}`, slot: kind, name: kind === 'hair' ? 'かみのいろ' : 'ふくのいろ', price: (kind === 'hair' ? HAIR_PRICES : CLOTH_PRICES)[i] || 0 });
 
 export const BODY_LAYER = L('body/bodies/teen/walk.png', Z.body);
 
