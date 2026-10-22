@@ -10,7 +10,7 @@ import { sfx } from '../audio/sfx.js';
 export const TIER_UNLOCK = { 1: 0, 2: 12, 3: 27, 4: 42 };
 
 export function tierOpen(map, tier) {
-  if (map.isTest) return true;
+  if (map.isTest || save.get().cheat) return true;
   return save.mapStars(map.id) >= TIER_UNLOCK[tier];
 }
 

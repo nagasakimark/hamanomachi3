@@ -1,3 +1,5 @@
+import { ITEMS } from './avatar/items.js';
+import { PETS, PET_COLORS } from './pets/petsData.js';
 import '@fontsource/fredoka/400.css';
 import '@fontsource/fredoka/500.css';
 import '@fontsource/fredoka/600.css';
@@ -39,6 +41,26 @@ fitStage();
 laidOutW = getStageW();
 sfx.apply(save.get().settings);
 window.addEventListener('pointerdown', () => sfx.unlock(), { once: true });
+// Tester code: type it once = unlock everything + lots of coins; again = full reset.
+{
+  const CODE = 'ifiwasarichman'; let typed = '';
+  window.addEventListener('keydown', e => {
+    if (e.target.closest?.('input, textarea') || e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-CODE.length);
+    if (typed !== CODE) return;
+    typed = '';
+    const d = save.get();
+    if (d.cheat) { save.reset(); sfx.play('error'); } else {
+      d.cheat = true; d.coins = Math.max(d.coins, 999999); d.madeCharacter = true;
+      for (const it of ITEMS) if (it.price && !d.owned.includes(it.id)) d.owned.push(it.id);
+      for (const p of PETS) for (const c of PET_COLORS) { const id = `pc-${p.id}-${c.id}`; if (!d.owned.includes(id)) d.owned.push(id); }
+      for (let i = 0; i < 12; i++) for (const k of ['hair', 'cloth']) { const id = `col-${k}-${i}`; if (!d.owned.includes(id)) d.owned.push(id); }
+      for (const it of ITEMS) if (it.badge && !d.badges[it.badge]) d.badges[it.badge] = Date.now();
+      save.write(); sfx.play('buy');
+    }
+    app.go(save.get().cheat ? 'towns' : 'title');
+  });
+}
 document.addEventListener('contextmenu', e => { if (e.target.closest('#stage')) e.preventDefault(); });
 
 (async () => {

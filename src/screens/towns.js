@@ -28,7 +28,7 @@ export async function townsScreen() {
   const turner = setInterval(() => { dir = [2, 3, 0, 1][([2, 3, 0, 1].indexOf(dir) + 1) % 4]; me.setDir(dir); }, 2200);
 
   const cards = MAPS.map((m, i) => {
-    const locked = !m.isTest && total < (m.unlockStars || 0);
+    const locked = !m.isTest && !save.get().cheat && total < (m.unlockStars || 0);
     const got = save.mapStars(m.id), max = m.missions.length * 3;
     const card = h('div.town-card' + (locked ? '.locked' : ''), { style: { animationDelay: `${i * 0.08}s` } },
       h('div.town-img', { style: { backgroundImage: `url(${m.thumbUrl})` } }, locked ? h('div.lock', {}, '🔒', h('span', {}, `★ ${m.unlockStars}`)) : null),
