@@ -281,23 +281,24 @@ function drawLabelBox(g, it, style) {
   return r;
 }
 const PIN_R = 13;
+const pinR = it => PIN_R * (it.ps || 1);
 function pinBody(it) {
   const r = labelRect(it);
   let dx = r.cx - it.px, dy = r.cy - it.py;
   const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
-  return { x: it.px + dx * PIN_R * 2.2, y: it.py + dy * PIN_R * 2.2, dx, dy };
+  return { x: it.px + dx * pinR(it) * 2.2, y: it.py + dy * pinR(it) * 2.2, dx, dy };
 }
 function drawPin(g, it, selected) {
   const b = pinBody(it), tip = { x: it.px, y: it.py };
-  const th = Math.atan2(tip.y - b.y, tip.x - b.x), dd = PIN_R * 2.2, al = Math.acos(PIN_R / dd);
+  const PR = pinR(it), th = Math.atan2(tip.y - b.y, tip.x - b.x), dd = PR * 2.2, al = Math.acos(PR / dd);
   g.beginPath();
   g.moveTo(tip.x, tip.y);
-  g.lineTo(b.x + Math.cos(th - al) * PIN_R, b.y + Math.sin(th - al) * PIN_R);
-  g.arc(b.x, b.y, PIN_R, th - al, th + al, true);
+  g.lineTo(b.x + Math.cos(th - al) * PR, b.y + Math.sin(th - al) * PR);
+  g.arc(b.x, b.y, PR, th - al, th + al, true);
   g.closePath();
   g.fillStyle = '#ffc42e'; g.fill();
   g.lineWidth = 2.5; g.strokeStyle = selected ? '#ff3d00' : '#4a3b12'; g.stroke();
-  g.beginPath(); g.arc(b.x, b.y, PIN_R * 0.38, 0, 7); g.fillStyle = '#7a5a10'; g.fill();
+  g.beginPath(); g.arc(b.x, b.y, PR * 0.38, 0, 7); g.fillStyle = '#7a5a10'; g.fill();
 }
 function drawPlace(g, it, selected) {
   const r = labelRect(it), b = pinBody(it);
@@ -534,7 +535,7 @@ function hitTest(p) {
   for (let i = doc.items.length - 1; i >= 0; i--) {
     const it = doc.items[i];
     if (it.type === 'place') {
-      if (dist({ x: it.px, y: it.py }, p) < 16 / z) return { kind: 'item', id: it.id, part: 'pin' };
+      if (dist({ x: it.px, y: it.py }, p) < 16 * (it.ps || 1) / z) return { kind: 'item', id: it.id, part: 'pin' };
       const r = labelRect(it);
       if (p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h) return { kind: 'item', id: it.id, part: 'label' };
     }
@@ -917,6 +918,9 @@ function selPanel() {
     const dl = h('datalist', { id: 'cp-places' }, ...STANDARD_PLACES.map(n => h('option', { value: n })));
     const inp = liveInput(it.text, v => { it.text = v; }, { id: 'cp-text', list: 'cp-places' });
     return [h('h3', {}, 'Place label + pin'), field('Name shown to students', inp), dl,
+      field('Pin size', liveRange(Math.round((it.ps || 1) * 100), 50, 250, 5, v => { it.ps = v / 100; }, v => v + '%')),
+      field('Label text size', liveRange(it.fs || C.doc.fs, 12, 60, 1, v => { it.fs = v; }, v => v + ' px')),
+      btn('Apply these sizes to every place', act(() => { for (const o of C.doc.items) if (o.type === 'place') { o.ps = it.ps; o.fs = it.fs; } }), 'Same pin and label size on all places'),
       h('p.ed-small', {}, 'Drag the yellow pin to the building\'s door. Drag the green label anywhere. In the game, the pin is where the character ends up.'),
       h('div.ed-row', {}, dup, del)];
   }
