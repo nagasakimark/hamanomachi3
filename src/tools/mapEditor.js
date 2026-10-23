@@ -474,8 +474,11 @@ function gimmickFields(m, num) {
   const sel = h('select', {}, ...[['', 'None'], ['stamps', 'Stamp rally'], ['treasure', 'Treasure chests'], ['crafting', 'Crafting materials'], ['blocks', '? blocks + closed roads'], ['monsters', 'Wild monsters (Pokémon town)']]
     .map(([v, t]) => h('option', { value: v, selected: (m.gimmick || '') === v }, t)));
   sel.addEventListener('change', () => { snapshot(); if (sel.value) m.gimmick = sel.value; else delete m.gimmick; changed(); renderSide(); });
+  const amb = h('select', {}, ...[['auto', 'Automatic (bubbles for undersea / Bikini Bottom)'], ['bubbles', 'Rising bubbles'], ['', 'None']]
+    .map(([v, t]) => h('option', { value: v, selected: (m.ambient === undefined ? 'auto' : m.ambient) === v }, t)));
+  amb.addEventListener('change', () => { snapshot(); if (amb.value === 'auto') delete m.ambient; else m.ambient = amb.value; changed(); });
   const gd = () => (m.gimmickData ||= {});
-  const out = [h('h3', {}, 'Special rule (gimmick)'), field('Gimmick', sel), h('p.ed-small', {}, GIMMICK_NOTES[m.gimmick || ''])];
+  const out = [h('h3', {}, 'Special rule (gimmick)'), field('Gimmick', sel), h('p.ed-small', {}, GIMMICK_NOTES[m.gimmick || '']), field('Screen effect', amb)];
   const spots = m.points.filter(p => p.spot).length;
   if (m.gimmick === 'treasure') out.push(field('Chests per mission', num(gd().count ?? 3, v => { gd().count = v; })), field('Coins per chest', num(gd().coins ?? 15, v => { gd().coins = v; })));
   if (m.gimmick === 'crafting') out.push(field('Chance a spot has a material (0-100%)', num(Math.round((gd().chance ?? 0.4) * 100), v => { gd().chance = Math.max(0, Math.min(100, v)) / 100; })));

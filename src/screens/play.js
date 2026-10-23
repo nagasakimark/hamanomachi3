@@ -15,6 +15,7 @@ import { sfx } from '../audio/sfx.js';
 import { say } from '../audio/lines.js';
 import { petById, loadPetImage } from '../pets/pets.js';
 import { createSession } from '../gimmicks/index.js';
+import { startAmbient } from '../gimmicks/ambient.js';
 import { maybeEncounter } from '../gimmicks/monsters.js';
 
 const TOP_H = 68, PANEL_W = 460;
@@ -159,7 +160,7 @@ export async function playScreen({ mapId, missionId, free }) {
 
   // ---- Phaser ----
   const R = Math.max(1, Math.min(2, getStageScale() * (window.devicePixelRatio || 1)));
-  let mv = null;
+  let mv = null, ambient = null;
 
   async function startMission(intro = true) {
     attempts = 0;
@@ -389,6 +390,7 @@ export async function playScreen({ mapId, missionId, free }) {
       mv = new MapView(mapBox, map, { width: mapW, height: mapH, renderScale: R, hero: heroSheet, asker: askerSheet, pet: await petInfo() });
       mv.speed = s.settings.speed || 1;
       await mv.ready();
+      ambient = startAmbient(mv, map);
       window.addEventListener('keydown', onKey);
       if (location.search.includes('debug')) window.__play = { win: () => win(editor.program()), encounter: () => maybeEncounter({ force: true }), mission, get gm() { return gm; }, mv, solveAndRun: () => { editor.setProgram(solve(gg, mission.start, mission.destination)); return run(); } };
       // First time: a starter hint in the program area.
@@ -396,6 +398,7 @@ export async function playScreen({ mapId, missionId, free }) {
     },
     destroy() {
       gm?.destroy?.();
+      ambient?.destroy();
       alive = false;
       window.removeEventListener('keydown', onKey);
       sfx.stopVoice();
