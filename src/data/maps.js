@@ -13,13 +13,19 @@ function packFiles(dir) {
   return out;
 }
 
+// Every town shares the voice clips in maps/hamanomachi/audio (one recording per
+// place name), so a new town only needs its own clip if it wants a different one.
+const SHARED = packFiles('hamanomachi');
+const slugAudio = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '') + '.mp3';
+
 function makePack(map, fileUrls, extra = {}) {
+  for (const p of map.points || []) if (p.type === 'destination' && !p.audio && p.name) p.audio = slugAudio(p.name);
   return {
     ...map,
     ...extra,
     imageUrl: fileUrls[map.image],
     thumbUrl: fileUrls['thumb.png'] || fileUrls[map.image],
-    audioUrl: name => (name ? fileUrls['audio/' + name] : null),
+    audioUrl: name => (name ? fileUrls['audio/' + name] || SHARED['audio/' + name] || null : null),
     graph: new MapGraph(map),
   };
 }
