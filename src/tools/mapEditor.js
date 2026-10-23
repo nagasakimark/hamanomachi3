@@ -37,6 +37,7 @@ function blankMap() {
 }
 
 const TYPE_COLORS = { normal: '#2f7de1', littlebit: '#ff9800', start: '#1faa55', destination: '#e8337a' };
+const BEND_COLOR = '#14b8a6'; // a 30-60 degree bend: the road is followed round it, not a block
 const TOOLS = [
   { id: 'select', label: 'Select / move', key: 'V', icon: '👆' },
   { id: 'road', label: 'Draw roads', key: 'R', icon: '🛣️' },
@@ -325,10 +326,19 @@ function draw() {
   // issues
   const bad = new Set(S.issues.flatMap(i => i.ids || []));
   // points
+  const gg = new MapGraph(S.map);
   for (const p of S.map.points) {
     const sel = S.selected?.kind === 'point' && S.selected.id === p.id;
+    const bend = (p.type === 'normal' || p.type === 'littlebit') && gg.isBend(p.id);
     const rad = (p.type === 'normal' ? 6 : 8) * lw * (sel ? 1.4 : 1) * (S.hover === p.id ? 1.3 : 1);
     if (bad.has(p.id)) { ctx.fillStyle = 'rgba(255,0,0,.25)'; ctx.beginPath(); ctx.arc(p.x, p.y, rad * 2.6, 0, 7); ctx.fill(); }
+    if (bend && p.type === 'normal') {
+      // hollow teal ring: the walk goes round this bend and it is not a block
+      ctx.fillStyle = '#fff'; ctx.strokeStyle = sel ? '#ff3d00' : BEND_COLOR; ctx.lineWidth = 3 * lw;
+      ctx.beginPath(); ctx.arc(p.x, p.y, rad, 0, 7); ctx.fill(); ctx.stroke();
+      continue;
+    }
+    if (bend) { ctx.strokeStyle = BEND_COLOR; ctx.lineWidth = 3 * lw; ctx.beginPath(); ctx.arc(p.x, p.y, rad + 5 * lw, 0, 7); ctx.stroke(); }
     ctx.fillStyle = TYPE_COLORS[p.type] || '#666';
     ctx.strokeStyle = sel ? '#ff3d00' : '#fff'; ctx.lineWidth = (sel ? 3 : 2) * lw;
     ctx.beginPath();
@@ -444,7 +454,8 @@ function pointPanel() {
 function legend() {
   return h('div.ed-legend', {},
     h('h3', {}, 'How points work'),
-    h('p', {}, h('b', { style: { color: TYPE_COLORS.normal } }, '● Corner point'), ' — a crossing or bend. Counts as 1 block for "go straight for 1 block".'),
+    h('p', {}, h('b', { style: { color: TYPE_COLORS.normal } }, '● Corner point'), ' — a crossing, or a sharp (about 90°) corner. Counts as 1 block for "go straight for 1 block".'),
+    h('p', {}, h('b', { style: { color: BEND_COLOR } }, '○ Bend'), ' — the road turns 30–60° with no side road (e.g. a cut or rounded corner). The walk follows the road round it and it does NOT count as a block. Points turn into bends automatically.'),
     h('p', {}, h('b', { style: { color: TYPE_COLORS.littlebit } }, '■ Little-bit point'), ' — where "go straight for a little bit" stops, usually beside a place. Doesn\'t count as a block.'),
     h('p', {}, h('b', { style: { color: TYPE_COLORS.start } }, '● Start'), ' — where the character begins (bus stops). Set which way it faces.'),
     h('p', {}, h('b', { style: { color: TYPE_COLORS.destination } }, '● Place'), ' — a destination. Connect it to one road point with a short road. "You can see it on your left/right" walks onto it.'),
@@ -515,6 +526,12 @@ function runChecks() {
       if (d < Math.PI / 8) out.push({ level: 'warn', text: `Two roads leave ${p.name || p.id} in almost the same direction.`, ids: [p.id] });
     }
   }
+  // A little-bit point on a bend makes "go straight for a little bit" stop at the corner.
+  for (const p of m.points) {
+    if (g.isLittleBit(p.id) && p.type === 'littlebit' && g.isBend(p.id) && !g.neighbors(p.id).some(n => P(n)?.type === 'destination')) {
+      out.push({ level: 'warn', text: `Little-bit point ${p.id} sits on a bend. Bends are followed automatically now, so "a little bit" would stop at the corner. Change it to a corner point (it will show as a bend).`, ids: [p.id], fix: () => { p.type = 'normal'; } });
+    }
+  }
   for (const d of dests) {
     const ok = starts.some(s => solve(g, s.id, d.id));
     if (!ok && g.neighbors(d.id).length) out.push({ level: 'error', text: `Nobody can reach ${d.name} with the blocks.`, ids: [d.id] });
@@ -532,7 +549,7 @@ function checkPanel() {
   if (!S.issues.length) return [h('div.ed-ok', {}, '✔ Everything looks good!')];
   const fixes = S.issues.filter(i => i.fix);
   return [
-    fixes.length ? mbtn(`🔧 Fix ${fixes.length} star targets`, () => { snapshot(); fixes.forEach(f => f.fix()); changed(); }) : null,
+    fixes.length ? mbtn(`🔧 Fix ${fixes.length} automatically`, () => { snapshot(); fixes.forEach(f => f.fix()); changed(); }) : null,
     ...S.issues.map(i => h('div.ed-issue.' + i.level, {
       onclick: () => { if (i.ids?.[0]) { S.selected = { kind: 'point', id: i.ids[0] }; focusPoint(P(i.ids[0])); tab = 'point'; renderSide(); } },
     }, { error: '⛔ ', warn: '⚠️ ', fix: '🔧 ' }[i.level], i.text)),
