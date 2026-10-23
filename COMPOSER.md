@@ -44,7 +44,7 @@ Each of the 7 themes has three sets: Buildings (18), Decorations (12) and Water 
 
 ## Overlay picture (AI-restyled background)
 
-Map tab → **Choose overlay picture…**. Workflow: build the map, **Save PNG**, have an AI restyle it, load the result as the overlay. It is stretched to the map size and drawn over the background; roads, walkways, pins, bus stops and labels stay on top. By default your own building/decoration pictures are hidden (the overlay already has them); untick that to keep them. Opacity and Remove are in the same panel. The overlay is saved in the project file and used by **Use picture + trace roads**, so road tracing still follows your drawn roads.
+Map tab → **Choose overlay picture…**. Workflow: build the map, **Save PNG**, have an AI restyle it, load the result as the overlay. It is stretched to the map size and drawn over the background; roads, walkways, buildings, pins, bus stops and labels stay on top (water/ground pieces are replaced by the overlay). If your overlay picture already contains the buildings, tick "Hide my building pictures". Opacity and Remove are in the same panel. The overlay is saved in the project file and used by **Use picture + trace roads**, so road tracing still follows your drawn roads.
 
 ## Make a town (generator)
 

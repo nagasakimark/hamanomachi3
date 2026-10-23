@@ -395,8 +395,11 @@ export function renderDoc(g, doc, o = {}) {
   g.fillStyle = doc.bg; g.fillRect(0, 0, doc.w, doc.h);
   const ov = doc.overlay, showOv = !!(ov && ov.on !== false && OV.img);
   if (showOv) { g.save(); g.globalAlpha = ov.op ?? 1; g.drawImage(OV.img, 0, 0, doc.w, doc.h); g.restore(); }
-  const hideImgs = showOv && ov.hide !== false;
-  for (const it of doc.items) if (it.type === 'image' && it.under && !hideImgs) drawImageItem(g, it);
+  // Buildings always stay on top of the overlay (it is only the background).
+  // Water/ground pieces ("under roads") belong to the background, so the overlay
+  // replaces them. Buildings are hidden only if that box is ticked.
+  const hideImgs = showOv && ov.hideImgs === true;
+  for (const it of doc.items) if (it.type === 'image' && it.under && !showOv) drawImageItem(g, it);
   if (hideImgs) {
     // Buildings are baked into the overlay, so cut walkways out wherever one of
     // my own building/decoration pictures stands: paths always sit below buildings.
@@ -982,15 +985,15 @@ function mapPanel() {
     field('Background colour', color('bg')),
     h('div.cp-swatches', {}, ...['#fbf3df', '#ffffff', '#e8f1e4', '#dcefff', '#f6e7cf', '#f1e0ff', '#fff3a8'].map(swatch)),
     h('h3', {}, 'Overlay picture'),
-    h('p.ed-small', {}, 'Save your map as a PNG, have an AI restyle the background, then load the result here. It is drawn over the background; your roads, walkways, pins and labels stay on top.'),
+    h('p.ed-small', {}, 'Save your map as a PNG, have an AI restyle the background, then load the result here. It replaces the background; your roads, walkways, buildings, pins and labels stay on top.'),
     btn(OV.src ? 'Replace overlay picture…' : 'Choose overlay picture…', () => {
       const i = h('input', { type: 'file', accept: 'image/*' });
-      i.addEventListener('change', async () => { const f = i.files[0]; if (!f) return; snapshot(); setOverlay(await readURL(f)); d.overlay = { on: true, op: 1, hide: true }; changed(); renderPanel(); });
+      i.addEventListener('change', async () => { const f = i.files[0]; if (!f) return; snapshot(); setOverlay(await readURL(f)); d.overlay = { on: true, op: 1, hideImgs: false }; changed(); renderPanel(); });
       i.click();
     }, 'Pick the restyled picture (any size; it is stretched to the map size)'),
     ...(OV.src ? [
       h('label.ed-field', {}, h('span', {}, 'Show overlay'), chk(d.overlay?.on !== false, e => { snapshot(); d.overlay = { ...(d.overlay || {}), on: e.target.checked }; changed(); })),
-      h('label.ed-field', {}, h('span', {}, 'Hide my building/decoration pictures (the overlay already has them)'), chk(d.overlay?.hide !== false, e => { snapshot(); d.overlay = { ...(d.overlay || {}), hide: e.target.checked }; changed(); })),
+      h('label.ed-field', {}, h('span', {}, 'Hide my building pictures (only if the overlay picture already has the buildings)'), chk(d.overlay?.hideImgs === true, e => { snapshot(); d.overlay = { ...(d.overlay || {}), hideImgs: e.target.checked }; changed(); })),
       field('Overlay opacity', liveRange(Math.round((d.overlay?.op ?? 1) * 100), 10, 100, 1, v => { d.overlay = { ...(d.overlay || {}), op: v / 100 }; }, v => v + '%')),
       btn('Remove overlay', () => { snapshot(); setOverlay(null); d.overlay = null; changed(); renderPanel(); }),
     ] : []),
