@@ -89,3 +89,38 @@ test('mission generation gives 4 tiers', () => {
   const ms = generateMissions(map);
   assert.deepEqual([...new Set(ms.map(m => m.tier))], [1, 2, 3, 4]);
 });
+
+// A cut corner:  S ---- A ---(lb P)--- B           (B and C are 45-degree bends)
+//                                        \
+//                                         C
+//                                         |
+//                                         D (junction) --- E
+// with "book" next to P, and little-bit points sitting right on the bends too.
+const corner = {
+  points: [
+    { id: 'S', x: 0, y: 0, type: 'start', facing: 'A' },
+    { id: 'A', x: 100, y: 0, type: 'normal' }, { id: 'A2', x: 100, y: -100, type: 'normal' },
+    { id: 'P', x: 200, y: 0, type: 'littlebit' },
+    { id: 'B', x: 300, y: 0, type: 'littlebit' },
+    { id: 'C', x: 380, y: 80, type: 'normal' },
+    { id: 'D', x: 380, y: 200, type: 'normal' }, { id: 'E', x: 480, y: 200, type: 'normal' }, { id: 'F', x: 380, y: 300, type: 'normal' },
+    { id: 'book', x: 200, y: -30, type: 'destination', name: 'book' },
+  ],
+  roads: [['S', 'A'], ['A', 'A2'], ['A', 'P'], ['P', 'B'], ['B', 'C'], ['C', 'D'], ['D', 'E'], ['D', 'F'], ['P', 'book']],
+};
+
+test('roads are followed round cut corners, which are not blocks', () => {
+  const g = new MapGraph(corner);
+  const r = goStraight(g, g.initialState('S'), 2, null);
+  assert.deepEqual(r.path, ['S', 'A', 'P', 'B', 'C', 'D']);
+});
+
+test('a place next to a cut corner can be reached from both sides', () => {
+  const g = new MapGraph(corner);
+  assert.ok(solve(g, 'S', 'book'));
+  const back = { ...corner, points: corner.points.map(p => (p.id === 'S' ? { ...p, x: 380, y: 400, facing: 'F' } : p)), roads: [...corner.roads.filter(r => r[0] !== 'S'), ['S', 'F']] };
+  const g2 = new MapGraph(back);
+  const best = solve(g2, 'S', 'book');
+  assert.ok(best, 'reachable coming round the corner');
+  assert.equal(simulate(g2, best, 'S', 'book').won, true);
+});

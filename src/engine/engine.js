@@ -11,8 +11,13 @@
 //  - "turn left/right" faces the road closest to a 90 degree turn.
 //  - "you can see it on your left/right" = turn, then go straight 1 block.
 //  - Reaching the destination during any move wins straight away.
+//  - A bend (a point with just two roads that turn by 30-60 degrees, like a
+//    rounded or cut corner) is not a junction: moves follow the
+//    road round it, and it does not count as a block. Sharper corners (about
+//    90 degrees) still need a "turn".
 
 export const STRAIGHT_TOLERANCE = Math.PI / 6;
+export const BEND_MAX = Math.PI / 3;
 
 export function normalizeAngle(a) {
   while (a > Math.PI) a -= 2 * Math.PI;
@@ -39,6 +44,17 @@ export class MapGraph {
     const a = this.point(fromId), b = this.point(toId);
     return Math.atan2(b.y - a.y, b.x - a.x);
   }
+  // How much the road turns at a point with exactly two roads (0 = straight), else null.
+  bendAngle(id) {
+    const nb = this.neighbors(id);
+    if (nb.length !== 2) return null;
+    return Math.abs(normalizeAngle(this.angle(id, nb[1]) - this.angle(nb[0], id)));
+  }
+  // A point you just walk round: two roads, gentle turn, not a place or bus stop.
+  isBend(id) {
+    const p = this.point(id), t = this.bendAngle(id);
+    return !!p && t !== null && t > STRAIGHT_TOLERANCE && t <= BEND_MAX + 1e-6 && p.type !== 'destination' && p.type !== 'start';
+  }
   isLittleBit(id) {
     const p = this.point(id);
     return !!(p && (p.type === 'littlebit' || p.littlebit));
@@ -60,8 +76,17 @@ export class MapGraph {
       const d = Math.abs(normalizeAngle(this.angle(node, n) - angle));
       if (d < bestDiff) { bestDiff = d; best = n; }
     }
+    // round a gentle bend: the road simply carries on
+    if (!best && this.isBend(node)) {
+      for (const n of this.neighbors(node)) {
+        const d = Math.abs(normalizeAngle(this.angle(node, n) - angle));
+        if (d <= BEND_MAX + 1e-6) return n;
+      }
+    }
     return best;
   }
+  // Points that are not a "block": little-bit points and gentle bends.
+  passThrough(id) { return this.isLittleBit(id) || this.isBend(id); }
 }
 
 function segAngle(g, path) {
@@ -79,7 +104,7 @@ export function goStraight(g, state, steps, destId) {
     const next = g.bestForward(node, angle);
     if (!next) return { ok: false, state, reason: 'noroad', partial: path };
     path.push(next);
-    if (!g.isLittleBit(next)) remaining--;
+    if (!g.passThrough(next)) remaining--;
     angle = segAngle(g, path);
     node = next;
     if (next === destId) break;
@@ -94,11 +119,15 @@ export function goLittleBit(g, state, destId) {
   const found = [];
   for (;;) {
     const next = g.bestForward(node, angle);
-    if (!next) return { ok: false, state, reason: 'noroad', partial: path };
+    if (!next) {
+      // the road ends or turns sharply: stop at a little-bit point we passed, if any
+      if (found.length) break;
+      return { ok: false, state, reason: 'noroad', partial: path };
+    }
     if (next === destId) { path.push(next); break; }
-    if (g.isLittleBit(next)) {
+    if (g.passThrough(next)) {
       path.push(next);
-      found.push(path.slice());
+      if (g.isLittleBit(next)) found.push(path.slice());
       angle = segAngle(g, path);
       node = next;
     } else {
