@@ -67,6 +67,26 @@ const SOUNDS = {
   dizzy: () => { for (let i = 0; i < 6; i++) tone(600 + (i % 2) * 200, 0.12, { type: 'triangle', vol: 0.15, at: i * 0.1, slide: -100 }); },
   whoosh: () => noise(0.3, { vol: 0.15, freq: 400, sweep: 2500, q: 1 }),
   error: () => { tone(200, 0.12, { type: 'square', vol: 0.1 }); tone(160, 0.15, { type: 'square', vol: 0.1, at: 0.1 }); },
+  // ---- town gimmick sounds (chiptune-ish) ----
+  blip: () => tone(1250, 0.025, { type: 'square', vol: 0.035 }),
+  encounter: () => { // short fanfare when a wild monster jumps out
+    const n = [[659, 0], [622, .07], [659, .14], [622, .21], [659, .28], [494, .35], [587, .42], [523, .49], [440, .56]];
+    n.forEach(([f, t]) => tone(f, 0.08, { type: 'square', vol: 0.07, at: t }));
+    [220, 165, 220].forEach((f, i) => tone(f, 0.2, { type: 'triangle', vol: 0.2, at: 0.66 + i * 0.2 }));
+    noise(0.4, { vol: 0.12, freq: 2000, sweep: -1500 });
+  },
+  hit: () => { noise(0.12, { vol: 0.35, freq: 1800, q: 0.8 }); tone(160, 0.12, { type: 'square', vol: 0.12, slide: -90 }); },
+  tackle: () => { noise(0.18, { vol: 0.3, freq: 500, sweep: -300 }); tone(90, 0.2, { type: 'triangle', vol: 0.35, slide: -40 }); },
+  throw: () => { tone(500, 0.35, { type: 'square', vol: 0.05, slide: 900 }); noise(0.3, { vol: 0.08, freq: 3000, sweep: -2000 }); },
+  absorb: () => { tone(1400, 0.4, { type: 'sine', vol: 0.15, slide: -1200 }); tone(1800, 0.3, { type: 'square', vol: 0.03, slide: -1500, at: 0.05 }); },
+  wobble: () => { tone(330, 0.05, { type: 'square', vol: 0.08 }); tone(260, 0.06, { type: 'square', vol: 0.08, at: 0.06 }); },
+  caught: () => { [523, 659, 784, 659, 784, 1047].forEach((f, i) => tone(f, i === 5 ? 0.5 : 0.11, { type: 'square', vol: 0.07, at: 0.15 + i * 0.12 })); tone(1568, 0.08, { type: 'square', vol: 0.06 }); },
+  bonk: () => { tone(180, 0.08, { type: 'square', vol: 0.15, slide: 120 }); noise(0.06, { vol: 0.2, freq: 900 }); },
+  pop: () => { tone(800, 0.06, { type: 'sine', vol: 0.25, slide: 700 }); tone(1300, 0.05, { type: 'sine', vol: 0.12, at: 0.05 }); },
+  craft: () => { noise(0.08, { vol: 0.3, freq: 1200, q: 3 }); tone(240, 0.1, { type: 'square', vol: 0.08 }); noise(0.08, { vol: 0.25, freq: 900, q: 3, at: 0.12 }); tone(480, 0.25, { type: 'triangle', vol: 0.18, at: 0.25 }); },
+  stamp: () => { tone(120, 0.15, { type: 'sine', vol: 0.5, slide: -50 }); noise(0.08, { vol: 0.3, freq: 600, q: 0.7 }); [1047, 1319, 1568].forEach((f, i) => tone(f, 0.12, { type: 'sine', vol: 0.12, at: 0.18 + i * 0.07 })); },
+  bubble: () => { tone(400 + Math.random() * 300, 0.12, { type: 'sine', vol: 0.14, slide: 600 }); },
+  chest: () => { tone(200, 0.12, { type: 'triangle', vol: 0.25, slide: -60 }); [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.18, { type: 'sine', vol: 0.15, at: 0.15 + i * 0.08 })); },
 };
 
 // ---- Music: a soft pentatonic loop ----

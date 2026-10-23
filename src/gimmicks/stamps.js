@@ -1,17 +1,32 @@
-// Stamp rally (Sanrio-style): the first time you reach a place you get its stamp.
-// Collect them all for a special hat.
-import { h, btn, modal } from '../ui/dom.js';
+// Stamp rally (kawaii town): the first time you reach a place you get its stamp,
+// pressed into a stamp card like a real Japanese stamp rally. Collect them all
+// for a ribbon.
+import { h, modal } from '../ui/dom.js';
 import { save } from '../progress/save.js';
 import { sfx } from '../audio/sfx.js';
-import { artUrl, stampArt } from './pickups.js';
+import { svgUrl, addArt } from './pickups.js';
+
+const inks = import.meta.glob('../assets/gimmick/ink/*.png', { eager: true, query: '?url', import: 'default' });
+const INK = ['#e8457a', '#e0464a', '#9a5ad0', '#3f86d9', '#ff6f9f', '#e2574a', '#8a5ad0', '#2f9ad9'];
+const stampNo = (map, destId) => Math.max(0, map.graph.destinations().findIndex(d => d.id === destId)) % 8 + 1;
+const tilt = id => ((String(id).split('').reduce((a, c) => a + c.charCodeAt(0), 0) % 17) - 8);
+
+// One inked stamp (mask picture coloured with its ink) with the place name.
+function inked(map, destId, cls = '') {
+  const n = stampNo(map, destId), name = map.graph.point(destId)?.name || '';
+  return h('div.st-ink' + cls, { style: { '--ink': INK[n - 1], '--tilt': tilt(destId) + 'deg' } },
+    h('div.st-inkimg', { style: { WebkitMaskImage: `url(${inks[`../assets/gimmick/ink/ink${n}.png`]})`, maskImage: `url(${inks[`../assets/gimmick/ink/ink${n}.png`]})` } }),
+    h('div.st-inkname', {}, name));
+}
 
 export const intro = {
-  icon: '📮',
+  theme: 'stamps',
+  icon: () => h('img.gi-svg', { src: svgUrl('stamp-stand') }),
   title: 'スタンプラリー',
   lines: [
-    ['📍', 'はじめて行く ばしょで スタンプが もらえるよ！'],
-    ['📒', 'スタンプカードに あつまるよ。'],
-    ['🎁', 'ぜんぶ あつめると とくべつな ごほうび！'],
+    [() => h('img.gi-li', { src: svgUrl('stamp-stand') }), 'はじめて いく ばしょで スタンプが もらえるよ！'],
+    ['♡', 'スタンプは スタンプカードに たまっていくよ。'],
+    ['🎀', 'ぜんぶ あつめると とくべつな リボンが もらえる！'],
   ],
 };
 
@@ -23,16 +38,24 @@ export const countStamps = map => stampsOf(map).length;
 export const totalStamps = map => map.graph.destinations().length;
 
 export function session(map, mission) {
+  let stands = [];
   return {
-    // Called after the win, with `first` = first time at this place.
-    async afterWin({ first, mapPanel, coins }) {
+    // a little stamp stand beside every place that still has a stamp to give
+    mount(mv) {
+      const have = new Set(stampsOf(map));
+      stands = map.graph.destinations().filter(d => !have.has(d.id)).map(d => {
+        const a = addArt(mv.scene, svgUrl('stamp-stand'), d.x + 26, d.y - 18, 34, 4.5);
+        a.onReady = o => mv.scene.tweens.add({ targets: o, y: o.y - 4, duration: 900 + Math.random() * 400, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        return a;
+      });
+    },
+    async afterWin({ first, coins }) {
       if (!first) return;
       const list = stampsOf(map);
       if (list.includes(mission.destination)) return;
       list.push(mission.destination);
       save.write();
-      const name = map.graph.point(mission.destination).name;
-      await stampPopup(mapPanel, name, list.length, totalStamps(map), stampArt(map, mission.destination));
+      await stampPopup(map, mission.destination, list.length, totalStamps(map));
       if (list.length >= totalStamps(map) && !save.owns(REWARD_ITEM)) {
         save.get().owned.push(REWARD_ITEM);
         save.addCoins(REWARD_COINS);
@@ -41,49 +64,64 @@ export function session(map, mission) {
         await rewardPopup();
       }
     },
+    destroy() { stands.forEach(s => s.destroy()); stands = []; },
   };
 }
 
-function stampPopup(parent, name, n, total, art) {
+// The stamping moment: the rubber stamp comes down - pon! - and leaves the ink.
+function stampPopup(map, destId, n, total) {
   return new Promise(res => {
-    sfx.play('buy');
-    const m = modal(h('div.stamp-pop', {},
-      h('div.stamp-title', {}, 'スタンプ ゲット！'),
-      h('div.stamp-ink', {}, h('div.stamp-ring', {}, h('img.stamp-img', { src: artUrl(art), alt: '' }), h('div.stamp-name', {}, name))),
-      h('div.stamp-count', {}, `${n} / ${total}`),
-      btn('primary', 'OK', () => m.close()),
-    ), { cls: 'gimmick-intro stamp-modal', onClose: () => res() });
+    const ink = inked(map, destId, '.big');
+    const handle = h('div.st-handle', {}, h('div.st-knob'), h('div.st-neck'), h('div.st-base'));
+    const pad = h('div.st-paper', {}, ink, handle);
+    const okBtn = h('button.st-btn', { onclick: () => m.close() }, 'やったね！');
+    okBtn.style.visibility = 'hidden';
+    const m = modal(h('div.st-pop', {},
+      h('div.st-ribbon', {}, 'スタンプ ゲット！'),
+      pad,
+      h('div.st-place', {}, map.graph.point(destId)?.name || ''),
+      h('div.st-count', {}, h('b', {}, String(n)), ` / ${total} こ あつめたよ`),
+      okBtn,
+    ), { cls: 'st-modal', onClose: () => res() });
+    ink.style.opacity = 0;
+    handle.animate([{ transform: 'translate(-50%, -260px) rotate(-8deg)' }, { transform: 'translate(-50%, -20px) rotate(0)', offset: 0.55 }, { transform: 'translate(-50%, 10px) scale(1.04, .94)', offset: 0.7 }, { transform: 'translate(-50%, -300px)', opacity: 0, offset: 1 }], { duration: 1300, easing: 'ease-in-out', fill: 'forwards' });
+    setTimeout(() => {
+      sfx.play('stamp');
+      ink.style.opacity = '';
+      ink.animate([{ transform: `rotate(var(--tilt)) scale(1.15)`, filter: 'blur(1px)' }, { transform: `rotate(var(--tilt)) scale(1)`, filter: 'none' }], { duration: 250, easing: 'ease-out' });
+      for (let i = 0; i < 8; i++) pad.append(h('i.st-heart', { style: { '--a': `${i * 45}deg` } }, i % 2 ? '♡' : '✦'));
+    }, 880);
+    setTimeout(() => { okBtn.style.visibility = ''; }, 1400);
   });
 }
 
 function rewardPopup() {
   return new Promise(res => {
     sfx.play('win');
-    const m = modal(h('div.gi', {},
-      h('div.gi-icon', {}, '🎀'),
-      h('h2', {}, 'スタンプ ぜんぶ そろった！'),
-      h('ul.gi-lines', {}, h('li', {}, h('span.gi-i', {}, '🎁'), h('span', {}, 'とくべつな ぼうしを ゲット！ きせかえで つけてみよう。')),
-        h('li', {}, h('span.gi-i', {}, '🪙'), h('span', {}, `コイン +${REWARD_COINS}`))),
-      btn('primary', 'やったー！', () => m.close()),
-    ), { cls: 'gimmick-intro', onClose: () => res() });
+    const m = modal(h('div.st-pop.st-reward', {},
+      h('div.st-ribbon', {}, 'コンプリート！'),
+      h('div.st-bigbow', {}, '🎀'),
+      h('div.st-place', {}, 'スタンプが ぜんぶ そろったよ！'),
+      h('div.st-count', {}, 'とくべつな「ラリーリボン」と コイン +' + REWARD_COINS + ' を ゲット！ きせかえで つけてみよう。'),
+      h('button.st-btn', { onclick: () => m.close() }, 'ありがとう！'),
+    ), { cls: 'st-modal', onClose: () => res() });
   });
 }
 
 // The stamp card (button on the mission screen).
 export function missionsExtra(map) {
-  return btn('secondary free-btn extra-btn', ['📒 スタンプカード', h('small', {}, `${countStamps(map)} / ${totalStamps(map)}`)], () => showCard(map));
+  return h('button.st-open', { onclick: () => { sfx.play('press'); showCard(map); } }, h('img', { src: svgUrl('stamp-stand') }), h('span', {}, 'スタンプカード'), h('small', {}, `${countStamps(map)} / ${totalStamps(map)}`));
 }
 
 export function showCard(map) {
   const have = new Set(stampsOf(map));
   const dests = map.graph.destinations();
-  const cells = dests.map(d => have.has(d.id)
-    ? h('div.card-cell.on', {}, h('div.stamp-ring.small', {}, h('img.stamp-img', { src: artUrl(stampArt(map, d.id)), alt: '' }), h('div.stamp-name', {}, d.name)))
-    : h('div.card-cell', {}, '?'));
-  const m = modal(h('div.stamp-card', {},
-    h('h2', {}, `${map.name} スタンプカード`),
-    h('div.card-grid', {}, ...cells),
-    h('div.stamp-count', {}, `${have.size} / ${dests.length}`),
-    btn('primary', 'とじる', () => m.close()),
-  ), { cls: 'gimmick-intro' });
+  const cells = dests.map((d, i) => h('div.st-cell' + (have.has(d.id) ? '.on' : ''), {},
+    h('div.st-slot', {}, have.has(d.id) ? inked(map, d.id) : h('span.st-num', {}, String(i + 1))),
+    h('div.st-label', {}, have.has(d.id) ? d.name : '？')));
+  const m = modal(h('div.st-card', {},
+    h('div.st-cardhead', {}, h('span.st-cardtitle', {}, `${map.name} スタンプラリー`), h('span.st-cardcount', {}, `${have.size} / ${dests.length}`)),
+    h('div.st-grid', {}, ...cells),
+    h('div.st-cardfoot', {}, h('span', {}, 'ぜんぶ あつめると 🎀 リボン！'), h('button.st-btn', { onclick: () => m.close() }, 'とじる')),
+  ), { cls: 'st-modal' });
 }

@@ -513,14 +513,7 @@ button { font-family: inherit; }
 .w-swatches { padding-bottom: 8px; }
 
 /* ===== Town gimmicks ===== */
-.modal.gimmick-intro { width: 760px; max-width: 94%; }
-.gi { text-align: center; }
-.gi-icon { font-size: 96px; line-height: 1.1; animation: giBounce 1.2s ease-in-out infinite; }
 @keyframes giBounce { 50% { transform: translateY(-10px) scale(1.06); } }
-.gi h2 { font-size: 44px; margin: 6px 0 14px; color: var(--sea-dark); }
-.gi-lines { list-style: none; margin: 0 auto 22px; padding: 0; display: grid; gap: 12px; max-width: 600px; }
-.gi-lines li { display: flex; align-items: center; gap: 16px; text-align: left; font-size: 28px; font-weight: 600; background: var(--cream); border-radius: 18px; padding: 12px 18px; }
-.gi-i { font-size: 44px; flex: none; }
 .stamp-pop { width: 420px; height: 400px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .stamp-title { font-size: 38px; font-weight: 700; color: var(--pink); }
 .stamp-ink { flex: 1; display: grid; place-items: center; }

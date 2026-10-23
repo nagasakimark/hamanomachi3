@@ -159,11 +159,12 @@ export const ITEMS = [
   hat('tophat', 'シルクハット', 0, 'formal/tophat', { badge: 'efficient' }),
   hat('wizard', 'まほうつかい', 0, 'magic/wizard/base', { badge: 'listener' }),
   hat('crown', 'おうかん', 0, 'formal/crown', { color: false, badge: 'expert' }),
-  hat('rally', 'ラリーぼうし', 0, 'pirate/bonnie', { gate: 'rally' }),
-  hat('craft-cap', 'マイナーぼうし', 0, 'cloth/leather_cap', { gate: 'craft' }),
-  hat('craft-hood', 'てつのフード', 0, 'cloth/hood', { gate: 'craft' }),
-  hat('craft-bonnie', 'ゴールドベレー', 0, 'pirate/bonnie', { gate: 'craft' }),
-  hat('craft-horns', 'ダイヤのつの', 0, 'accessory/horns_short', { two: true, gate: 'craft' }),
+  // Town-gimmick rewards (hidden in the shop until earned).
+  { id: 'hat-rally', slot: 'hat', name: 'ラリーリボン', price: 0, gate: 'rally', layers: [L('hat/custom/ribbon/walk.png', Z.hatFg)] },
+  { id: 'hat-craft-leather', slot: 'hat', name: 'かわの ぼうし', price: 0, gate: 'craft', tint: '#9a6334', layers: [L('hat/cloth/leather_cap/adult/walk.png', Z.hat)] },
+  { id: 'hat-craft-iron', slot: 'hat', name: 'てつの かぶと', price: 0, gate: 'craft', tint: '#d6d6d6', layers: [L('hat/helmet/spangenhelm/adult/walk.png', Z.hatFg)] },
+  { id: 'hat-craft-gold', slot: 'hat', name: 'きんの かぶと', price: 0, gate: 'craft', tint: '#f6c62c', layers: [L('hat/helmet/spangenhelm/adult/walk.png', Z.hatFg)] },
+  { id: 'hat-craft-diamond', slot: 'hat', name: 'ダイヤの かぶと', price: 0, gate: 'craft', tint: '#4ae8d6', layers: [L('hat/helmet/spangenhelm/adult/walk.png', Z.hatFg)] },
 
   // Glasses
   glasses('round', 'まるめがね', 100, 'glasses/round'),

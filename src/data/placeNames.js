@@ -9,10 +9,12 @@ export const PLACE_JA = {
   'sushi restaurant': 'おすしや', 'hotel': 'ホテル', 'tonkatsu restaurant': 'とんかつや',
   'soba restaurant': 'おそばや', 'chawanmushi restaurant': 'ちゃわんむしや', 'ramen restaurant': 'ラーメンや',
   'temple': 'おてら',
-  // proposed new words for the themed maps (see hamanomachi_map_plan.xlsx)
-  'park': 'こうえん', 'bakery': 'パンや', 'cafe': 'カフェ', 'school': 'がっこう', 'zoo': 'どうぶつえん',
-  'train station': 'えき', 'library': 'としょかん', 'bank': 'ぎんこう', 'farm': 'のうじょう',
-  'castle': 'おしろ', 'stadium': 'スタジアム', 'fire station': 'しょうぼうしょ',
-  'museum': 'はくぶつかん', 'aquarium': 'すいぞくかん', 'gym': 'たいいくかん',
+  // the 29 new buildings for the themed maps (see the map plan)
+  'house': 'いえ', 'park': 'こうえん', 'station': 'えき', 'zoo': 'どうぶつえん', 'castle': 'おしろ', 'farm': 'のうじょう',
+  'library': 'としょかん', 'bank': 'ぎんこう', 'museum': 'はくぶつかん', 'fire station': 'しょうぼうしょ', 'stadium': 'スタジアム', 'tower': 'タワー',
+  'church': 'きょうかい', 'shrine': 'じんじゃ', 'aquarium': 'すいぞくかん', 'theater': 'げきじょう', 'garden': 'にわ', 'dome': 'ドーム',
+  'elementary school': 'しょうがっこう', 'junior high school': 'ちゅうがっこう', 'kindergarten': 'ようちえん', 'city hall': 'しやくしょ',
+  'amusement park': 'ゆうえんち', 'shopping mall': 'ショッピングモール',
+  'factory': 'こうじょう', 'dam': 'ダム', 'airport': 'くうこう', 'planetarium': 'プラネタリウム', 'gas station': 'ガソリンスタンド',
 };
 export const jaName = en => PLACE_JA[String(en || '').toLowerCase()] || null;

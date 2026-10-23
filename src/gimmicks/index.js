@@ -10,6 +10,8 @@ import * as treasure from './treasure.js';
 import * as crafting from './crafting.js';
 import * as blocks from './blocks.js';
 import * as monsters from './monsters.js';
+import './monsters.css';
+import './gimmicks.css';
 
 export const GIMMICKS = { stamps, treasure, crafting, blocks, monsters };
 
@@ -29,15 +31,24 @@ export function maybeShowIntro(map) {
   return showIntro(gm.intro);
 }
 
+// Each town's intro is dressed in its own world's style (see gimmicks.css).
+const ART = { treasure: 'treasure', stamps: 'stamps', crafting: 'crafting', blocks: 'blocks', monsters: 'monsters' };
+const el = x => (typeof x === 'function' ? x(h) : x);
 export function showIntro(intro, { button = 'わかった！' } = {}) {
   return new Promise(res => {
-    sfx.play('win');
-    const m = modal(h('div.gi', {},
-      h('div.gi-icon', {}, intro.icon),
-      h('h2', {}, intro.title),
-      h('ul.gi-lines', {}, ...intro.lines.map(([ic, t]) => h('li', {}, h('span.gi-i', {}, ic), h('span', {}, t)))),
-      btn('primary', button, () => m.close()),
-    ), { cls: 'gimmick-intro', onClose: () => res() });
+    sfx.play(intro.theme === 'monsters' ? 'encounter' : intro.theme === 'stamps' ? 'stamp' : intro.theme === 'treasure' ? 'chest' : intro.theme === 'blocks' ? 'coin' : 'win');
+    const theme = ART[intro.theme] || 'plain';
+    const deco = theme === 'treasure' ? Array.from({ length: 10 }, (_, i) => h('i.gi-bub', { style: { left: `${5 + i * 9.5}%`, animationDelay: `${(i * 0.37) % 2.4}s`, '--s': `${10 + (i * 7) % 18}px` } }))
+      : theme === 'blocks' ? [h('div.gi-cloud.c1'), h('div.gi-cloud.c2'), h('div.gi-ground')]
+      : theme === 'stamps' ? [h('div.gi-bow.l', {}, '🎀'), h('div.gi-bow.r', {}, '🎀')]
+      : [];
+    const m = modal(h('div.gi.gi-' + theme, {},
+      ...deco,
+      h('div.gi-icon', {}, el(intro.icon)),
+      h('h2.gi-title', {}, intro.title),
+      h('ul.gi-lines', {}, ...intro.lines.map(([ic, t]) => h('li', {}, h('span.gi-i', {}, el(ic)), h('span.gi-t', {}, t)))),
+      h('button.gi-btn', { onclick: () => { sfx.play('press'); m.close(); } }, button),
+    ), { cls: 'gi-modal gi-m-' + theme, onClose: () => res() });
   });
 }
 

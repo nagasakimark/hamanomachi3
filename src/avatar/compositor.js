@@ -82,6 +82,7 @@ export async function composeLook(look) {
     item.layers.forEach((l, idx) => {
       let mode = null, color = null;
       if (item.skin) { mode = 'skin'; color = skin; }
+      else if (item.tint) { mode = 'cloth'; color = item.tint; }
       else if (item.color === 'hair') { mode = 'hair'; color = HAIR_COLORS[look.hairColor ?? 0]; }
       else if (item.color === 'cloth') {
         mode = 'cloth';
