@@ -9,6 +9,7 @@ import { h } from '../ui/dom.js';
 import { idbGet, idbSet } from './idb.js';
 
 import { PACKS } from './buildingPacks.js';
+import { generateTown } from './townGen.js';
 
 export const STANDARD_PLACES = ['tonkatsu restaurant','convenience store 7/11','soba restaurant','bookstore','sushi restaurant','police station','department store','chawanmushi restaurant','castella shop','flower shop','post office','ramen restaurant','temple','convenience store lawson','ice cream shop','supermarket','hospital','hotel'];
 
@@ -847,12 +848,13 @@ function cbox(value, fn) {
 }
 function renderPanel() {
   if (!panelEl) return;
-  const tabs = h('div.ed-tabs', {}, ...[['sel', 'Selected'], ['img', `Images (${Object.keys(C.lib).length})`], ['map', 'Map']].map(([id, label]) =>
+  const tabs = h('div.ed-tabs', {}, ...[['sel', 'Selected'], ['img', `Images (${Object.keys(C.lib).length})`], ['map', 'Map'], ['town', '🏙️ Make a town']].map(([id, label]) =>
     h('button.ed-tab' + (C.tab === id ? '.on' : ''), { onclick: () => { C.tab = id; renderPanel(); } }, label)));
   const body = h('div.ed-panel');
   if (C.tab === 'sel') body.append(...selPanel());
   if (C.tab === 'img') body.append(...imgPanel());
   if (C.tab === 'map') body.append(...mapPanel());
+  if (C.tab === 'town') body.append(...townPanel());
   const keepScroll = panelEl.querySelector('.ed-panel')?.scrollTop || 0;
   panelEl.replaceChildren(tabs, body);
   body.scrollTop = keepScroll;
@@ -999,6 +1001,103 @@ function mapPanel() {
     field('Label text size', liveRange(d.fs, 14, 48, 1, v => { d.fs = v; }, v => v + ' px')),
     field('Walkway width (new)', liveRange(d.pathW, 8, 40, 1, v => { d.pathW = v; }, v => v + ' px')),
   ];
+}
+
+// ---------------------------------------------------------------- town generator
+// Builds a whole town (streets, buildings, labels, pins, walkways, bus stops)
+// from a list of places. Same settings + same layout number = same town.
+const THEMES = [['bikini', 'Bikini Bottom'], ['sanrio', 'Kawaii pastel'], ['minecraft', 'Blocky sandbox'], ['mario', 'Mushroom Kingdom'], ['pokemon', 'Monster world'], ['doraemon', 'Doraemon-style'], ['matsuri', 'Matsuri']];
+// The 6-map plan (hamanomachi-map-plan-v2.xlsx): new buildings first, then returning ones.
+export const MAP_PLAN = [
+  { id: 'hamanomachi', title: 'Hamanomachi', theme: 'bikini', places: STANDARD_PLACES },
+  { id: 'sanrio', title: 'Sanrio Town', theme: 'sanrio', places: ['house', 'park', 'station', 'zoo', 'castle', 'farm', 'ice cream shop', 'department store', 'post office', 'convenience store 7/11', 'hospital', 'ramen restaurant', 'soba restaurant', 'hotel', 'castella shop'] },
+  { id: 'sandy', title: 'Bikini Bottom', theme: 'bikini', places: ['library', 'bank', 'museum', 'fire station', 'stadium', 'tower', 'supermarket', 'post office', 'temple', 'bookstore', 'police station', 'hospital', 'convenience store lawson', 'flower shop', 'ramen restaurant'] },
+  { id: 'minecraft', title: 'Block Town', theme: 'minecraft', places: ['church', 'shrine', 'aquarium', 'theater', 'garden', 'dome', 'sushi restaurant', 'ice cream shop', 'department store', 'temple', 'police station', 'hospital', 'convenience store lawson', 'chawanmushi restaurant', 'tonkatsu restaurant'] },
+  { id: 'mario', title: 'Mushroom Kingdom', theme: 'mario', places: ['elementary school', 'junior high school', 'kindergarten', 'city hall', 'amusement park', 'shopping mall', 'sushi restaurant', 'ice cream shop', 'supermarket', 'post office', 'bookstore', 'police station', 'convenience store 7/11', 'chawanmushi restaurant', 'hotel'] },
+  { id: 'pokemon', title: 'Monster Town', theme: 'pokemon', places: ['factory', 'dam', 'airport', 'planetarium', 'gas station', 'sushi restaurant', 'supermarket', 'department store', 'temple', 'bookstore', 'convenience store 7/11', 'flower shop', 'soba restaurant', 'castella shop', 'tonkatsu restaurant'] },
+];
+const G = { theme: 'bikini', plan: 'sandy', places: MAP_PLAN[2].places.join('\n'), title: 'Bikini Bottom', seed: 1, outsideRow: true, slants: 2, busStops: 4, size: 160, perBlock: 1.15, w: 1600, h: 1130 };
+const packFor = (theme, name) => {
+  for (const pid of [theme + '-b', theme + '-x']) {
+    const pk = PACKS.find(p => p.id === pid), it = pk?.items.find(i => i.name.toLowerCase() === name.toLowerCase());
+    if (it) return { id: 'pk_' + pid + '_' + it.name.replace(/[^a-z0-9]+/gi, ''), it, pk };
+  }
+  return null;
+};
+// The visible (non-transparent) part of a picture, so buildings pack tightly.
+function opaqueBox(img) {
+  const k = Math.min(1, 160 / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
+  const g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(img, 0, 0, c.width, c.height);
+  const d = g.getImageData(0, 0, c.width, c.height).data;
+  let x0 = c.width, y0 = c.height, x1 = 0, y1 = 0;
+  for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 40) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  if (x1 < x0) return null;
+  return { w: (x1 - x0 + 1) / k, h: (y1 - y0 + 1) / k, cx: (x0 + x1 + 1) / 2 / k, cy: (y0 + y1 + 1) / 2 / k };
+}
+const loaded = img => (img.complete && img.naturalWidth ? Promise.resolve() : new Promise(r => { img.onload = () => { r(); draw(); }; img.onerror = r; }));
+export async function generateIntoDoc(opts = G) {
+  const names = String(opts.places).split('\n').map(s => s.trim()).filter(Boolean);
+  const missing = names.filter(n => !packFor(opts.theme, n));
+  if (missing.length) { toast(`No picture for: ${missing.join(', ')} (in this building set)`); }
+  const places = [];
+  for (const n of names) {
+    const f = packFor(opts.theme, n); if (!f) continue;
+    if (!C.lib[f.id]) addLib(f.id, f.it.name, f.it.url, { under: f.it.under ?? f.pk.under, size: f.it.size ?? f.pk.size });
+    const l = C.lib[f.id];
+    await loaded(l.img);
+    l.box ||= opaqueBox(l.img);
+    places.push({ name: n, lib: f.id, iw: l.img.naturalWidth, ih: l.img.naturalHeight, box: l.box });
+  }
+  const fs = 20;
+  const res = generateTown({
+    places, seed: +opts.seed || 1, w: opts.w, h: opts.h, title: opts.title, outsideRow: opts.outsideRow, slants: +opts.slants, busStops: +opts.busStops,
+    size: +opts.size, perBlock: +opts.perBlock, rwStreet: 44, rwMain: 60, pathW: 18,
+    measure: (t, title) => { const m = labelMetrics(t, title ? Math.round(fs * 1.9) : fs); return { w: m.w, h: m.h }; },
+  });
+  snapshot();
+  Object.assign(C.doc, { name: opts.title || C.doc.name, w: opts.w, h: opts.h, fs, rwStreet: 44, rwMain: 60, pathW: 18, nodes: res.nodes, edges: res.edges, paths: res.paths, items: res.items, gen: { ...opts } });
+  C.sel = null;
+  fitView(); changed();
+  if (res.missing.length) toast(`Could not fit: ${res.missing.join(', ')}. Try another layout or smaller buildings.`);
+  return res;
+}
+function townPanel() {
+  const planSel = h('select', {}, h('option', { value: '' }, '— choose —'), ...MAP_PLAN.map(p => h('option', { value: p.id, selected: G.plan === p.id }, `${p.title} (${p.places.length} places)`)));
+  const themeSel = h('select', {}, ...THEMES.map(([id, n]) => h('option', { value: id, selected: G.theme === id }, n)));
+  const ta = h('textarea.cp-places', { rows: 12 }); ta.value = G.places;
+  const title = h('input', { value: G.title });
+  const seed = h('input', { type: 'number', value: G.seed, min: 1, style: { width: '90px' } });
+  const rng = (key, min, max, step, fmt) => liveRange(G[key], min, max, step, v => { G[key] = v; }, fmt);
+  planSel.addEventListener('change', () => { const p = MAP_PLAN.find(x => x.id === planSel.value); if (!p) return; G.plan = p.id; G.theme = p.theme; G.places = p.places.join('\n'); G.title = p.title; renderPanel(); });
+  themeSel.addEventListener('change', () => { G.theme = themeSel.value; });
+  ta.addEventListener('input', () => { G.places = ta.value; });
+  title.addEventListener('input', () => { G.title = title.value; });
+  seed.addEventListener('input', () => { G.seed = +seed.value || 1; });
+  const go = async (next) => {
+    if (next) G.seed = (+G.seed || 1) + 1;
+    if ((C.doc.nodes.length || C.doc.items.length) && !C.doc.gen && !confirm('Replace the current map with a new town? (Undo brings it back.)')) return;
+    await generateIntoDoc(G);
+  };
+  const unknown = String(G.places).split('\n').map(x => x.trim()).filter(x => x && !packFor(G.theme, x));
+  return [
+    h('h3', {}, 'Make a town'),
+    h('p.ed-small', {}, 'Pick a map from the plan (or type your own places), then press Make town. Not happy? Press Another layout until you like it, then fix small things by hand.'),
+    field('Map plan', planSel),
+    field('Building set', themeSel),
+    field('Map title', title),
+    field('Places (one per line)', ta),
+    unknown.length ? h('p.ed-small', { style: { color: '#c0392b' } }, 'No picture in this set for: ' + unknown.join(', ')) : null,
+    h('div.ed-row', {}, btn('🏙️ Make town', () => go(false), 'Build the town with these settings', 'primary'), btn('🎲 Another layout', () => go(true), 'Same places, new streets and positions')),
+    field('Layout number', seed),
+    h('h3', {}, 'Options'),
+    h('label.ed-field', {}, h('span', {}, 'Row of buildings outside the ring road'), chk(G.outsideRow, e => { G.outsideRow = e.target.checked; })),
+    field('Slanted streets', rng('slants', 0, 3, 1, v => v)),
+    field('Bus stops', rng('busStops', 2, 4, 1, v => v)),
+    field('Building size', rng('size', 120, 200, 5, v => v + ' px')),
+    field('Buildings per block', rng('perBlock', 1, 2.4, 0.05, v => (+v).toFixed(2))),
+    h('div.ed-row', {}, field('Width', liveInput(G.w, v => { G.w = Math.max(800, +v || 1600); }, { type: 'number' })), field('Height', liveInput(G.h, v => { G.h = Math.max(600, +v || 1130); }, { type: 'number' }))),
+  ].filter(Boolean);
 }
 
 // ---------------------------------------------------------------- export
@@ -1228,5 +1327,5 @@ export async function openComposer(opts = {}) {
 }
 
 // Test hook (used by the automated check, harmless otherwise).
-export const _composer = { C, labelRect, traceDoc, addRoad, addNode, addItem, renderToCanvas, importImages, draw, nodeOf };
+export const _composer = { C, G, generateIntoDoc, projectData: () => { const used = new Set(C.doc.items.map(i => i.lib).filter(Boolean)); const lib = Object.fromEntries(Object.entries(libPlain()).filter(([id]) => used.has(id))); return { format: 'hamanomachi-compose', doc: C.doc, lib }; }, labelRect, traceDoc, addRoad, addNode, addItem, renderToCanvas, importImages, draw, nodeOf };
 if (typeof window !== 'undefined') window.__composer = _composer;

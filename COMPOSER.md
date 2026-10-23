@@ -45,3 +45,20 @@ Each of the 7 themes has three sets: Buildings (18), Decorations (12) and Water 
 ## Overlay picture (AI-restyled background)
 
 Map tab → **Choose overlay picture…**. Workflow: build the map, **Save PNG**, have an AI restyle it, load the result as the overlay. It is stretched to the map size and drawn over the background; roads, walkways, pins, bus stops and labels stay on top. By default your own building/decoration pictures are hidden (the overlay already has them); untick that to keep them. Opacity and Remove are in the same panel. The overlay is saved in the project file and used by **Use picture + trace roads**, so road tracing still follows your drawn roads.
+
+## Make a town (generator)
+
+Composer → **🏙️ Make a town** tab builds a whole map from a list of places:
+
+1. Pick a map from the plan (Sanrio, Bikini Bottom, Block Town, Mushroom Kingdom, Monster Town) or type your own places, one per line. The building set decides which pictures are used.
+2. Press **Make town**. Not happy? **Another layout** gives a new town with the same places (each layout number always gives the same town, so you can note a good one).
+3. Fix small things by hand, then **Save PNG** for the AI background and **Use picture + trace roads** as usual.
+
+How it builds a town (`src/tools/townGen.js`):
+- A ring road with one or more cut corners, then blocks are split at uneven positions (sometimes on a slant) until there are about as many blocks as buildings. No dead ends.
+- Optionally a row of buildings outside the ring along the top or bottom.
+- Big buildings first. Each building hugs a street, leans with slanted streets, gets a label beside it, and a pin + walkway to the road. Doors stay at least ~85px from junctions so "a little bit" works.
+- Up to 4 bus stops outside the ring, each with an arrow on the road.
+- It keeps trying until every place fits; every start can reach every place.
+
+Options: outside row on/off, number of slanted streets, bus stops, building size, buildings per block, map size.
