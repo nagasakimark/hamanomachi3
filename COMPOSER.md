@@ -55,10 +55,9 @@ Composer → **🏙️ Make a town** tab builds a whole map from a list of place
 3. Fix small things by hand, then **Save PNG** for the AI background and **Use picture + trace roads** as usual.
 
 How it builds a town (`src/tools/townGen.js`):
-- A ring road with one or more cut corners, then blocks are split at uneven positions (sometimes on a slant) until there are about as many blocks as buildings. No dead ends.
-- Optionally a row of buildings outside the ring along the top or bottom.
-- Big buildings first. Each building hugs a street, leans with slanted streets, gets a label beside it, and a pin + walkway to the road. Doors stay at least ~85px from junctions so "a little bit" works.
-- Up to 4 bus stops outside the ring, each with an arrow on the road.
-- It keeps trying until every place fits; every start can reach every place.
+- Streets: a ring road (slightly tilted, sometimes with cut corners), 2-4 cross-town streets at their own angles, and short side streets in each band placed independently, so junctions are staggered (lots of T-junctions). One or two diagonal avenues cut across, and a few short pieces are removed to make long and L-shaped blocks. Each layout number picks its own rows, spacing, tilt and diagonals, so towns look different.
+- Buildings are about 120px and spread across the town. Each one is turned so its front (the door, at the bottom of the picture) faces its street: upright on a street below it, sideways on a street beside it, leaning on a slanted street. Never upside down; tall ones (towers) stay standing. The walkway runs straight from the road to the door.
+- Doors stay at least ~60px from junctions so "a little bit" works. Up to 4 bus stops outside the ring with arrows. Optional row of buildings outside the ring.
+- Typical result: ~30 junctions, routes up to 10+ blocks, "go straight" up to 5-7 blocks.
 
-Options: outside row on/off, number of slanted streets, bus stops, building size, buildings per block, map size.
+Options: outside row on/off, number of diagonal avenues, bus stops, building size, map size.

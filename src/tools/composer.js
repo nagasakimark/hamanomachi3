@@ -1016,7 +1016,7 @@ export const MAP_PLAN = [
   { id: 'mario', title: 'Mushroom Kingdom', theme: 'mario', places: ['elementary school', 'junior high school', 'kindergarten', 'city hall', 'amusement park', 'shopping mall', 'sushi restaurant', 'ice cream shop', 'supermarket', 'post office', 'bookstore', 'police station', 'convenience store 7/11', 'chawanmushi restaurant', 'hotel'] },
   { id: 'pokemon', title: 'Monster Town', theme: 'pokemon', places: ['factory', 'dam', 'airport', 'planetarium', 'gas station', 'sushi restaurant', 'supermarket', 'department store', 'temple', 'bookstore', 'convenience store 7/11', 'flower shop', 'soba restaurant', 'castella shop', 'tonkatsu restaurant'] },
 ];
-const G = { theme: 'bikini', plan: 'sandy', places: MAP_PLAN[2].places.join('\n'), title: 'Bikini Bottom', seed: 1, outsideRow: true, slants: 2, busStops: 4, size: 160, perBlock: 1.15, w: 1600, h: 1130 };
+const G = { theme: 'bikini', plan: 'sandy', places: MAP_PLAN[2].places.join('\n'), title: 'Bikini Bottom', seed: 1, outsideRow: true, slants: '', busStops: 4, size: 118, perBlock: 1.15, w: 1600, h: 1130 };
 const packFor = (theme, name) => {
   for (const pid of [theme + '-b', theme + '-x']) {
     const pk = PACKS.find(p => p.id === pid), it = pk?.items.find(i => i.name.toLowerCase() === name.toLowerCase());
@@ -1049,14 +1049,14 @@ export async function generateIntoDoc(opts = G) {
     l.box ||= opaqueBox(l.img);
     places.push({ name: n, lib: f.id, iw: l.img.naturalWidth, ih: l.img.naturalHeight, box: l.box });
   }
-  const fs = 20;
+  const fs = 18;
   const res = generateTown({
-    places, seed: +opts.seed || 1, w: opts.w, h: opts.h, title: opts.title, outsideRow: opts.outsideRow, slants: +opts.slants, busStops: +opts.busStops,
-    size: +opts.size, perBlock: +opts.perBlock, rwStreet: 44, rwMain: 60, pathW: 18,
+    places, seed: +opts.seed || 1, w: opts.w, h: opts.h, title: opts.title, outsideRow: opts.outsideRow, slants: opts.slants === '' || opts.slants == null ? undefined : +opts.slants, busStops: +opts.busStops,
+    size: +opts.size, rwStreet: 38, rwMain: 54, pathW: 16,
     measure: (t, title) => { const m = labelMetrics(t, title ? Math.round(fs * 1.9) : fs); return { w: m.w, h: m.h }; },
   });
   snapshot();
-  Object.assign(C.doc, { name: opts.title || C.doc.name, w: opts.w, h: opts.h, fs, rwStreet: 44, rwMain: 60, pathW: 18, nodes: res.nodes, edges: res.edges, paths: res.paths, items: res.items, gen: { ...opts } });
+  Object.assign(C.doc, { name: opts.title || C.doc.name, w: opts.w, h: opts.h, fs, rwStreet: 38, rwMain: 54, pathW: 16, nodes: res.nodes, edges: res.edges, paths: res.paths, items: res.items, gen: { ...opts } });
   C.sel = null;
   fitView(); changed();
   if (res.missing.length) toast(`Could not fit: ${res.missing.join(', ')}. Try another layout or smaller buildings.`);
@@ -1092,10 +1092,9 @@ function townPanel() {
     field('Layout number', seed),
     h('h3', {}, 'Options'),
     h('label.ed-field', {}, h('span', {}, 'Row of buildings outside the ring road'), chk(G.outsideRow, e => { G.outsideRow = e.target.checked; })),
-    field('Slanted streets', rng('slants', 0, 3, 1, v => v)),
+    field('Diagonal avenues (blank = random)', liveInput(G.slants, v => { G.slants = v === '' ? '' : Math.max(0, Math.min(3, +v || 0)); }, { type: 'number', min: 0, max: 3 })),
     field('Bus stops', rng('busStops', 2, 4, 1, v => v)),
-    field('Building size', rng('size', 120, 200, 5, v => v + ' px')),
-    field('Buildings per block', rng('perBlock', 1, 2.4, 0.05, v => (+v).toFixed(2))),
+    field('Building size', rng('size', 90, 170, 2, v => v + ' px')),
     h('div.ed-row', {}, field('Width', liveInput(G.w, v => { G.w = Math.max(800, +v || 1600); }, { type: 'number' })), field('Height', liveInput(G.h, v => { G.h = Math.max(600, +v || 1130); }, { type: 'number' }))),
   ].filter(Boolean);
 }
