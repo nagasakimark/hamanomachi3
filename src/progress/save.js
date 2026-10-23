@@ -18,7 +18,12 @@ function fresh() {
     badges: {},       // badgeId -> timestamp
     stats: { wins: 0, listenWins: 0, littlebitWins: 0, freeWins: 0, threeStars: 0, dizzy: 0, bestComeback: 0 },
     settings: { sfx: true, music: false, speed: 1 },
-    seen: {},
+    seen: {},         // 'gimmick:<mapId>' -> true once its intro was shown
+    stamps: {},       // mapId -> [destination ids] (stamp rally)
+    dex: {},          // monster id -> times caught
+    chests: {},       // mapId -> treasure chests opened
+    materials: {},    // crafting material id -> count
+    crafted: [],      // crafted item ids
   };
 }
 

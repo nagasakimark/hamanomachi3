@@ -14,6 +14,8 @@ import { checkBadges } from '../progress/badges.js';
 import { sfx } from '../audio/sfx.js';
 import { say } from '../audio/lines.js';
 import { petById, loadPetImage } from '../pets/pets.js';
+import { createSession } from '../gimmicks/index.js';
+import { maybeEncounter } from '../gimmicks/monsters.js';
 
 const TOP_H = 68, PANEL_W = 460;
 
@@ -43,6 +45,11 @@ export async function playScreen({ mapId, missionId, free }) {
   const tierMissions = free ? [] : map.missions.filter(m => m.tier === mission.tier);
   let attempts = 0;
   let running = false;
+  // Town gimmick (null for Hamanomachi).
+  let gm = null;
+  // The town as it is for this mission (a gimmick can close roads).
+  let gg = g;
+  let best = 0;
 
   // ---- layout: the map gets as much room as possible ----
   const W = getStageW();
@@ -120,7 +127,7 @@ export async function playScreen({ mapId, missionId, free }) {
     onChange: prog => updateCounter(prog),
   });
 
-  const limitFor = () => mission.best + (tier.exact ? 0 : 1);
+  const limitFor = () => best + (tier.exact ? 0 : 1);
   function updateCounter(prog = editor.program()) {
     const n = prog.length;
     counterEl.replaceChildren(h('span.cnum', {}, String(n)), h('span', {}, ' ブロック'));
@@ -156,9 +163,14 @@ export async function playScreen({ mapId, missionId, free }) {
 
   async function startMission(intro = true) {
     attempts = 0;
+    gm?.destroy?.();
+    gm = createSession(map, mission, { map, g, free });
+    gg = gm?.graph || g;
+    best = gg === g ? mission.best : (solve(gg, mission.start, mission.destination) || []).length || mission.best;
     setMissionUI();
     const st = g.initialState(mission.start);
     mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
+    gm?.mount?.(mv);
     editor.setLocked(false);
     editor.clearMarks();
     if (intro) {
@@ -188,11 +200,12 @@ export async function playScreen({ mapId, missionId, free }) {
     runBtn.classList.add('going');
     const st = g.initialState(mission.start);
     mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
+    gm?.reset?.();
     await wait(250);
     editor.pulseStart();
     mv.followPlayer();
     await wait(600);
-    const result = simulate(g, prog, mission.start, mission.destination);
+    const result = simulate(gg, prog, mission.start, mission.destination);
     for (const step of result.steps) {
       if (!alive) return;
       editor.mark(step.block, 'active');
@@ -200,7 +213,7 @@ export async function playScreen({ mapId, missionId, free }) {
       await say(prog[step.block]);
       await mv.delay(120);
       for (const sub of step.sub) {
-        if (sub.kind === 'move') await mv.walk(sub.path);
+        if (sub.kind === 'move') await mv.walk(sub.path, gm?.onNode ? id => gm.onNode(id, mv, coins) : null);
         else if (sub.kind === 'turn') await mv.turn(sub.from, sub.by);
       }
       if (!step.ok) {
@@ -236,12 +249,20 @@ export async function playScreen({ mapId, missionId, free }) {
         setTimeout(() => card.remove(), 250);
         const st = g.initialState(mission.start);
         mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
+        gm?.reset?.();
         editor.setLocked(false);
         editor.clearMarks();
         running = false;
       }),
     );
     mapPanel.append(card);
+  }
+
+  let encounterDue = false;
+  async function afterResults() {
+    if (!encounterDue) return;
+    encounterDue = false;
+    if (await maybeEncounter()) coins.num.textContent = s.coins;
   }
 
   async function win(prog) {
@@ -252,6 +273,7 @@ export async function playScreen({ mapId, missionId, free }) {
     const stars = checks.filter(Boolean).length;
     const coinsBefore = s.coins;
     let earned;
+    const first = !(s.visited[map.id] || []).includes(mission.destination);
     save.visit(map.id, mission.destination);
     s.stats.wins++;
     if (tier.id >= 3) s.stats.listenWins++;
@@ -266,11 +288,14 @@ export async function playScreen({ mapId, missionId, free }) {
     save.addCoins(earned);
     save.write();
     await showResults({ stars: free ? 0 : stars, checks, limit, earned, coinsBefore });
+    if (!map.isTest) await gm?.afterWin?.({ first, mapPanel, coins, stars });
     const badges = map.isTest ? [] : checkBadges();
     if (badges.length) {
       coins.bump(s.coins - badges.length * 20, s.coins);
       await showBadges(badges);
     }
+    // A wild monster can show up on the Pokémon town only; it waits until the results card is left.
+    encounterDue = !map.isTest && map.gimmick === 'monsters';
   }
 
   function showResults({ stars, checks, limit, earned, coinsBefore }) {
@@ -293,12 +318,12 @@ export async function playScreen({ mapId, missionId, free }) {
         h('div.rlines', {}, ...lines),
         coinRow,
         h('div.r-buttons', {},
-          btn('secondary', '↺ もういちど', () => { close(); startMission(false); }),
+          btn('secondary', '↺ もういちど', async () => { await afterResults(); close(); startMission(false); }),
           free
-            ? btn('primary', 'つぎへ ▶', () => { close(); mission = pickFree(); newAsker().then(() => startMission(true)); })
+            ? btn('primary', 'つぎへ ▶', async () => { await afterResults(); close(); mission = pickFree(); newAsker().then(() => startMission(true)); })
             : nextMission
-              ? btn('primary', 'つぎへ ▶', () => { close(); app.go('play', { mapId: map.id, missionId: nextMission.id }); })
-              : btn('primary', 'ミッションへ', () => { close(); app.go('missions', { mapId: map.id }); }),
+              ? btn('primary', 'つぎへ ▶', async () => { await afterResults(); close(); app.go('play', { mapId: map.id, missionId: nextMission.id }); })
+              : btn('primary', 'ミッションへ', async () => { await afterResults(); close(); app.go('missions', { mapId: map.id }); }),
         ),
       );
       const back = h('div.results-back', {}, card);
@@ -365,10 +390,12 @@ export async function playScreen({ mapId, missionId, free }) {
       mv.speed = s.settings.speed || 1;
       await mv.ready();
       window.addEventListener('keydown', onKey);
+      if (location.search.includes('debug')) window.__play = { win: () => win(editor.program()), encounter: () => maybeEncounter({ force: true }), mission, get gm() { return gm; }, mv, solveAndRun: () => { editor.setProgram(solve(gg, mission.start, mission.destination)); return run(); } };
       // First time: a starter hint in the program area.
       await startMission(true);
     },
     destroy() {
+      gm?.destroy?.();
       alive = false;
       window.removeEventListener('keydown', onKey);
       sfx.stopVoice();

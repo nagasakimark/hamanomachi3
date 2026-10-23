@@ -5,6 +5,8 @@ import { MAPS } from '../data/maps.js';
 import { coinPill, iconBtn, ICONS, showQR, showSettings, starPill } from '../ui/hud.js';
 import { composeLook, previewCanvas } from '../avatar/compositor.js';
 import { sfx } from '../audio/sfx.js';
+import { monstersActive } from '../gimmicks/index.js';
+import { showDex } from '../gimmicks/monsters.js';
 
 export function topBar(title, { back, extra = [] } = {}) {
   return h('div.topbar', {},
@@ -56,6 +58,7 @@ export async function townsScreen() {
         h('div.me-stage', {}, h('div.w-spot'), me),
         btn('dock wardrobe', [h('span.dock-icon', { html: ICONS.shirt }), 'きせかえ・ショップ'], () => app.go('wardrobe')),
         btn('dock stickers', [h('span.dock-icon', { html: ICONS.sticker }), 'シールちょう'], () => app.go('stickers')),
+        monstersActive() ? btn('dock dex', [h('span.dock-icon', {}, '👾'), 'モンスターずかん'], showDex) : null,
       ),
       h('div.towns-row', {}, ...cards),
     ),

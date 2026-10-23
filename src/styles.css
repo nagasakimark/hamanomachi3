@@ -511,3 +511,76 @@ button { font-family: inherit; }
 .pcol-price { background: #fff3c4; color: #9a6400; font-size: 13px; font-weight: 700; border-radius: 9px; padding: 0 6px; }
 .pcol-own { color: var(--green); font-weight: 700; }
 .w-swatches { padding-bottom: 8px; }
+
+/* ===== Town gimmicks ===== */
+.modal.gimmick-intro { width: 760px; max-width: 94%; }
+.gi { text-align: center; }
+.gi-icon { font-size: 96px; line-height: 1.1; animation: giBounce 1.2s ease-in-out infinite; }
+@keyframes giBounce { 50% { transform: translateY(-10px) scale(1.06); } }
+.gi h2 { font-size: 44px; margin: 6px 0 14px; color: var(--sea-dark); }
+.gi-lines { list-style: none; margin: 0 auto 22px; padding: 0; display: grid; gap: 12px; max-width: 600px; }
+.gi-lines li { display: flex; align-items: center; gap: 16px; text-align: left; font-size: 28px; font-weight: 600; background: var(--cream); border-radius: 18px; padding: 12px 18px; }
+.gi-i { font-size: 44px; flex: none; }
+.stamp-pop { width: 420px; height: 400px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.stamp-title { font-size: 38px; font-weight: 700; color: var(--pink); }
+.stamp-ink { flex: 1; display: grid; place-items: center; }
+.stamp-ring { width: 200px; height: 200px; border-radius: 50%; border: 8px solid var(--pink); color: var(--pink); display: grid; place-items: center; transform: rotate(-12deg); animation: stampDown .5s .15s cubic-bezier(.3,1.6,.5,1) both; background: #fff5f8; }
+.stamp-ring.small { width: 104px; height: 104px; border-width: 5px; animation: none; }
+.stamp-name { font-size: 24px; font-weight: 700; padding: 0 12px; line-height: 1.15; text-transform: capitalize; }
+.stamp-ring.small .stamp-name { font-size: 15px; padding: 0 8px; }
+@keyframes stampDown { from { transform: rotate(-12deg) scale(3); opacity: 0; } to { transform: rotate(-12deg) scale(1); opacity: 1; } }
+.stamp-count { font-size: 26px; font-weight: 700; color: var(--ink-soft); }
+.stamp-card { text-align: center; }
+.stamp-card h2 { font-size: 34px; }
+.card-grid, .dex-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 8px 0 14px; }
+.card-cell { aspect-ratio: 1; border-radius: 16px; background: var(--cream-2); display: grid; place-items: center; font-size: 36px; color: #c9b995; }
+.card-cell.on { background: #fff5f8; }
+.dex-grid { grid-template-columns: repeat(3, 1fr); }
+.dex-cell { background: var(--cream-2); border-radius: 18px; padding: 10px; }
+.dex-cell img { width: 150px; height: 150px; object-fit: contain; filter: brightness(0) opacity(.25); }
+.dex-cell.on img { filter: none; }
+.dex-name { font-size: 24px; font-weight: 700; }
+.dex-n { font-size: 18px; color: var(--ink-soft); }
+.modal.battle-modal { max-width: none; overflow: visible; width: auto; padding: 0; background: none; box-shadow: none; }
+.battle { position: relative; width: 1100px; height: 640px; max-width: 96vw; border-radius: 28px; overflow: hidden; background-size: cover; background-position: center; box-shadow: 0 12px 0 rgba(0,0,0,.25); }
+.b-mon { position: absolute; right: 120px; top: 70px; width: 300px; height: 300px; object-fit: contain; filter: drop-shadow(0 12px 8px rgba(0,0,0,.3)); animation: monIdle 1.6s ease-in-out infinite; }
+@keyframes monIdle { 50% { transform: translateY(-10px); } }
+.b-top { position: absolute; left: 24px; top: 20px; background: rgba(255,255,255,.92); border-radius: 18px; padding: 10px 18px; }
+.b-name { font-size: 30px; font-weight: 700; }
+.b-name small { font-size: 16px; color: var(--green-dark); }
+.b-balls { display: flex; gap: 8px; margin-top: 6px; }
+.ball { width: 26px; height: 26px; border-radius: 50%; border: 4px solid #d33; background: #fff; transition: background .3s; }
+.ball.on { background: #d33; }
+.b-panel { position: absolute; left: 24px; right: 24px; bottom: 20px; background: rgba(255,255,255,.96); border-radius: 22px; padding: 14px 22px 18px; text-align: center; }
+.b-msg { font-size: 26px; font-weight: 600; min-height: 36px; }
+.b-english { font-size: 56px; font-weight: 700; color: var(--sea-dark); text-transform: capitalize; min-height: 70px; }
+.b-choices { display: flex; gap: 16px; justify-content: center; min-height: 80px; }
+.btn.choice { font-size: 34px; padding: 14px 28px; }
+.btn.choice.wrong { --b: #ccc; --bd: #aaa; opacity: .6; }
+.b-run { position: absolute; right: 18px; bottom: 14px; }
+.gi-lines li span:last-child { word-break: keep-all; overflow-wrap: anywhere; }
+.free-btn.extra-btn { flex-direction: row; gap: 12px; padding: 8px 14px; font-size: 22px; align-items: center; justify-content: center; }
+.free-btn.extra-btn small { color: var(--ink-soft); font-size: 20px; }
+.modal.stamp-modal { width: 500px; }
+.stamp-pop { margin: 0 auto; width: 100%; }
+.btn.b-run { position: absolute; right: 18px; bottom: 14px; top: auto; height: 46px; width: auto; padding: 6px 16px; font-size: 18px; }
+
+.bench-ico { height: 40px; width: auto; vertical-align: middle; }
+.bench-inv { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.mat { background: var(--cream-2); border-radius: 14px; padding: 8px 12px; display: flex; flex-direction: column; align-items: center; font-size: 18px; }
+.mat-e { font-size: 34px; }
+.bench-list { display: grid; gap: 10px; text-align: left; }
+.recipe { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 16px; padding: 10px 16px; }
+.recipe .r-name { font-size: 26px; font-weight: 700; flex: 1; }
+.r-cost span { font-size: 24px; margin-right: 10px; font-weight: 600; }
+.r-cost .no { color: var(--red); }
+.r-have { color: var(--green-dark); font-weight: 700; font-size: 22px; }
+
+.mat-e { width: 40px; height: 40px; object-fit: contain; }
+.mat-s { height: 28px; vertical-align: middle; }
+.stamp-ring { flex-direction: column; align-content: center; }
+.stamp-img { width: 100px; height: 100px; object-fit: contain; margin-top: 18px; }
+.stamp-ring.small .stamp-img { width: 52px; height: 52px; margin-top: 8px; }
+.stamp-ring .stamp-name { font-size: 20px; margin-bottom: 14px; }
+.stamp-ring.small .stamp-name { font-size: 11px; margin-bottom: 8px; padding: 0 4px; }
+.stamp-ring { display: flex; flex-direction: column; align-items: center; justify-content: center; }

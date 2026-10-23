@@ -84,3 +84,6 @@ Swap `src/assets/qrcode.png` for a new picture with the same name.
 
 ## Pet art credits
 Pets in `src/pets/sheets` come from free itch.io / CraftPix packs (farm animals, slimes, hunt animals, cats). Check each pack's licence before redistributing.
+
+## Town gimmicks (dormant until a map pack opts in)
+Each non-Hamanomachi town can set `"gimmick"` in its `map.json` (Map info > Special rule in the map editor): `stamps`, `treasure`, `crafting`, `blocks` or `monsters`. Code is in `src/gimmicks/`; `src/data/placeNames.js` maps English place names to Japanese for the monster quiz (add every real building). To try them before the real maps exist: `node scripts/make-dev-maps.mjs stamps treasure crafting blocks monsters` (git-ignored; run with `clean` to remove). Open the game with `?debug` for test hooks.

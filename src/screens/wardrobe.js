@@ -28,7 +28,7 @@ export async function wardrobeScreen({ create = false } = {}) {
   save.write();
   await refresh();
 
-  const available = item => item.price === 0 && !item.badge || save.owns(item.id) || (item.badge && s.badges[item.badge]);
+  const available = item => item.price === 0 && !item.badge && !item.gate || save.owns(item.id) || (item.badge && s.badges[item.badge]);
   // Things being tried on that still cost coins: items, hair/cloth colours, pet colour.
   const unpaid = () => {
     const out = SLOTS.map(sl => itemById(look[sl.id])).filter(it => it && !available(it));
@@ -70,7 +70,7 @@ export async function wardrobeScreen({ create = false } = {}) {
   }
 
   async function renderGrid() {
-    const items = ITEMS.filter(i => i.slot === slot);
+    const items = ITEMS.filter(i => i.slot === slot && (!i.gate || save.owns(i.id)));
     const cards = [];
     if (!REQUIRED.has(slot)) {
       const none = h('button.w-item' + (!look[slot] ? '.on' : ''), { onclick: () => wear(null) }, h('div.w-none', {}, '✖'), h('div.w-name', {}, 'なし'));
@@ -166,7 +166,7 @@ export async function wardrobeScreen({ create = false } = {}) {
 
   const done = () => {
     // Anything not paid for goes back to what was worn before.
-    for (const it of unpaid()) if (it.revert) it.revert(); else look[it.slot] = s.look[it.slot] && available(itemById(s.look[it.slot])) ? s.look[it.slot] : ITEMS.find(i => i.slot === it.slot && i.price === 0 && !i.badge)?.id || null;
+    for (const it of unpaid()) if (it.revert) it.revert(); else look[it.slot] = s.look[it.slot] && available(itemById(s.look[it.slot])) ? s.look[it.slot] : ITEMS.find(i => i.slot === it.slot && i.price === 0 && !i.badge && !i.gate)?.id || null;
     if (!REQUIRED.has('hat')) { /* optional slots may stay empty */ }
     s.look = { ...look };
     if (create) s.madeCharacter = true;

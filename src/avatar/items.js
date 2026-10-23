@@ -38,8 +38,8 @@ const hair = (id, name, price, path, { two = false, feminine = false } = {}) => 
 const top = (id, name, price, path, extra = {}) => ({ id: 'top-' + id, slot: 'top', name, price, color: 'cloth', layers: [L(`torso/${path}/teen/walk.png`, Z.top)], ...extra });
 const bottom = (id, name, price, path, extra = {}) => ({ id: 'bottom-' + id, slot: 'bottom', name, price, color: 'cloth', layers: [L(`legs/${path}/thin/walk.png`, Z.bottom)], ...extra });
 const shoes = (id, name, price, path) => ({ id: 'shoes-' + id, slot: 'shoes', name, price, color: 'cloth', layers: [L(`feet/${path}/thin/walk.png`, Z.shoes)] });
-const hat = (id, name, price, path, { color = true, two = false, badge } = {}) => ({
-  id: 'hat-' + id, slot: 'hat', name, price, badge, color: color ? 'cloth' : undefined,
+const hat = (id, name, price, path, { color = true, two = false, badge, gate } = {}) => ({
+  id: 'hat-' + id, slot: 'hat', name, price, badge, gate, color: color ? 'cloth' : undefined,
   layers: two ? [L(`hat/${path}/bg/adult/walk.png`, Z.hairBg), L(`hat/${path}/fg/adult/walk.png`, Z.hatFg)] : [L(`hat/${path}/adult/walk.png`, Z.hat)],
 });
 const glasses = (id, name, price, path) => ({ id: 'glasses-' + id, slot: 'glasses', name, price, layers: [L(`facial/${path}/adult/walk.png`, Z.glasses)] });
@@ -159,6 +159,11 @@ export const ITEMS = [
   hat('tophat', 'シルクハット', 0, 'formal/tophat', { badge: 'efficient' }),
   hat('wizard', 'まほうつかい', 0, 'magic/wizard/base', { badge: 'listener' }),
   hat('crown', 'おうかん', 0, 'formal/crown', { color: false, badge: 'expert' }),
+  hat('rally', 'ラリーぼうし', 0, 'pirate/bonnie', { gate: 'rally' }),
+  hat('craft-cap', 'マイナーぼうし', 0, 'cloth/leather_cap', { gate: 'craft' }),
+  hat('craft-hood', 'てつのフード', 0, 'cloth/hood', { gate: 'craft' }),
+  hat('craft-bonnie', 'ゴールドベレー', 0, 'pirate/bonnie', { gate: 'craft' }),
+  hat('craft-horns', 'ダイヤのつの', 0, 'accessory/horns_short', { two: true, gate: 'craft' }),
 
   // Glasses
   glasses('round', 'まるめがね', 100, 'glasses/round'),

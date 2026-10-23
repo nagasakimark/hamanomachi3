@@ -304,6 +304,9 @@ function draw() {
     ctx.lineWidth = (sel ? 7 : 5) * lw;
     ctx.setLineDash(toDest ? [8 * lw, 6 * lw] : []);
     ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+    if ((S.map.gimmickData?.closable || []).some(r => (r[0] === a && r[1] === b) || (r[0] === b && r[1] === a))) {
+      ctx.setLineDash([]); ctx.font = `${22 * lw}px sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = '#000'; ctx.fillText('🚧', (A.x + B.x) / 2, (A.y + B.y) / 2 + 8 * lw);
+    }
   });
   ctx.setLineDash([]);
   // solution path
@@ -332,6 +335,7 @@ function draw() {
     if (p.type === 'littlebit') { ctx.rect(p.x - rad, p.y - rad, rad * 2, rad * 2); }
     else ctx.arc(p.x, p.y, rad, 0, 7);
     ctx.fill(); ctx.stroke();
+    if (p.spot) { ctx.strokeStyle = '#8e24aa'; ctx.lineWidth = 3 * lw; ctx.beginPath(); ctx.arc(p.x, p.y, rad + 4 * lw, 0, 7); ctx.stroke(); }
     if (p.littlebit && p.type !== 'littlebit') { ctx.strokeStyle = '#ff9800'; ctx.lineWidth = 3 * lw; ctx.beginPath(); ctx.arc(p.x, p.y, rad + 4 * lw, 0, 7); ctx.stroke(); }
     if (p.name && (p.type === 'destination' || p.type === 'start')) {
       ctx.font = `600 ${13 * lw}px Fredoka, sans-serif`; ctx.textAlign = 'center';
@@ -373,7 +377,15 @@ function pointPanel() {
   if (!sel) return [h('p.ed-hint', {}, 'Click a point or road with the Select tool to edit it.'), legend()];
   if (sel.kind === 'road') {
     const [a, b] = S.map.roads[sel.index] || [];
-    return [h('h3', {}, 'Road'), h('p', {}, `${a} ↔ ${b}`), mbtn('🗑️ Delete road', () => { snapshot(); S.map.roads.splice(sel.index, 1); S.selected = null; changed(); })];
+    const road = [h('h3', {}, 'Road'), h('p', {}, `${a} ↔ ${b}`)];
+    if (S.map.gimmick === 'blocks') {
+      const gd = (S.map.gimmickData ||= {}); gd.closable ||= [];
+      const idx = gd.closable.findIndex(r => (r[0] === a && r[1] === b) || (r[0] === b && r[1] === a));
+      const cb = h('input', { type: 'checkbox', checked: idx >= 0 });
+      cb.addEventListener('change', () => { snapshot(); if (cb.checked) gd.closable.push([a, b]); else gd.closable.splice(idx, 1); changed(); });
+      road.push(h('label.ed-check', {}, cb, ' This road can be closed (🚧) in a mission'));
+    }
+    return [...road, mbtn('🗑️ Delete road', () => { snapshot(); S.map.roads.splice(sel.index, 1); S.selected = null; changed(); })];
   }
   const p = P(sel.id);
   if (!p) return [];
@@ -419,6 +431,11 @@ function pointPanel() {
     cb.addEventListener('change', () => { snapshot(); if (cb.checked) p.littlebit = true; else delete p.littlebit; changed(); });
     out.push(h('label.ed-check', {}, cb, ' Count as a little-bit point when walking (does not count as a block)'));
   }
+  if (['treasure', 'crafting', 'blocks'].includes(S.map.gimmick) && p.type === 'normal') {
+    const cb = h('input', { type: 'checkbox', checked: !!p.spot });
+    cb.addEventListener('change', () => { snapshot(); if (cb.checked) p.spot = true; else delete p.spot; changed(); });
+    out.push(h('label.ed-check', {}, cb, ' Gimmick spot: a chest / material / ? block can appear here'));
+  }
   out.push(h('p.ed-small', {}, `x ${p.x}, y ${p.y} · roads: ${g.neighbors(p.id).join(', ') || 'none'}`));
   out.push(mbtn('🗑️ Delete point', () => { snapshot(); deletePoint(p.id); S.selected = null; changed(); }));
   return out;
@@ -434,6 +451,28 @@ function legend() {
   );
 }
 
+const GIMMICK_NOTES = {
+  '': 'No special rule (like Hamanomachi).',
+  stamps: 'Stamp rally: the first time a student reaches a place they get its stamp. All stamps = a special hat.',
+  treasure: 'Sunken treasure: chests sit on corners. Walking over them gives coins, but detours cost blocks. Mark spots in the Selected tab.',
+  crafting: 'Minecraft crafting: materials may appear on corners before a run. Collected ones go to the crafting bench. Mark spots in the Selected tab.',
+  monsters: 'Pokémon town: after a win there is a small chance of a wild monster. The student translates 3 place names (from any town they have visited) to catch it.',
+  blocks: '? blocks give coins, and some roads can be closed (mark them in the Selected tab) so the best route changes.',
+};
+function gimmickFields(m, num) {
+  const sel = h('select', {}, ...[['', 'None'], ['stamps', 'Stamp rally'], ['treasure', 'Treasure chests'], ['crafting', 'Crafting materials'], ['blocks', '? blocks + closed roads'], ['monsters', 'Wild monsters (Pokémon town)']]
+    .map(([v, t]) => h('option', { value: v, selected: (m.gimmick || '') === v }, t)));
+  sel.addEventListener('change', () => { snapshot(); if (sel.value) m.gimmick = sel.value; else delete m.gimmick; changed(); renderSide(); });
+  const gd = () => (m.gimmickData ||= {});
+  const out = [h('h3', {}, 'Special rule (gimmick)'), field('Gimmick', sel), h('p.ed-small', {}, GIMMICK_NOTES[m.gimmick || ''])];
+  const spots = m.points.filter(p => p.spot).length;
+  if (m.gimmick === 'treasure') out.push(field('Chests per mission', num(gd().count ?? 3, v => { gd().count = v; })), field('Coins per chest', num(gd().coins ?? 15, v => { gd().coins = v; })));
+  if (m.gimmick === 'crafting') out.push(field('Chance a spot has a material (0-100%)', num(Math.round((gd().chance ?? 0.4) * 100), v => { gd().chance = Math.max(0, Math.min(100, v)) / 100; })));
+  if (m.gimmick === 'blocks') out.push(field('? blocks per mission', num(gd().count ?? 3, v => { gd().count = v; })), field('Coins per ? block', num(gd().coins ?? 5, v => { gd().coins = v; })), field('Roads closed per mission', num(gd().closed ?? 1, v => { gd().closed = v; })), h('p.ed-small', {}, `Closable roads marked: ${(gd().closable || []).length}`));
+  if (['treasure', 'crafting', 'blocks'].includes(m.gimmick)) out.push(h('p.ed-small', {}, spots ? `Gimmick spots marked: ${spots}` : 'No spots marked: every corner point will be used.'));
+  return out;
+}
+
 function mapPanel() {
   const m = S.map;
   const num = (v, fn) => textInput(v, x => fn(Number(x) || 0), { type: 'number' });
@@ -444,6 +483,7 @@ function mapPanel() {
     field('Subtitle', textInput(m.subtitle, v => { m.subtitle = v; })),
     field('Order on the town screen', num(m.order, v => { m.order = v; })),
     field('Stars needed to unlock', num(m.unlockStars, v => { m.unlockStars = v; })),
+    ...gimmickFields(m, num),
     h('p.ed-small', {}, `Picture: ${S.imageName} (${m.width} × ${m.height})`),
     mbtn('🖼️ Replace map picture', () => { replacingImage = true; fileInput.click(); }),
     legend(),

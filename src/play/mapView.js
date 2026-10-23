@@ -262,7 +262,7 @@ export class MapView {
   tween(cfg) { return new Promise(r => this.scene.tweens.add({ ...cfg, onComplete: () => r() })); }
   delay(ms) { return new Promise(r => this.scene.time.delayedCall(ms / this.speed, r)); }
 
-  async walk(path) {
+  async walk(path, onNode) {
     const s = this.scene, g = this.pack.graph;
     s.recording = true;
     for (let i = 1; i < path.length; i++) {
@@ -281,6 +281,7 @@ export class MapView {
       });
       // draw the walked route
       s.routeG.lineStyle(7, 0xffffff, 0.75).lineBetween(a.x, a.y, b.x, b.y);
+      if (onNode) await onNode(path[i]);
     }
     s.recording = false;
     s.player.stop();
