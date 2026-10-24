@@ -190,7 +190,7 @@ canvas.addEventListener('contextmenu', e => e.preventDefault());
 canvas.addEventListener('pointerdown', e => {
   canvas.setPointerCapture(e.pointerId);
   const w = toWorld(e);
-  if (e.button === 1 || e.button === 2 || spaceDown) { drag = { kind: 'pan', sx: e.clientX, sy: e.clientY, vx: S.view.x, vy: S.view.y }; return; }
+  if (e.button === 1 || e.button === 2 || spaceDown) { drag = { kind: 'pan', sx: e.clientX, sy: e.clientY, vx: S.view.x, vy: S.view.y, btn: e.button, moved: 0 }; return; }
   if (!S.image) return;
   const hitP = pointAt(w);
   const tool = S.tool;
@@ -233,16 +233,18 @@ canvas.addEventListener('pointerdown', e => {
 });
 canvas.addEventListener('pointermove', e => {
   const w = toWorld(e); mouseW = w; shift = e.shiftKey;
-  if (drag?.kind === 'pan') { S.view.x = drag.vx + e.clientX - drag.sx; S.view.y = drag.vy + e.clientY - drag.sy; draw(); return; }
+  if (drag?.kind === 'pan') { drag.moved = Math.max(drag.moved || 0, Math.abs(e.clientX - drag.sx) + Math.abs(e.clientY - drag.sy)); S.view.x = drag.vx + e.clientX - drag.sx; S.view.y = drag.vy + e.clientY - drag.sy; draw(); return; }
   if (drag?.kind === 'move') {
     const p = P(drag.id); p.x = Math.round(w.x); p.y = Math.round(w.y); drag.moved = true; draw(); return;
   }
   const hp = pointAt(w);
   S.hover = hp ? hp.id : null;
-  status.textContent = `x ${Math.round(w.x)}, y ${Math.round(w.y)}` + (hp ? ` · ${hp.type}${hp.name ? ': ' + hp.name : ''}` : '') + (S.tool === 'road' ? ' · click to add road points, Esc to stop, hold Shift for straight lines' : '');
+  status.textContent = `x ${Math.round(w.x)}, y ${Math.round(w.y)}` + (hp ? ` · ${hp.type}${hp.name ? ': ' + hp.name : ''}` : '') + (S.tool === 'road' ? ' · click to add road points, right-click or Esc to stop, hold Shift for straight lines' : '');
   draw();
 });
 canvas.addEventListener('pointerup', () => {
+  // a right-click (not a right-drag, which moves the view) ends the road being drawn, like Esc
+  if (drag?.kind === 'pan' && drag.btn === 2 && (drag.moved || 0) < 5 && S.roadFrom) { S.roadFrom = null; S.solution = null; draw(); }
   if (drag?.kind === 'move') { if (drag.moved) changed(); else S.undo.pop(); }
   drag = null;
 });
@@ -772,7 +774,7 @@ function showHelp() {
     h('h2', {}, 'Making a new town'),
     h('ol', {},
       h('li', {}, 'Click ', h('b', {}, 'Open…'), ' and choose your map picture (PNG or JPG), or press ', h('b', {}, 'Compose map'), ' to draw the picture from roads and building images, then ', h('b', {}, 'Use picture + trace roads'), '.'),
-      h('li', {}, 'Use ', h('b', {}, 'Draw roads (R)'), ': click along the middle of each road. Click at every crossing and bend. Press Esc to stop a line. Click an existing point to join roads. Hold Shift for straight lines.'),
+      h('li', {}, 'Use ', h('b', {}, 'Draw roads (R)'), ': click along the middle of each road. Click at every crossing and bend. Press Esc or right-click to stop a line. Click an existing point to join roads. Hold Shift for straight lines.'),
       h('li', {}, 'Use ', h('b', {}, 'Little-bit point (L)'), ' on a road where "go straight for a little bit" should stop, usually beside a place.'),
       h('li', {}, 'Use ', h('b', {}, 'Place (D)'), ' on each building, name it, then click the road point it joins. Add its voice clip in the Selected tab.'),
       h('li', {}, 'Use ', h('b', {}, 'Start (S)'), ' for each bus stop, join it to a road, and choose which way the character faces.'),
