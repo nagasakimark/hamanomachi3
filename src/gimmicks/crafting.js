@@ -1,7 +1,7 @@
 // Block world (Minecraft-style town): crafting materials may lie on the roads
 // (you can see them before you run, so you can plan to walk that way). Collect
 // them by winning, then use the crafting table to make helmets.
-// map.json:  "gimmickData": { "spots": ["p3","p9",...], "chance": 0.4 }
+// map.json:  "gimmickData": { "spots": ["p3","p9",...], "chance": 0.15 }
 import { h, modal } from '../ui/dom.js';
 import { save } from '../progress/save.js';
 import { itemById } from '../avatar/items.js';
@@ -46,13 +46,17 @@ function randomMaterial() {
   return 'wood';
 }
 
-export function session(map, mission) {
+// How likely a spot is to hold a material. Free play (endless random trips) uses a quarter of the story chance.
+export const DEFAULT_CHANCE = 0.15, FREE_PLAY_FACTOR = 0.25;
+
+export function session(map, mission, ctx = {}) {
   const d = map.gimmickData || {};
+  const chance = (d.chance ?? DEFAULT_CHANCE) * (ctx.free ? FREE_PLAY_FACTOR : 1);
   let pk = null;
   return {
     mount(mv) {
       const spots = freePoints(map.graph, mission, d.spots);
-      const list = spots.filter(() => Math.random() < (d.chance ?? 0.4)).map(at => {
+      const list = spots.filter(() => Math.random() < chance).map(at => {
         const mat = randomMaterial();
         return {
           at, kind: mat, src: pxUrl(MATERIALS[mat].art), pixel: true, size: mat === 'wood' || mat === 'stone' ? 52 : 48, anim: mat === 'wood' || mat === 'stone' ? 'bob' : 'spin',

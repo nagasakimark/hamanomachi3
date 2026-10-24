@@ -487,7 +487,7 @@ function gimmickFields(m, num) {
   const out = [h('h3', {}, 'Special rule (gimmick)'), field('Gimmick', sel), h('p.ed-small', {}, GIMMICK_NOTES[m.gimmick || '']), field('Screen effect', amb)];
   const spots = m.points.filter(p => p.spot).length;
   if (m.gimmick === 'treasure') out.push(field('Chests per mission', num(gd().count ?? 3, v => { gd().count = v; })), field('Coins per chest', num(gd().coins ?? 15, v => { gd().coins = v; })));
-  if (m.gimmick === 'crafting') out.push(field('Chance a spot has a material (0-100%)', num(Math.round((gd().chance ?? 0.4) * 100), v => { gd().chance = Math.max(0, Math.min(100, v)) / 100; })));
+  if (m.gimmick === 'crafting') out.push(field('Chance a spot has a material (0-100%; free play uses a quarter of this)', num(Math.round((gd().chance ?? 0.15) * 100), v => { gd().chance = Math.max(0, Math.min(100, v)) / 100; })));
   if (m.gimmick === 'blocks') out.push(field('? blocks per mission', num(gd().count ?? 3, v => { gd().count = v; })), field('Coins per ? block', num(gd().coins ?? 5, v => { gd().coins = v; })), field('Roads closed per mission', num(gd().closed ?? 1, v => { gd().closed = v; })), h('p.ed-small', {}, `Closable roads marked: ${(gd().closable || []).length}`));
   if (['treasure', 'crafting', 'blocks'].includes(m.gimmick)) out.push(h('p.ed-small', {}, spots ? `Gimmick spots marked: ${spots}` : 'No spots marked: every corner point will be used.'));
   return out;
