@@ -7,7 +7,7 @@ import '@fontsource/fredoka/600.css';
 import './mapEditor.css';
 import { zipSync, unzipSync, strToU8, strFromU8 } from 'fflate';
 import { MapGraph, blockLabel, simulate } from '../engine/engine.js';
-import { solve } from '../engine/solver.js';
+import { solve, tooClose } from '../engine/solver.js';
 import { generateMissions, TIERS } from '../engine/missions.js';
 import { idbGet, idbSet } from './idb.js';
 import { h } from '../ui/dom.js';
@@ -551,6 +551,7 @@ function runChecks() {
     if (!P(ms.start) || !P(ms.destination)) { out.push({ level: 'error', text: `Mission ${ms.id} uses a deleted point.` }); continue; }
     const best = solve(g, ms.start, ms.destination);
     if (!best) out.push({ level: 'error', text: `Mission ${ms.id} (${P(ms.destination).name}) can't be solved any more.`, ids: [ms.destination] });
+    else if (tooClose(g, ms.start, ms.destination)) out.push({ level: 'fix', text: `Mission ${ms.id}: ${P(ms.destination).name} is on the same block as the start (less than one block away).`, ids: [ms.destination], fix: () => { m.missions = m.missions.filter(x => x !== ms); } });
     else if (best.length !== ms.best) out.push({ level: 'fix', text: `Mission ${ms.id}: best is now ${best.length} blocks (was ${ms.best}).`, fix: () => { ms.best = best.length; } });
   }
   return out;
@@ -594,6 +595,7 @@ function missionsPanel() {
   out.push(h('div.ed-add', {}, h('b', {}, 'Add a mission: '), sSel, ' → ', dSel, tSel, mbtn('Add', () => {
     const best = solve(g, sSel.value, dSel.value);
     if (!best) { alert('That route cannot be solved with the blocks.'); return; }
+    if (tooClose(g, sSel.value, dSel.value) && !confirm('That place is on the same block as the start (less than one block away). Add it anyway?')) return;
     snapshot();
     const tier = Number(tSel.value);
     const n = m.missions.filter(x => x.tier === tier).length + 1;

@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { MapGraph, simulate, goStraight, turn } from '../src/engine/engine.js';
-import { solve } from '../src/engine/solver.js';
+import { solve, tooClose, blocksAway } from '../src/engine/solver.js';
 import { generateMissions } from '../src/engine/missions.js';
 
 // A tiny "plus" shaped town:      N
@@ -123,4 +123,28 @@ test('a place next to a cut corner can be reached from both sides', () => {
   const best = solve(g2, 'S', 'book');
   assert.ok(best, 'reachable coming round the corner');
   assert.equal(simulate(g2, best, 'S', 'book').won, true);
+});
+
+// A street:  S -(L1)-(L2)- J -(L3)- K     "near" is beside L2 (same block as the start), "far" beside L3.
+const street = {
+  points: [
+    { id: 'S', x: 0, y: 0, type: 'start', facing: 'L1' },
+    { id: 'L1', x: 100, y: 0, type: 'littlebit' },
+    { id: 'L2', x: 200, y: 0, type: 'littlebit' },
+    { id: 'J', x: 300, y: 0, type: 'normal' },
+    { id: 'L3', x: 400, y: 0, type: 'littlebit' },
+    { id: 'K', x: 500, y: 0, type: 'normal' },
+    { id: 'Y', x: 300, y: 100, type: 'normal' },
+    { id: 'near', x: 200, y: -30, type: 'destination', name: 'near' },
+    { id: 'far', x: 400, y: -30, type: 'destination', name: 'far' },
+    { id: 'side', x: 300, y: 130, type: 'destination', name: 'side' },
+  ],
+  roads: [['S', 'L1'], ['L1', 'L2'], ['L2', 'J'], ['J', 'L3'], ['L3', 'K'], ['J', 'Y'], ['L2', 'near'], ['L3', 'far'], ['Y', 'side']],
+};
+test('places on the start\'s own block are too close, places past a corner are not', () => {
+  const g = new MapGraph(street);
+  assert.equal(blocksAway(g, 'S', 'near'), 0);
+  assert.equal(tooClose(g, 'S', 'near'), true);
+  assert.equal(tooClose(g, 'S', 'far'), false);
+  assert.equal(tooClose(g, 'S', 'side'), false);
 });

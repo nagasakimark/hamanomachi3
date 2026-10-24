@@ -46,3 +46,29 @@ export function solve(g, startId, destId, { maxDepth = 12 } = {}) {
 export function reachableDestinations(g, startId) {
   return g.destinations().filter(d => solve(g, startId, d.id));
 }
+
+// How many corners (real blocks) lie between two points on the shortest road route.
+// Little-bit points and gentle bends do not count. 0 = the place is on the same block as the start.
+// Returns null when there is no route.
+export function blocksAway(g, startId, destId) {
+  const dist = new Map([[startId, 0]]), prev = new Map(), todo = [startId], done = new Set();
+  while (todo.length) {
+    todo.sort((a, b) => dist.get(a) - dist.get(b));
+    const u = todo.shift();
+    if (done.has(u)) continue;
+    done.add(u);
+    if (u === destId) break;
+    const pu = g.point(u);
+    for (const v of g.neighbors(u)) {
+      const pv = g.point(v), d = dist.get(u) + Math.hypot(pu.x - pv.x, pu.y - pv.y);
+      if (!dist.has(v) || d < dist.get(v)) { dist.set(v, d); prev.set(v, u); todo.push(v); }
+    }
+  }
+  if (!dist.has(destId)) return null;
+  let corners = 0;
+  for (let n = prev.get(destId); n !== undefined && n !== startId; n = prev.get(n)) if (!g.passThrough(n)) corners++;
+  return corners;
+}
+
+// A trip must be at least one block long: places on the same block as the start are never chosen.
+export const tooClose = (g, startId, destId) => g.neighbors(startId).includes(destId) || (blocksAway(g, startId, destId) ?? 1) < 1;

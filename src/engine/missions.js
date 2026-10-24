@@ -1,6 +1,6 @@
 // Builds a map's mission list automatically from its roads.
 import { MapGraph } from './engine.js';
-import { solve } from './solver.js';
+import { solve, tooClose } from './solver.js';
 
 export const TIERS = [
   { id: 1, name: 'Warm-up', ja: 'ウォームアップ', hint: 'marker', desc: 'Short walks. The place glows on the map.', jaDesc: '近い場所へ行こう。行き先が地図で光るよ。' },
@@ -15,7 +15,7 @@ export function analysePairs(map) {
   const out = [];
   for (const s of g.starts()) {
     for (const d of g.destinations()) {
-      if (g.neighbors(s.id).includes(d.id)) continue;
+      if (tooClose(g, s.id, d.id)) continue; // the place is on the start's own block
       const best = solve(g, s.id, d.id);
       if (!best) continue;
       const turns = best.filter(b => b.type !== 'straight' && b.type !== 'littlebit').length;

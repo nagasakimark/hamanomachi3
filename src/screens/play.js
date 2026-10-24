@@ -5,7 +5,7 @@ import { mapById } from '../data/maps.js';
 import { TIERS } from '../engine/missions.js';
 import { tierOpen } from './missions.js';
 import { simulate } from '../engine/engine.js';
-import { solve } from '../engine/solver.js';
+import { solve, tooClose } from '../engine/solver.js';
 import { BlockEditor } from '../editor/blockEditor.js';
 import { MapView } from '../play/mapView.js';
 import { composeLook, previewCanvas, portraitCanvas, randomLook } from '../avatar/compositor.js';
@@ -32,7 +32,7 @@ export async function playScreen({ mapId, missionId, free }) {
     for (let tries = 0; tries < 50; tries++) {
       const st = starts[Math.floor(Math.random() * starts.length)];
       const de = dests[Math.floor(Math.random() * dests.length)];
-      if (g.neighbors(st.id).includes(de.id)) continue;
+      if (tooClose(g, st.id, de.id)) continue; // never on the start's own block
       const best = solve(g, st.id, de.id);
       if (best) return { id: 'free', tier: 0, start: st.id, destination: de.id, best: best.length };
     }
