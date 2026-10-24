@@ -28,3 +28,20 @@ test('closing a road on the shortest route can change the answer', () => {
   }
   assert.ok(changed > 0, 'at least one closure forces a different program');
 });
+
+import { autoChains, chooseClosedChains } from '../src/gimmicks/closure.js';
+test('automatic closures close whole blocks and keep every mission solvable', () => {
+  const chains = autoChains(map);
+  assert.ok(chains.length > 5, 'finds streets to close');
+  let onRouteChanged = 0;
+  for (const m of map.missions) {
+    const { edges, mids } = chooseClosedChains(map, m, chains, 1);
+    assert.equal(mids.length, edges.length ? 1 : 0);
+    if (edges.length) {
+      const closedG = graphWithout(map, edges);
+      assert.ok(solve(closedG, m.start, m.destination), 'still solvable');
+      if (JSON.stringify(solve(closedG, m.start, m.destination)) !== JSON.stringify(solve(g, m.start, m.destination))) onRouteChanged++;
+    }
+  }
+  assert.ok(onRouteChanged >= map.missions.length / 2, 'most closures change the answer');
+});

@@ -162,16 +162,19 @@ export async function playScreen({ mapId, missionId, free }) {
   const R = Math.max(1, Math.min(2, getStageScale() * (window.devicePixelRatio || 1)));
   let mv = null, ambient = null;
 
+  // A mistake inside a town's special rule must never freeze the game.
+  function safeGm(fn) { try { return fn(); } catch (e) { console.error('gimmick', e); } }
+
   async function startMission(intro = true) {
     attempts = 0;
     gm?.destroy?.();
-    gm = createSession(map, mission, { map, g, free });
+    try { gm = createSession(map, mission, { map, g, free }); } catch (e) { console.error('gimmick', e); gm = null; }
     gg = gm?.graph || g;
     best = gg === g ? mission.best : (solve(gg, mission.start, mission.destination) || []).length || mission.best;
     setMissionUI();
     const st = g.initialState(mission.start);
     mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
-    gm?.mount?.(mv);
+    safeGm(() => gm?.mount?.(mv));
     editor.setLocked(false);
     editor.clearMarks();
     if (intro) {
@@ -201,7 +204,7 @@ export async function playScreen({ mapId, missionId, free }) {
     runBtn.classList.add('going');
     const st = g.initialState(mission.start);
     mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
-    gm?.reset?.();
+    safeGm(() => gm?.reset?.());
     await wait(250);
     editor.pulseStart();
     mv.followPlayer();
@@ -214,7 +217,7 @@ export async function playScreen({ mapId, missionId, free }) {
       await say(prog[step.block]);
       await mv.delay(120);
       for (const sub of step.sub) {
-        if (sub.kind === 'move') await mv.walk(sub.path, gm?.onNode ? id => gm.onNode(id, mv, coins) : null);
+        if (sub.kind === 'move') await mv.walk(sub.path, gm?.onNode ? id => Promise.resolve().then(() => gm.onNode(id, mv, coins)).catch(e => console.error('gimmick', e)) : null);
         else if (sub.kind === 'turn') await mv.turn(sub.from, sub.by);
       }
       if (!step.ok) {
@@ -250,7 +253,7 @@ export async function playScreen({ mapId, missionId, free }) {
         setTimeout(() => card.remove(), 250);
         const st = g.initialState(mission.start);
         mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
-        gm?.reset?.();
+        safeGm(() => gm?.reset?.());
         editor.setLocked(false);
         editor.clearMarks();
         running = false;
@@ -294,7 +297,7 @@ export async function playScreen({ mapId, missionId, free }) {
     save.addCoins(earned);
     save.write();
     await showResults({ stars: free ? 0 : stars, checks, limit, earned, coinsBefore, replay: !fresh });
-    if (fresh) await gm?.afterWin?.({ first, mapPanel, coins, stars }); // test towns run their gimmick too (progress is cleared on each Test play)
+    if (fresh) { try { await gm?.afterWin?.({ first, mapPanel, coins, stars }); } catch (e) { console.error('gimmick', e); } } // test towns run their gimmick too (progress is cleared on each Test play)
     const badges = map.isTest ? [] : checkBadges();
     if (badges.length) {
       coins.bump(s.coins - badges.length * 20, s.coins);

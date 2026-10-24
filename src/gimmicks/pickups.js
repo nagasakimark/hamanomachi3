@@ -49,7 +49,7 @@ export function makePickups(mv, list) {
     rec.scale = size / Math.max(s.width, s.height);
     s.setScale(rec.scale);
     rec.start = () => {
-      rec.tweens.forEach(t => t.stop()); rec.tweens = [];
+      rec.tweens.forEach(t => t.stop?.() ?? t.remove?.()); rec.tweens = []; // tweens stop(), timer events remove()
       if (item.anim !== 'still' && item.anim !== 'spin') rec.tweens.push(scene.tweens.add({ targets: s, y: rec.home.y - 8, duration: 800 + Math.random() * 300, yoyo: true, repeat: -1, ease: 'Sine.inOut' }));
       if (item.anim === 'spin') {
         // dropped items slowly turn and float, like in a block game

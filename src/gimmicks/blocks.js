@@ -5,7 +5,7 @@
 import { h } from '../ui/dom.js';
 import { save } from '../progress/save.js';
 import { sfx } from '../audio/sfx.js';
-import { chooseClosed, graphWithout } from './closure.js';
+import { chooseClosed, chooseClosedChains, autoChains, graphWithout } from './closure.js';
 import { makePickups, pickRandom, freePoints, addArt, pxUrl, loadTex, floatText } from './pickups.js';
 
 export const intro = {
@@ -22,7 +22,12 @@ export const intro = {
 export function session(map, mission) {
   const d = map.gimmickData || {};
   let pk = null, walls = [];
-  const closed = chooseClosed(map, mission, (d.closable || []).filter(([a, b]) => map.roads.some(r => (r[0] === a && r[1] === b) || (r[0] === b && r[1] === a))), d.closed ?? 1);
+  // Roads marked "can be closed" in the map editor are used if there are any; otherwise whole blocks
+  // (the stretch between two corners) are closed automatically.
+  const marked = (d.closable || []).filter(([a, b]) => map.roads.some(r => (r[0] === a && r[1] === b) || (r[0] === b && r[1] === a)));
+  let closed, wallAt;
+  if (marked.length) { closed = chooseClosed(map, mission, marked, d.closed ?? 1); wallAt = closed; }
+  else { const r = chooseClosedChains(map, mission, autoChains(map), d.closed ?? 1); closed = r.edges; wallAt = r.mids; }
   const graph = closed.length ? graphWithout(map, closed) : map.graph;
   const value = d.coins ?? 5;
   return {
@@ -31,7 +36,7 @@ export function session(map, mission) {
     mount(mv) {
       const sc = mv.scene, g = map.graph;
       // a little brick wall across each closed road
-      walls = closed.flatMap(([a, b]) => {
+      walls = wallAt.flatMap(([a, b]) => {
         const pa = g.point(a), pb = g.point(b);
         const mx = (pa.x + pb.x) / 2, my = (pa.y + pb.y) / 2;
         const ang = Math.atan2(pb.y - pa.y, pb.x - pa.x) + Math.PI / 2;
