@@ -47,7 +47,7 @@ export async function townsScreen() {
       ),
     );
     card.addEventListener('click', () => {
-      if (locked) { sfx.play('error'); card.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(-3px)' }, { transform: 'none' }], { duration: 250 }); return; }
+      if (locked) { sfx.play('error'); card.parentElement?.classList.add('settling'); card.animate([{ transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' }, { transform: 'none' }], { duration: 250 }).onfinish = () => card.parentElement?.classList.remove('settling'); return; }
       sfx.play('press');
       app.go('missions', { mapId: m.id });
     });

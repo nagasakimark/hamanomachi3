@@ -54,10 +54,21 @@ export async function playScreen({ mapId, missionId, free }) {
 
   // ---- layout: the map gets as much room as possible ----
   const W = getStageW();
-  const avail = W - PANEL_W, mapH = 900 - TOP_H;
-  const fullMapW = Math.round(mapH * (map.width / map.height));
-  const sideW = avail - fullMapW >= 220 ? Math.min(340, avail - fullMapW) : 0;
-  const mapW = avail - sideW;
+  // The map panel is shaped exactly like the map (no gaps, no cropping); the block panel and the
+  // asker column take the rest of the width. On a narrow screen the map shrinks to fit the width instead.
+  const fullH = 900 - TOP_H;
+  const aspect = map.width / map.height;
+  const fullMapW = Math.round(fullH * aspect);
+  const rest = W - fullMapW;
+  let leftW = PANEL_W, sideW = 0, mapW = fullMapW, mapH = fullH;
+  if (rest >= PANEL_W) {
+    const extra = rest - PANEL_W;
+    sideW = extra >= 240 ? Math.min(380, Math.max(240, Math.round(extra * 0.6))) : 0;
+    leftW = rest - sideW;
+  } else {
+    mapW = W - PANEL_W; mapH = Math.round(mapW / aspect);
+  }
+  const mapTop = TOP_H + Math.floor((fullH - mapH) / 2);
 
   // ---- characters ----
   const heroSheet = await composeLook(s.look);
@@ -104,7 +115,7 @@ export async function playScreen({ mapId, missionId, free }) {
     mv.speed = s.settings.speed;
   });
   const clearBtn = btn('small clear', [h('span.dock-icon', { html: ICONS.broom }), 'けす'], () => editor.clear());
-  const panel = h('div.block-panel', { style: { width: PANEL_W + 'px', top: TOP_H + 'px' } },
+  const panel = h('div.block-panel', { style: { width: leftW + 'px', top: TOP_H + 'px' } },
     h('div.panel-label', {}, 'ブロック'),
     palette,
     h('div.panel-label', {}, 'みちあんない'),
@@ -114,7 +125,7 @@ export async function playScreen({ mapId, missionId, free }) {
 
   // ---- map ----
   const mapBox = h('div.map-box');
-  const mapPanel = h('div.map-panel', { style: { left: PANEL_W + 'px', top: TOP_H + 'px', width: mapW + 'px' } }, mapBox);
+  const mapPanel = h('div.map-panel', { style: { left: leftW + 'px', top: mapTop + 'px', width: mapW + 'px', height: mapH + 'px', bottom: 'auto' } }, mapBox);
   const side = sideW ? h('div.side-panel', { style: { width: sideW + 'px', top: TOP_H + 'px' } },
     h('div.side-label', {}, 'みちをきいている人'),
     askerCard,
