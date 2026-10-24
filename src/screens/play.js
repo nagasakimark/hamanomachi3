@@ -273,33 +273,39 @@ export async function playScreen({ mapId, missionId, free }) {
     const checks = [true, attempts <= 2, attempts <= 2 && prog.length <= limit];
     const stars = checks.filter(Boolean).length;
     const coinsBefore = s.coins;
-    let earned;
+    let earned = 0, fresh = true;
     const first = !(s.visited[map.id] || []).includes(mission.destination);
     save.visit(map.id, mission.destination);
     s.stats.wins++;
     if (tier.id >= 3) s.stats.listenWins++;
     if (prog.some(b => b.type === 'littlebit')) s.stats.littlebitWins++;
     s.stats.bestComeback = Math.max(s.stats.bestComeback || 0, attempts - 1);
-    if (free) { s.stats.freeWins++; earned = 5; }
-    else if (map.isTest) earned = 0;
-    else {
-      const newStars = save.setStars(map.id, mission.id, stars);
-      earned = newStars ? newStars * 10 : 3;
+    // Coins (and every gimmick reward) are paid once: the first clear of a mission, or when a replay
+    // earns more stars. Replaying the same mission over and over pays nothing, so it cannot be farmed.
+    if (free) {
+      s.stats.freeWins++;
+      const key = mission.start + '>' + mission.destination;
+      fresh = !paidFree.has(key); paidFree.add(key);
+      earned = fresh ? 5 : 0;
+    } else if (!map.isTest) {
+      earned = save.setStars(map.id, mission.id, stars) * 10;
+      fresh = earned > 0;
     }
     save.addCoins(earned);
     save.write();
-    await showResults({ stars: free ? 0 : stars, checks, limit, earned, coinsBefore });
-    await gm?.afterWin?.({ first, mapPanel, coins, stars }); // test towns run their gimmick too (progress is cleared on each Test play)
+    await showResults({ stars: free ? 0 : stars, checks, limit, earned, coinsBefore, replay: !fresh });
+    if (fresh) await gm?.afterWin?.({ first, mapPanel, coins, stars }); // test towns run their gimmick too (progress is cleared on each Test play)
     const badges = map.isTest ? [] : checkBadges();
     if (badges.length) {
       coins.bump(s.coins - badges.length * 20, s.coins);
       await showBadges(badges);
     }
     // A wild monster can show up on the Pokémon town only; it waits until the results card is left.
-    encounterDue = map.gimmick === 'monsters';
+    encounterDue = fresh && map.gimmick === 'monsters';
   }
 
-  function showResults({ stars, checks, limit, earned, coinsBefore }) {
+  const paidFree = new Set(); // free-play missions already paid in this visit
+  function showResults({ stars, checks, limit, earned, coinsBefore, replay }) {
     return new Promise(res => {
       const dest = g.point(mission.destination);
       const starEls = [1, 2, 3].map(() => h('div.rstar', {}, '★'));
@@ -317,7 +323,7 @@ export async function playScreen({ mapId, missionId, free }) {
         h('div.r-place', {}, h('b', {}, dest.name), ' に着いたよ！'),
         free ? null : h('div.rstars', {}, ...starEls),
         h('div.rlines', {}, ...lines),
-        coinRow,
+        replay ? h('div.r-note', {}, free ? 'おなじ もんだいは コインが もらえないよ。' : 'もう クリアしたよ！ ★が ふえると コインが もらえるよ。') : coinRow,
         h('div.r-buttons', {},
           btn('secondary', '↺ もういちど', async () => { await afterResults(); close(); startMission(false); }),
           free
@@ -339,10 +345,12 @@ export async function playScreen({ mapId, missionId, free }) {
           await wait(380);
         }
         await wait(200);
-        flyCoins(coinRow, Math.min(8, Math.max(3, earned / 3)));
-        await wait(700);
-        coins.bump(coinsBefore, save.get().coins);
-        sfx.play('coin');
+        if (earned > 0) {
+          flyCoins(coinRow, Math.min(8, Math.max(3, earned / 3)));
+          await wait(700);
+          coins.bump(coinsBefore, save.get().coins);
+          sfx.play('coin');
+        }
         await wait(500);
         res();
       })();

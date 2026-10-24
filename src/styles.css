@@ -379,6 +379,7 @@ button { font-family: inherit; }
 .rline .tick { width: 30px; height: 30px; border-radius: 50%; background: #e1d6c1; color: #fff; display: grid; place-items: center; font-size: 17px; }
 .rline.ok .tick { background: var(--green); }
 .rcoins { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 40px; font-weight: 700; color: #b87400; margin: 14px 0 6px; }
+.r-note { text-align: center; font-size: 22px; font-weight: 700; color: #7a6a52; margin: 16px 20px 8px; line-height: 1.4; }
 .r-buttons { display: flex; gap: 16px; justify-content: center; margin-top: 12px; }
 
 /* ---------- wardrobe ---------- */
