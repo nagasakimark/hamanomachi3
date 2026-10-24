@@ -43,7 +43,7 @@ export async function loadTestMap() {
   if (!pack) return null;
   const urls = { [pack.map.image]: pack.image };
   for (const [name, dataUrl] of Object.entries(pack.audio || {})) urls['audio/' + name] = dataUrl;
-  const m = makePack(pack.map, urls, { isTest: true, unlockStars: 0, name: 'TEST: ' + pack.map.name });
+  const m = makePack(pack.map, urls, { isTest: true, id: 'test-' + pack.map.id, unlockStars: 0, name: 'TEST: ' + pack.map.name });
   MAPS.unshift(m);
   return m;
 }

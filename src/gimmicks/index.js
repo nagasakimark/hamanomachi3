@@ -24,7 +24,7 @@ export const monstersActive = () => MAPS.some(m => !m.isTest && m.gimmick === 'm
 // The short "how this town works" popup, shown the first time a town is opened.
 export function maybeShowIntro(map) {
   const gm = gimmickOf(map);
-  if (!gm || map.isTest) return Promise.resolve();
+  if (!gm) return Promise.resolve();
   const s = save.get(), key = 'gimmick:' + map.id;
   if (s.seen[key]) return Promise.resolve();
   s.seen[key] = true; save.write();

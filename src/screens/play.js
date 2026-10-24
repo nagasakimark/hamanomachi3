@@ -289,14 +289,14 @@ export async function playScreen({ mapId, missionId, free }) {
     save.addCoins(earned);
     save.write();
     await showResults({ stars: free ? 0 : stars, checks, limit, earned, coinsBefore });
-    if (!map.isTest) await gm?.afterWin?.({ first, mapPanel, coins, stars });
+    await gm?.afterWin?.({ first, mapPanel, coins, stars }); // test towns run their gimmick too (progress is cleared on each Test play)
     const badges = map.isTest ? [] : checkBadges();
     if (badges.length) {
       coins.bump(s.coins - badges.length * 20, s.coins);
       await showBadges(badges);
     }
     // A wild monster can show up on the Pokémon town only; it waits until the results card is left.
-    encounterDue = !map.isTest && map.gimmick === 'monsters';
+    encounterDue = map.gimmick === 'monsters';
   }
 
   function showResults({ stars, checks, limit, earned, coinsBefore }) {

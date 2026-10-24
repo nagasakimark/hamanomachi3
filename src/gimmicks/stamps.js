@@ -121,7 +121,7 @@ export function showCard(map) {
     h('div.st-label', {}, have.has(d.id) ? d.name : '？')));
   const m = modal(h('div.st-card', {},
     h('div.st-cardhead', {}, h('span.st-cardtitle', {}, `${map.name} スタンプラリー`), h('span.st-cardcount', {}, `${have.size} / ${dests.length}`)),
-    h('div.st-grid', {}, ...cells),
+    h('div.st-grid', { style: { '--slot': (dests.length <= 15 ? 150 : Math.floor(560 / Math.ceil(dests.length / 5)) - 30) + 'px' } }, ...cells), // 5 across; 3 rows for the usual 15
     h('div.st-cardfoot', {}, h('span', {}, 'ぜんぶ あつめると 🎀 リボン！'), h('button.st-btn', { onclick: () => m.close() }, 'とじる')),
   ), { cls: 'st-modal' });
 }

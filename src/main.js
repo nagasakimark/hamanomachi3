@@ -68,6 +68,13 @@ document.addEventListener('contextmenu', e => { if (e.target.closest('#stage')) 
   const params = new URLSearchParams(location.search);
   if (params.has('test')) {
     const m = await loadTestMap();
+    if (m) {
+      // every Test play starts the test town fresh, so intros and first-time rewards can be tried again
+      const sv = save.get();
+      for (const k of ['visited', 'stars', 'stamps', 'chests']) delete sv[k]?.[m.id];
+      delete sv.seen?.['gimmick:' + m.id];
+      save.write();
+    }
     if (m) return app.go('missions', { mapId: m.id });
   }
   app.go('title');

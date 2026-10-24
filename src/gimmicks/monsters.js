@@ -42,7 +42,6 @@ const NEED = 3;
 export function encounteredPlaces() {
   const s = save.get(), out = new Map();
   for (const m of MAPS) {
-    if (m.isTest) continue;
     for (const id of s.visited[m.id] || []) {
       const p = m.graph.point(id);
       const ja = p && jaName(p.name);

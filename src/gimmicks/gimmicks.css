@@ -169,11 +169,11 @@
 .st-cardhead { display: flex; align-items: center; justify-content: space-between; background: #ff5c93; color: #fff; border-radius: 26px; padding: 12px 30px; font-weight: 800; box-shadow: 0 5px 0 #d63c74; }
 .st-cardtitle { font-size: 36px; }
 .st-cardcount { font-size: 30px; background: #fff; color: #ff5c93; border-radius: 20px; padding: 2px 18px; }
-.st-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px 10px; padding: 16px 14px; margin: 14px 0; }
+.st-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px 14px; padding: 12px 14px; margin: 10px 0; }
 .st-cell { display: flex; flex-direction: column; align-items: center; }
-.st-slot { width: 150px; height: 150px; border-radius: 50%; border: 4px dotted #ffb3cf; display: grid; place-items: center; }
+.st-slot { width: var(--slot, 150px); height: var(--slot, 150px); border-radius: 50%; border: 4px dotted #ffb3cf; display: grid; place-items: center; }
 .st-cell.on .st-slot { border-color: transparent; }
-.st-cell .st-ink { width: 142px; }
+.st-cell .st-ink { width: calc(var(--slot, 150px) - 8px); }
 .st-cell .st-inkname { display: none; }
 .st-num { font-size: 46px; font-weight: 800; color: #ffd6e5; }
 .st-label { font-family: Fredoka, var(--font); font-weight: 600; font-size: 18px; text-align: center; min-height: 24px; text-transform: capitalize; color: #b05a80; }
