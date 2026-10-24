@@ -107,7 +107,9 @@ export async function playScreen({ mapId, missionId, free }) {
   const palette = h('div.palette');
   const program = h('div.program');
   const bin = h('div.bin', { html: ICONS.bin });
-  const runBtn = btn('run', [h('span.run-icon', { html: ICONS.play }), h('span', {}, 'すすむ！')], () => run());
+  const runLabel = h('span', {}, 'すすむ！'), runIcon = h('span.run-icon', { html: ICONS.play });
+  let moving = false, stopNow = null;   // moving: the characters are walking right now (the button becomes ■ とめる)
+  const runBtn = btn('run', [runIcon, runLabel], () => (moving ? stopRun() : run()));
   const speedLabel = () => (s.settings.speed > 1 ? '🐇 はやい' : '🐢 ふつう');
   const speedBtn = btn('small speed', speedLabel(), () => {
     s.settings.speed = s.settings.speed > 1 ? 1 : 2; save.write();
@@ -209,34 +211,42 @@ export async function playScreen({ mapId, missionId, free }) {
       return;
     }
     running = true;
+    moving = true;
+    const stopped = new Promise(r => (stopNow = r));
     attempts++;
     sfx.play('run');
     editor.setLocked(true);
     editor.clearMarks();
-    runBtn.classList.add('going');
+    runBtn.classList.add('going', 'stop');
+    runIcon.textContent = '■'; runLabel.textContent = 'とめる';
     const st = g.initialState(mission.start);
     mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
     safeGm(() => gm?.reset?.());
-    await wait(250);
+    await Promise.race([wait(250), stopped]);
     editor.pulseStart();
     mv.followPlayer();
-    await wait(600);
+    await Promise.race([wait(600), stopped]);
     const result = simulate(gg, prog, mission.start, mission.destination);
     let blocked = false;
+    let halted = mv.aborted;
     for (const step of result.steps) {
       if (!alive) return;
+      if (halted || mv.aborted) { halted = true; break; }
       editor.mark(step.block, 'active');
       sfx.play('pick');
-      await say(prog[step.block]);
+      await Promise.race([say(prog[step.block]), stopped]);
       await mv.delay(120);
+      if (mv.aborted) { halted = true; break; }
       for (const sub of step.sub) {
         if (sub.kind === 'move') {
           const out = await mv.walk(sub.path, gm?.onNode ? id => Promise.resolve().then(() => gm.onNode(id, mv, coins)).catch(e => console.error('gimmick', e)) : null,
             gm?.blockerAt ? (a, b) => { try { return gm.blockerAt(a, b, mv); } catch (e) { console.error('gimmick', e); return null; } } : null);
+          if (out === 'stopped') { halted = true; break; }
           if (out === 'blocked') { blocked = true; break; }
         }
-        else if (sub.kind === 'turn') await mv.turn(sub.from, sub.by);
+        else if (sub.kind === 'turn') { await mv.turn(sub.from, sub.by); if (mv.aborted) { halted = true; break; } }
       }
+      if (halted) break;
       if (blocked) { editor.mark(step.block, 'fail'); break; }
       if (!step.ok) {
         editor.mark(step.block, 'fail');
@@ -246,7 +256,19 @@ export async function playScreen({ mapId, missionId, free }) {
       editor.mark(step.block, 'done');
     }
     if (!alive) return;
-    runBtn.classList.remove('going');
+    moving = false;
+    runBtn.classList.remove('going', 'stop');
+    runIcon.innerHTML = ICONS.play; runLabel.textContent = 'すすむ！';
+    if (halted) {   // the student pressed ■ とめる: put everything back so they can fix the blocks right away
+      sfx.stopVoice();
+      attempts = Math.max(0, attempts - 1);
+      mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
+      safeGm(() => gm?.reset?.());
+      editor.setLocked(false);
+      editor.clearMarks();
+      running = false;
+      return;
+    }
     if (blocked) { say('fail'); sfx.play('fail'); return showTryAgain('モンスターが とおせんぼ！ べつの みちを かんがえよう。'); }
     if (result.won) { say('arrive'); return win(prog); }
     if (result.dizzy) {
@@ -261,6 +283,13 @@ export async function playScreen({ mapId, missionId, free }) {
     say('fail');
     sfx.play('fail');
     showTryAgain(result.dizzy ? '目がまわった〜！もういちど。' : (result.failIndex >= 0 ? 'あれ？そのブロックはできなかったよ。' : 'うーん、ここじゃないみたい。'));
+  }
+
+  function stopRun() {
+    if (!moving) return;
+    sfx.play('press');
+    mv.abort();
+    stopNow?.();
   }
 
   function showTryAgain(text) {

@@ -228,3 +228,20 @@
 .pw-row b { font-size: 18px; }
 .pw-prev canvas { width: 52px; height: 52px; }
 .pw-close { margin-top: 8px; padding: 4px 44px; font-size: 20px; }
+
+/* how to play (Hamanomachi / ? button) */
+.gi-basics { background: linear-gradient(#fff8ec, #ffefcf); border: 8px solid #fff; border-radius: 36px; box-shadow: 0 10px 0 rgba(0,0,0,.18); color: #2d3142; }
+.gi-basics .gi-icon { font-size: 96px; height: 110px; }
+.gi-basics .gi-title { font-size: 52px; color: #1d7469; }
+.gi-basics .gi-lines li { font-weight: 600; }
+.gi-basics .gi-i { font-size: 40px; width: 64px; text-align: center; flex: none; }
+.gi-basics .gi-lines li.hl { background: #fff; border: 4px solid #ffb703; border-radius: 22px; padding: 10px 16px; box-shadow: 0 5px 0 #f0a000; }
+.gi-basics .gi-lines li.hl .gi-i { width: auto; }
+.rb-block { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: #ef4b4b; color: #fff; border-radius: 16px; font-size: 22px; font-weight: 700; box-shadow: 0 4px 0 #b83030; white-space: nowrap; }
+.rb-num { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #ef4b4b; font-size: 26px; animation: rbPulse 1s ease-in-out infinite; }
+.rb-num::after { content: '👆'; position: absolute; left: 14px; top: 30px; font-size: 30px; animation: rbTap 1s ease-in-out infinite; }
+@keyframes rbPulse { 50% { box-shadow: 0 0 0 8px rgba(255, 183, 3, .8); } }
+@keyframes rbTap { 50% { transform: translateY(-6px); } }
+.gi-basics .gi-btn { font-size: 34px; font-weight: 700; color: #fff; background: linear-gradient(#4fd37f, #2fb460); border: 0; border-radius: 40px; padding: 12px 60px; box-shadow: 0 7px 0 #1c8f43; }
+.help-btn { position: absolute; top: 14px; right: 14px; z-index: 3; width: 54px; height: 54px; border-radius: 50%; border: 4px solid #fff; background: #ffb703; color: #fff; font: 700 34px/1 var(--font); text-shadow: 0 2px 0 rgba(0,0,0,.25); box-shadow: 0 5px 0 rgba(0,0,0,.25); cursor: pointer; }
+.help-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }

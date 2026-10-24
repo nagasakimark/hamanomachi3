@@ -21,18 +21,40 @@ export const gimmickOf = map => (map && GIMMICKS[map.gimmick]) || null;
 // The monster dex button shows once such a town exists.
 export const monstersActive = () => MAPS.some(m => !m.isTest && m.gimmick === 'monsters');
 
+// How to play: shown the first time a town without a special rule (Hamanomachi) is opened,
+// and again from the ? button on any town's mission screen.
+export const BASIC_INTRO = {
+  theme: 'basics',
+  icon: '🗺️',
+  title: 'あそびかた',
+  lines: [
+    ['👂', 'まず、おねがいを きこう。どこに いきたいか きいてね。'],
+    ['🧱', 'ブロックを ドラッグ か タップで ならべて、みちあんないを つくろう。'],
+    [h => h('div.rb-block', {}, h('span', {}, 'go straight for'), h('b.rb-num', {}, '2'), h('span', {}, 'block')),
+      '「go straight for」の 数字を タップすると、すすむ ブロックの数を かえられるよ！', 'hl'],
+    ['▶', '「すすむ！」で あるきだす。まちがえたと おもったら 「■ とめる」で すぐ とめられるよ。'],
+    ['★', 'すくない ブロックで クリアすると ★が ふえる！'],
+  ],
+};
+export const helpIntro = map => gimmickOf(map)?.intro || BASIC_INTRO;
+
 // The short "how this town works" popup, shown the first time a town is opened.
 export function maybeShowIntro(map) {
   const gm = gimmickOf(map);
-  if (!gm) return Promise.resolve();
-  const s = save.get(), key = 'gimmick:' + map.id + (gm.introVersion ? ':' + gm.introVersion : '');
+  const s = save.get();
+  if (!gm) {
+    if (s.seen['rules:v1']) return Promise.resolve();
+    s.seen['rules:v1'] = true; save.write();
+    return showIntro(BASIC_INTRO);
+  }
+  const key = 'gimmick:' + map.id + (gm.introVersion ? ':' + gm.introVersion : '');
   if (s.seen[key]) return Promise.resolve();
   s.seen[key] = true; save.write();
   return showIntro(gm.intro);
 }
 
 // Each town's intro is dressed in its own world's style (see gimmicks.css).
-const ART = { treasure: 'treasure', stamps: 'stamps', crafting: 'crafting', blocks: 'blocks', monsters: 'monsters' };
+const ART = { basics: 'basics', treasure: 'treasure', stamps: 'stamps', crafting: 'crafting', blocks: 'blocks', monsters: 'monsters' };
 const el = x => (typeof x === 'function' ? x(h) : x);
 export function showIntro(intro, { button = 'わかった！' } = {}) {
   return new Promise(res => {
@@ -46,7 +68,7 @@ export function showIntro(intro, { button = 'わかった！' } = {}) {
       ...deco,
       h('div.gi-icon', {}, el(intro.icon)),
       h('h2.gi-title', {}, intro.title),
-      h('ul.gi-lines', {}, ...intro.lines.map(([ic, t]) => h('li', {}, h('span.gi-i', {}, el(ic)), h('span.gi-t', {}, t)))),
+      h('ul.gi-lines', {}, ...intro.lines.map(([ic, t, cls]) => h('li' + (cls ? '.' + cls : ''), {}, h('span.gi-i', {}, el(ic)), h('span.gi-t', {}, t)))),
       h('button.gi-btn', { onclick: () => { sfx.play('press'); m.close(); } }, button),
     ), { cls: 'gi-modal gi-m-' + theme, onClose: () => res() });
   });

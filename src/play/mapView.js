@@ -196,7 +196,7 @@ export class MapView {
     this.sheets = { hero, asker };
     this.petInfo = pet; // { img, frames, scale } or null
     this.W = width; this.H = height; this.R = renderScale;
-    this.speed = 1;
+    this.speed = 1; this.aborted = false; this._pend = new Set();
     this.readyP = new Promise(r => (this._ready = r));
     this.scene = new TownScene(this);
     this.game = new Phaser.Game({
@@ -223,6 +223,7 @@ export class MapView {
   // Place everyone at the start.
   reset(startId, destId, { marker = false, angle = 0 } = {}) {
     const s = this.scene, g = this.pack.graph;
+    this.aborted = false; s.recording = false;
     const sp = g.point(startId), dp = g.point(destId);
     s.tweens.killTweensOf(s.player);
     s.player.stop();
@@ -270,8 +271,24 @@ export class MapView {
   }
 
   // ---- animation primitives ----
-  tween(cfg) { return new Promise(r => this.scene.tweens.add({ ...cfg, onComplete: () => r() })); }
-  delay(ms) { return new Promise(r => this.scene.time.delayedCall(ms / this.speed, r)); }
+  // Everything the hero does goes through tween()/delay(); abort() cuts them all short so a run can be stopped.
+  tween(cfg) {
+    if (this.aborted) return Promise.resolve();
+    return new Promise(r => {
+      const t = this.scene.tweens.add({ ...cfg, onComplete: () => { this._pend.delete(end); r(); } });
+      const end = () => { this._pend.delete(end); t.stop(); r(); };
+      this._pend.add(end);
+    });
+  }
+  delay(ms) {
+    if (this.aborted) return Promise.resolve();
+    return new Promise(r => {
+      const t = this.scene.time.delayedCall(ms / this.speed, () => { this._pend.delete(end); r(); });
+      const end = () => { this._pend.delete(end); t.remove(false); r(); };
+      this._pend.add(end);
+    });
+  }
+  abort() { this.aborted = true; [...this._pend].forEach(f => f()); }
 
   // gate(a, b) may return { x, y, stop: async () => boolean, pass? } for something on that road:
   // the hero walks up to it and stop() says whether the way is free. If not, walk() ends early and returns 'blocked'.
@@ -288,6 +305,7 @@ export class MapView {
     });
     let outcome = 'ok';
     for (let i = 1; i < path.length; i++) {
+      if (this.aborted) { outcome = 'stopped'; break; }
       const a = g.point(path[i - 1]), b = g.point(path[i]);
       const ang = Math.atan2(b.y - a.y, b.x - a.x);
       s.facing = ang;
@@ -300,10 +318,12 @@ export class MapView {
         await go(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f, stopAt);
         if (!blk.pass) { s.player.stop(); s.player.setFrame(dirRow(ang) * 9); }
         const free = blk.pass ? (blk.stop(), true) : await blk.stop();
+        if (this.aborted) { outcome = 'stopped'; break; }
         if (!free) { outcome = 'blocked'; break; }
         if (!blk.pass) s.player.play(`hero-walk-${dirRow(ang)}`, true);
         await go(b.x, b.y, dist - stopAt);
       } else await go(b.x, b.y, dist);
+      if (this.aborted) { outcome = 'stopped'; break; }
       // draw the walked route
       s.routeG.lineStyle(7, 0xffffff, 0.75).lineBetween(a.x, a.y, b.x, b.y);
       if (onNode) await onNode(path[i]);

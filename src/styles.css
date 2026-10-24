@@ -642,3 +642,4 @@ button { font-family: inherit; }
 .ml-bar i { display: block; height: 100%; width: 6%; background: linear-gradient(#ffd24a, #ffb703); transition: width .2s; }
 
 .settling { overflow: hidden !important; }
+.btn.run.stop { --b: #e8514a; --bd: #b2312b; animation: none; }

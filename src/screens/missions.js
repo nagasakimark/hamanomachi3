@@ -5,7 +5,7 @@ import { mapById } from '../data/maps.js';
 import { TIERS } from '../engine/missions.js';
 import { topBar } from './towns.js';
 import { sfx } from '../audio/sfx.js';
-import { gimmickOf, maybeShowIntro } from '../gimmicks/index.js';
+import { gimmickOf, maybeShowIntro, showIntro, helpIntro } from '../gimmicks/index.js';
 
 // Stars needed in this town to open each tier.
 export const TIER_UNLOCK = { 1: 0, 2: 12, 3: 27, 4: 42 };
@@ -52,6 +52,7 @@ export async function missionsScreen({ mapId }) {
     topBar(map.name, { back: () => app.go(map.isTest ? 'title' : 'towns') }),
     h('div.missions-body', {},
       h('div.town-banner', { style: { backgroundImage: `url(${map.bannerUrl || map.imageUrl})` } },
+        h('button.help-btn', { title: 'あそびかた', onclick: () => { sfx.play('press'); showIntro(helpIntro(map), { button: 'とじる' }); } }, '?'),
         h('div.banner-inner', {}, h('div.banner-stars', {}, `★ ${got} / ${map.missions.length * 3}`),
           gimmickOf(map)?.missionsExtra?.(map),
           btn('secondary free-btn', ['🚶 フリープレイ', h('small', {}, 'いちばん むずかしい！')], () => app.go('play', { mapId: map.id, free: true })),
