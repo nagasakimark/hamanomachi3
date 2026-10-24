@@ -55,6 +55,10 @@ window.addEventListener('pointerdown', () => sfx.unlock(), { once: true });
       for (const it of ITEMS) if (it.price && !d.owned.includes(it.id)) d.owned.push(it.id);
       for (const p of PETS) for (const c of PET_COLORS) { const id = `pc-${p.id}-${c.id}`; if (!d.owned.includes(id)) d.owned.push(id); }
       for (let i = 0; i < 12; i++) for (const k of ['hair', 'cloth']) { const id = `col-${k}-${i}`; if (!d.owned.includes(id)) d.owned.push(id); }
+      // everything the town gimmicks hand out (rally ribbon, crafted helmets, power-up hats), plus stock to test with
+      for (const it of ITEMS) if (it.gate && !d.owned.includes(it.id)) d.owned.push(it.id);
+      d.powerups = { mushroom: 20, flower: 20, star: 20 };
+      d.materials = { wood: 99, stone: 99, iron: 99, gold: 99, diamond: 99 };
       for (const it of ITEMS) if (it.badge && !d.badges[it.badge]) d.badges[it.badge] = Date.now();
       save.write(); sfx.play('buy');
     }
