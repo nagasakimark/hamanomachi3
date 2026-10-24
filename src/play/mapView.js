@@ -263,7 +263,7 @@ export class MapView {
   tween(cfg) { return new Promise(r => this.scene.tweens.add({ ...cfg, onComplete: () => r() })); }
   delay(ms) { return new Promise(r => this.scene.time.delayedCall(ms / this.speed, r)); }
 
-  // gate(a, b) may return { x, y, stop: async () => boolean } for something standing on that road:
+  // gate(a, b) may return { x, y, stop: async () => boolean, pass? } for something on that road:
   // the hero walks up to it and stop() says whether the way is free. If not, walk() ends early and returns 'blocked'.
   async walk(path, onNode, gate) {
     const s = this.scene, g = this.pack.graph;
@@ -285,12 +285,13 @@ export class MapView {
       const dist = Math.hypot(b.x - a.x, b.y - a.y);
       const blk = gate?.(path[i - 1], path[i]);
       if (blk) {
-        const toBlk = Math.hypot(blk.x - a.x, blk.y - a.y), stopAt = Math.max(0, toBlk - 46), f = stopAt / dist;
+        // pass: something you walk through (tall grass) - no stopping, it just reacts as you cross it
+        const toBlk = Math.hypot(blk.x - a.x, blk.y - a.y), stopAt = blk.pass ? Math.min(dist, toBlk) : Math.max(0, toBlk - 46), f = stopAt / dist;
         await go(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f, stopAt);
-        s.player.stop(); s.player.setFrame(dirRow(ang) * 9);
-        const free = await blk.stop();
+        if (!blk.pass) { s.player.stop(); s.player.setFrame(dirRow(ang) * 9); }
+        const free = blk.pass ? (blk.stop(), true) : await blk.stop();
         if (!free) { outcome = 'blocked'; break; }
-        s.player.play(`hero-walk-${dirRow(ang)}`, true);
+        if (!blk.pass) s.player.play(`hero-walk-${dirRow(ang)}`, true);
         await go(b.x, b.y, dist - stopAt);
       } else await go(b.x, b.y, dist);
       // draw the walked route

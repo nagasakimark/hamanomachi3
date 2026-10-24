@@ -271,10 +271,12 @@ export async function playScreen({ mapId, missionId, free }) {
   }
 
   let encounterDue = false;
+  let badgeWait = null;   // town rewards / sticker popups still showing over the results card
   async function afterResults() {
     if (!encounterDue) return;
+    await badgeWait;
     encounterDue = false;
-    if (await maybeEncounter()) coins.num.textContent = s.coins;
+    if (await maybeEncounter({ force: true })) coins.num.textContent = s.coins;
   }
 
   async function win(prog) {
@@ -304,15 +306,18 @@ export async function playScreen({ mapId, missionId, free }) {
     }
     save.addCoins(earned);
     save.write();
+    // A wild monster can show up on the Pokémon town only (if the tall grass stirred one up); it waits until the results card is left.
+    encounterDue = fresh && map.gimmick === 'monsters' && !!gm?.encounterPending?.();
+    let endPost; badgeWait = new Promise(r => { endPost = r; });   // town rewards and stickers come first
     await showResults({ stars: free ? 0 : stars, checks, limit, earned, coinsBefore, replay: !fresh });
-    if (fresh) { try { await gm?.afterWin?.({ first, mapPanel, coins, stars }); } catch (e) { console.error('gimmick', e); } } // test towns run their gimmick too (progress is cleared on each Test play)
+    if (fresh) { try { await gm?.afterWin?.({ first, mapPanel, coins, stars }); } catch (e) { console.error('gimmick', e); endPost(); } } // test towns run their gimmick too (progress is cleared on each Test play)
     const badges = map.isTest ? [] : checkBadges();
-    if (badges.length) {
-      coins.bump(s.coins - badges.length * 20, s.coins);
-      await showBadges(badges);
-    }
-    // A wild monster can show up on the Pokémon town only; it waits until the results card is left.
-    encounterDue = fresh && map.gimmick === 'monsters';
+    try {
+      if (badges.length) {
+        coins.bump(s.coins - badges.length * 20, s.coins);
+        await showBadges(badges);
+      }
+    } finally { endPost(); }
   }
 
   const paidFree = new Set(); // free-play missions already paid in this visit

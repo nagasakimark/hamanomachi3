@@ -1,5 +1,5 @@
-// Wild monsters (the monster town): after a win there is a small chance a monster
-// jumps out. It plays like a classic handheld monster RPG battle: answer three
+// Wild monsters (the monster town): tall grass grows on some roads. Walking through it may
+// stir up a monster ("!"); if the mission is then won for the first time, the monster jumps out. It plays like a classic handheld monster RPG battle: answer three
 // place names (English -> Japanese) to wear it down, then a capsule catches it.
 // The places come from every town the student has already visited.
 // All monster art is original pixel art (scripts/pixel-art/mon.py).
@@ -9,19 +9,22 @@ import { MAPS } from '../data/maps.js';
 import { jaName, PLACE_JA } from '../data/placeNames.js';
 import { sfx } from '../audio/sfx.js';
 import { composeLook, FRAME } from '../avatar/compositor.js';
+import { loadTex } from './pickups.js';
+import { simulate } from '../engine/engine.js';
+import { solve } from '../engine/solver.js';
 
 const px = import.meta.glob('../assets/gimmick/px/*.png', { eager: true, query: '?url', import: 'default' });
 export const pxUrl = n => px[`../assets/gimmick/px/${n}.png`];
 
 export const MONSTERS = [
-  { id: 'mofun', n: 1, name: 'モフン', kind: 'くも', text: 'くものように ふわふわ。はれの ひは そらを ただよう。' },
-  { id: 'umikii', n: 2, name: 'ウミキー', kind: 'うみ', text: 'あたまの ほしが ひかると なかまが あつまってくる。' },
-  { id: 'bobo', n: 3, name: 'ボボ', kind: 'ほのお', text: 'ちょうちんの おばけ。よるの まつりが だいすき。' },
-  { id: 'leafy', n: 4, name: 'リーフィ', kind: 'くさ', text: 'あたまの はっぱで おひさまの ひかりを あつめる。' },
-  { id: 'pinkuru', n: 5, name: 'ピンクル', kind: 'ようせい', text: 'ちいさな はねで ぴょんぴょん とぶ。おもちが すき。' },
-  { id: 'yurari', n: 6, name: 'ユラリ', kind: 'ゴースト', text: 'ゆらゆら ゆれる。ちいさな おうかんが じまん。' },
-  { id: 'kachiri', n: 7, name: 'カチリ', kind: 'でんき', text: 'せなかの トゲに でんきを ためる。さわると パチッ！' },
-  { id: 'pochan', n: 8, name: 'ポチャン', kind: 'みず', text: 'みずたまりから うまれた。あめの ひは げんき いっぱい。' },
+  { id: 'mofun', w: 20, n: 1, name: 'モフン', kind: 'くも', text: 'くものように ふわふわ。はれの ひは そらを ただよう。' },
+  { id: 'umikii', w: 15, n: 2, name: 'ウミキー', kind: 'うみ', text: 'あたまの ほしが ひかると なかまが あつまってくる。' },
+  { id: 'bobo', w: 20, n: 3, name: 'ボボ', kind: 'ほのお', text: 'ちょうちんの おばけ。よるの まつりが だいすき。' },
+  { id: 'leafy', w: 20, n: 4, name: 'リーフィ', kind: 'くさ', text: 'あたまの はっぱで おひさまの ひかりを あつめる。' },
+  { id: 'pinkuru', w: 15, n: 5, name: 'ピンクル', kind: 'ようせい', text: 'ちいさな はねで ぴょんぴょん とぶ。おもちが すき。' },
+  { id: 'yurari', w: 10, n: 6, name: 'ユラリ', kind: 'ゴースト', text: 'ゆらゆら ゆれる。ちいさな おうかんが じまん。' },
+  { id: 'kachiri', w: 15, n: 7, name: 'カチリ', kind: 'でんき', text: 'せなかの トゲに でんきを ためる。さわると パチッ！' },
+  { id: 'pochan', w: 20, n: 8, name: 'ポチャン', kind: 'みず', text: 'みずたまりから うまれた。あめの ひは げんき いっぱい。' },
 ];
 
 export const intro = {
@@ -29,13 +32,19 @@ export const intro = {
   icon: h => h('img.gi-px', { src: pxUrl('mon1') }),
   title: 'やせいの モンスター',
   lines: [
-    ['!', 'ミッションの あとに やせいの モンスターが とびだすことが あるよ。'],
+    [h => h('img.gi-li', { src: pxUrl('grass0'), style: 'image-rendering:pixelated' }), 'みちに くさむらが あるよ。とおると モンスターが でてくるかも！'],
+    ['!', '「！」が でたら チャンス。ミッションを クリアすると モンスターが とびだすよ。'],
     ['A', 'えいごの ばしょの なまえを にほんごで えらんで たたかおう！'],
     ['●', '3もん せいかいで カプセルを なげて つかまえよう。ずかんに のるよ！'],
   ],
 };
+export const introVersion = 'v2';
 
-export const ENCOUNTER_CHANCE = 0.15;
+// Chance that one patch of tall grass stirs up a monster. Simulated pacing (most trips cross 0-2 patches,
+// only first clears count, new monsters are twice as likely): about 15 battles / 60 cleared missions
+// to fill the dex, while the first monster usually turns up within the first few clears.
+export const GRASS_CHANCE = 0.25;
+export const ENCOUNTER_CHANCE = GRASS_CHANCE;
 const NEED = 3;
 
 // Every place the student has already reached, on any town. One entry per Japanese name.
@@ -81,8 +90,16 @@ async function backSprite() {
   return c;
 }
 
+// Rarer monsters have a smaller weight; ones not caught yet are twice as likely, so the dex fills steadily.
+export function pickMonster(dex = save.get().dex, rnd = Math.random) {
+  const ws = MONSTERS.map(m => (m.w || 15) * (dex[m.id] ? 1 : 2));
+  let r = rnd() * ws.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < MONSTERS.length; i++) if ((r -= ws[i]) < 0) return MONSTERS[i];
+  return MONSTERS[MONSTERS.length - 1];
+}
+
 export async function battle(pool) {
-  const mon = MONSTERS[Math.floor(Math.random() * MONSTERS.length)];
+  const mon = pickMonster();
   const lv = 3 + Math.floor(Math.random() * 6);
   const known = save.get().dex[mon.id] > 0;
   const questions = shuffle(pool).slice(0, NEED);
@@ -303,4 +320,90 @@ export function showDex() {
     h('div.dx-body', {}, screen, list),
     h('div.dx-bottom', {}, h('button.dx-close', { onclick: () => m.close() }, 'とじる')),
   ), { cls: 'dx-modal' });
+}
+
+// ---- tall grass on the roads ------------------------------------------------------------
+// map.json: "gimmickData": { "grass": 4, "grassChance": 0.25 }
+const keyOf = (a, b) => (a < b ? a + '|' + b : b + '|' + a);
+
+// The roads walked by the best block program for this mission, so one patch is where the student will go.
+function routeEdges(g, from, to) {
+  try {
+    const prog = solve(g, from, to);
+    if (!prog) return [];
+    const out = [];
+    for (const st of simulate(g, prog, from, to).steps) for (const sub of st.sub) if (sub.kind === 'move') for (let i = 1; i < sub.path.length; i++) out.push([sub.path[i - 1], sub.path[i]]);
+    return out;
+  } catch (e) { return []; }
+}
+
+export function chooseGrass(map, mission, n = 4, rnd = Math.random) {
+  const g = map.graph, ends = new Set([mission.start, mission.destination]);
+  const ok = ([a, b]) => !ends.has(a) && !ends.has(b);
+  const all = [], seen = new Set();
+  for (const r of map.roads) {
+    const e = [r[0], r[1]], k = keyOf(...e);
+    if (seen.has(k) || !g.point(e[0]) || !g.point(e[1]) || !ok(e)) continue;
+    seen.add(k); all.push(e);
+  }
+  const pick = [];
+  const onRoute = routeEdges(g, mission.start, mission.destination).filter(ok);
+  if (onRoute.length) pick.push(onRoute[Math.floor(rnd() * onRoute.length)]);
+  const rest = all.filter(e => !pick.some(p => keyOf(...p) === keyOf(...e)));
+  for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+  return pick.concat(rest).slice(0, Math.max(0, n));
+}
+
+export function session(map, mission) {
+  const d = map.gimmickData || {};
+  const edges = chooseGrass(map, mission, d.grass ?? 4);
+  const chance = window.__encounterChance ?? d.grassChance ?? GRASS_CHANCE;   // override is for testing
+  const patches = new Map();
+  let pending = false;
+  const tuftUrls = [pxUrl('grass0'), pxUrl('grass1')];
+  return {
+    mount(mv) {
+      const sc = mv.scene, g = map.graph;
+      Promise.all(tuftUrls.map(u => loadTex(sc, u, true))).then(keys => {
+        if (!keys[0]) return;
+        for (const [a, b] of edges) {
+          if (patches.has(keyOf(a, b))) continue;
+          const pa = g.point(a), pb = g.point(b);
+          const x = (pa.x + pb.x) / 2, y = (pa.y + pb.y) / 2;
+          const ang = Math.atan2(pb.y - pa.y, pb.x - pa.x);
+          // a little clump of tufts across and along the road
+          const tufts = [[-0.9, -0.7], [0.9, -0.5], [0, 0.1], [-0.8, 0.8], [0.9, 0.9]].map(([along, across], i) => {
+            const ox = Math.cos(ang) * along * 20 - Math.sin(ang) * across * 20, oy = Math.sin(ang) * along * 20 + Math.cos(ang) * across * 20;
+            const s = sc.add.image(x + ox, y + oy, keys[i % 2]).setScale(1.7).setOrigin(0.5, 0.9).setDepth(4.5);
+            s.baseX = s.x;
+            return s;
+          });
+          const sway = sc.tweens.add({ targets: tufts, angle: { from: -3, to: 3 }, duration: 1300, yoyo: true, repeat: -1, ease: 'Sine.inOut', delay: sc.tweens.stagger(120) });
+          patches.set(keyOf(a, b), { x, y, tufts, sway });
+        }
+      });
+    },
+    // Walking through a patch: it rustles, and may stir up a monster (at most one per run).
+    blockerAt(a, b, mv) {
+      const p = patches.get(keyOf(a, b));
+      if (!p) return null;
+      return {
+        x: p.x, y: p.y, pass: true,
+        stop: () => {
+          const sc = mv.scene;
+          sfx.play('step');
+          p.tufts.forEach((t, i) => sc.tweens.add({ targets: t, x: t.baseX + (i % 2 ? 4 : -4), duration: 60, yoyo: true, repeat: 3 }));
+          sc.dust?.emitParticleAt(p.x, p.y, 6);
+          if (pending || encounteredPlaces().length < NEED || Math.random() >= chance) return;
+          pending = true;
+          sfx.play('pop');
+          mv.bubble(sc.player, '！', 1600, '#e8514a');
+        },
+      };
+    },
+    // Did the grass stir up a monster this run? (play.js asks after a first-time win)
+    encounterPending: () => pending,
+    reset() { pending = false; },
+    destroy() { for (const p of patches.values()) { p.sway?.stop?.(); p.tufts.forEach(t => t.destroy()); } patches.clear(); },
+  };
 }
