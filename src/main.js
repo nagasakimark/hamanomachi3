@@ -2,6 +2,7 @@ import { ITEMS } from './avatar/items.js';
 import { PETS, PET_COLORS } from './pets/petsData.js';
 import '@fontsource/fredoka/400.css';
 import '@fontsource/fredoka/500.css';
+import '@fontsource/fredoka/700.css';
 import '@fontsource/fredoka/600.css';
 import '@fontsource/fredoka/700.css';
 import './styles.css';
@@ -13,9 +14,10 @@ import { sfx } from './audio/sfx.js';
 import { save } from './progress/save.js';
 import { MONSTERS } from './gimmicks/monsters.js';
 import { preloadLayers } from './avatar/compositor.js';
-import { loadTestMap } from './data/maps.js';
+import { loadTestMap, MAPS } from './data/maps.js';
 import { reconcileUnlocks } from './progress/reconcile.js';
 import { showBadges } from './ui/hud.js';
+import { BADGES } from './progress/badges.js';
 import { titleScreen } from './screens/title.js';
 import { townsScreen } from './screens/towns.js';
 import { missionsScreen } from './screens/missions.js';
@@ -64,7 +66,12 @@ window.addEventListener('pointerdown', () => sfx.unlock(), { once: true });
       d.powerCollected = { mushroom: 99, flower: 99, star: 99 }; d.foesDefeated = Math.max(d.foesDefeated || 0, 99);
       for (const m of MONSTERS) d.dex[m.id] = Math.max(d.dex[m.id] || 0, 1);   // the whole monster dex
       d.materials = { wood: 99, stone: 99, iron: 99, gold: 99, diamond: 99 };
-      for (const it of ITEMS) if (it.badge && !d.badges[it.badge]) d.badges[it.badge] = Date.now();
+      for (const b of BADGES) if (!d.badges[b.id]) d.badges[b.id] = Date.now();   // every sticker (no coin bonus)
+      for (const m of MAPS) {   // full stamp cards, opened chests
+        if (m.isTest) continue;
+        if (m.gimmick === 'stamps') d.stamps[m.id] = m.graph.destinations().map(x => x.id);
+        if (m.gimmick === 'treasure') d.chests[m.id] = Math.max(d.chests[m.id] || 0, 30);
+      }
       save.write(); sfx.play('buy');
     }
     app.go(save.get().cheat ? 'towns' : 'title');

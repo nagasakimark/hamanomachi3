@@ -1,7 +1,7 @@
 {
   "name": "hamanomachi",
   "version": "2.0.0",
-  "description": "Hamanomachi: a directions practice game",
+  "description": "Map Quest: a directions practice game",
   "type": "module",
   "scripts": {
     "dev": "vite",

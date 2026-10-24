@@ -1,4 +1,4 @@
-# Hamanomachi 2
+# Map Quest
 
 A directions game for 5th-year elementary students. Listen to someone ask the way, build the directions from blocks, and walk them there.
 
