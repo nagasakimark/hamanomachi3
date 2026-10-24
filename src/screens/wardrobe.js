@@ -69,6 +69,9 @@ export async function wardrobeScreen({ create = false } = {}) {
     return c;
   }
 
+  const SOURCE = { rally: 'スタンプラリー', craft: 'クラフト', powerup: 'パワーアップ' };
+  const special = it => !!(it.gate || it.badge);
+
   async function renderGrid() {
     const items = ITEMS.filter(i => i.slot === slot && (!i.gate || save.owns(i.id)));
     const cards = [];
@@ -76,21 +79,25 @@ export async function wardrobeScreen({ create = false } = {}) {
       const none = h('button.w-item' + (!look[slot] ? '.on' : ''), { onclick: () => wear(null) }, h('div.w-none', {}, '✖'), h('div.w-name', {}, 'なし'));
       cards.push(none);
     }
-    for (const it of items) {
+    const card = async it => {
       const ok = available(it);
       const lockedBadge = it.badge && !s.badges[it.badge];
       const badge = it.badge && BADGES.find(b => b.id === it.badge);
       const tag = ok ? (it.price || it.badge ? h('div.w-tag.owned', {}, '✔') : null)
         : lockedBadge ? h('div.w-tag.badge', {}, badge.icon)
         : h('div.w-tag.price', {}, String(it.price), h('span.coin-icon.small'));
-      const card = h('button.w-item' + (look[slot] === it.id ? '.on' : '') + (lockedBadge ? '.badge-locked' : ''), {
+      const el = h('button.w-item' + (special(it) ? '.special' : '') + (look[slot] === it.id ? '.on' : '') + (lockedBadge ? '.badge-locked' : ''), {
         onclick: () => {
           if (lockedBadge) { sfx.play('error'); toast(`「${badge.name}」シールをゲットすると つかえるよ！`, 'warn'); return; }
           wear(it.id);
         },
-      }, await thumb(it.id), h('div.w-name', {}, it.name), it.en ? h('div.w-en', {}, it.en) : null, tag);
-      cards.push(card);
-    }
+      }, await thumb(it.id), h('div.w-name', {}, it.name), it.en ? h('div.w-en', {}, it.en) : null, tag, special(it) ? h('div.w-src', {}, SOURCE[it.gate] || 'シール') : null);
+      return el;
+    };
+    // Special unlocks (town rewards, sticker rewards) come first under their own heading, then the shop.
+    const spec = items.filter(special), shop = items.filter(i => !special(i));
+    if (spec.length) cards.unshift(h('div.w-sub.special', {}, '★ とくべつ アイテム', h('small', {}, 'ミッションや まちで ゲットしたもの')), ...await Promise.all(spec.map(card)), h('div.w-sub', {}, 'ショップ'));
+    for (const it of shop) cards.push(await card(it));
     grid.replaceChildren(...cards);
   }
 

@@ -359,17 +359,31 @@ export class MapView {
     const s = this.scene;
     s.time.delayedCall(delay, () => {
       const c = s.add.container(target.x, target.y - 74).setDepth(40);
+      // short emotes are big; sentences use a smaller font so they fit on screen
+      const long = [...String(text)].length > 3;
+      const t = s.add.text(0, -2, text, { fontFamily: 'Fredoka, sans-serif', fontSize: long ? '24px' : '30px', color, fontStyle: 'bold', padding: { x: 2, y: 4 } }).setOrigin(0.5);
+      const w = Math.max(48, Math.ceil(t.width) + 32), hh = Math.max(44, Math.ceil(t.height) + 10);
+      const line = Phaser.Display.Color.HexStringToColor(color).color;
       const bg = s.add.graphics();
-      const t = s.add.text(0, -2, text, { fontFamily: 'Fredoka, sans-serif', fontSize: '30px', color, fontStyle: 'bold' }).setOrigin(0.5);
-      const w = Math.max(48, Math.ceil(t.width) + 28), hh = Math.max(44, Math.ceil(t.height) + 12);
       bg.fillStyle(0xffffff, 1).fillRoundedRect(-w / 2, -hh / 2 - 2, w, hh, 14);
-      bg.fillTriangle(-7, hh / 2 - 6, 7, hh / 2 - 6, 0, hh / 2 + 4);
-      bg.lineStyle(3, Phaser.Display.Color.HexStringToColor(color).color, 1).strokeRoundedRect(-w / 2, -hh / 2 - 2, w, hh, 14);
-      c.add([bg, t]);
+      bg.lineStyle(3, line, 1).strokeRoundedRect(-w / 2, -hh / 2 - 2, w, hh, 14);
+      // the little tail always points at the speaker, even when the box is pushed back inside the screen
+      const tail = s.add.graphics();
+      tail.fillStyle(0xffffff, 1).fillTriangle(-8, hh / 2 - 4, 8, hh / 2 - 4, 0, hh / 2 + 8);
+      tail.lineStyle(3, line, 1).lineBetween(-8, hh / 2 - 2, 0, hh / 2 + 8).lineBetween(8, hh / 2 - 2, 0, hh / 2 + 8);
+      c.add([bg, tail, t]);
       c.setScale(0);
       (this._bubbles = this._bubbles || []).push(c);
       s.tweens.add({ targets: c, scale: 1, duration: 260, ease: 'Back.out' });
-      const follow = s.time.addEvent({ delay: 16, loop: true, callback: () => c.setPosition(target.x, target.y - 74) });
+      const place = () => {
+        const v = s.cameras.main.worldView, m = 8;
+        let x = target.x;
+        if (w + m * 2 < v.width) x = Math.min(Math.max(x, v.x + w / 2 + m), v.right - w / 2 - m);
+        c.setPosition(x, target.y - 74);
+        tail.x = Math.max(-w / 2 + 16, Math.min(w / 2 - 16, target.x - x));
+      };
+      place();
+      const follow = s.time.addEvent({ delay: 16, loop: true, callback: place });
       s.time.delayedCall(ms, () => {
         s.tweens.add({ targets: c, scale: 0, alpha: 0, duration: 200, onComplete: () => { follow.remove(); c.destroy(); } });
       });

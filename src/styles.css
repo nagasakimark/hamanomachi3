@@ -415,6 +415,12 @@ button { font-family: inherit; }
 .w-none { width: 112px; height: 112px; display: grid; place-items: center; font-size: 50px; color: #d4c8b2; }
 .w-name { font-size: 17px; font-weight: 600; }
 .w-tag { position: absolute; top: 6px; right: 6px; font-size: 16px; font-weight: 700; border-radius: 12px; padding: 2px 8px; display: flex; align-items: center; gap: 3px; }
+.w-item.special { background: #fffaf0; box-shadow: 0 0 0 3px #ffd36b, 0 5px 0 #e2c27a; }
+.w-item.special.on { box-shadow: 0 0 0 5px var(--sea), 0 5px 0 #e2c27a; }
+.w-sub { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 12px; margin: 6px 4px -4px; font-size: 22px; font-weight: 700; color: #7a6a52; border-bottom: 3px solid #e2d5bd; padding-bottom: 4px; }
+.w-sub small { font-size: 15px; font-weight: 500; opacity: .8; }
+.w-sub.special { color: #c27a00; border-color: #ffd36b; }
+.w-src { margin-top: 4px; font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(#ffb627, #f08a00); border-radius: 8px; padding: 1px 6px; }
 .w-tag.price { background: #fff3c4; color: #9a6400; }
 .w-tag.owned { background: var(--green); color: #fff; }
 .w-tag.badge { background: #efe3ff; font-size: 20px; }
