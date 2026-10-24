@@ -360,10 +360,11 @@ export class MapView {
     s.time.delayedCall(delay, () => {
       const c = s.add.container(target.x, target.y - 74).setDepth(40);
       const bg = s.add.graphics();
-      bg.fillStyle(0xffffff, 1).fillRoundedRect(-24, -24, 48, 44, 14);
-      bg.fillTriangle(-7, 18, 7, 18, 0, 28);
-      bg.lineStyle(3, Phaser.Display.Color.HexStringToColor(color).color, 1).strokeRoundedRect(-24, -24, 48, 44, 14);
       const t = s.add.text(0, -2, text, { fontFamily: 'Fredoka, sans-serif', fontSize: '30px', color, fontStyle: 'bold' }).setOrigin(0.5);
+      const w = Math.max(48, Math.ceil(t.width) + 28), hh = Math.max(44, Math.ceil(t.height) + 12);
+      bg.fillStyle(0xffffff, 1).fillRoundedRect(-w / 2, -hh / 2 - 2, w, hh, 14);
+      bg.fillTriangle(-7, hh / 2 - 6, 7, hh / 2 - 6, 0, hh / 2 + 4);
+      bg.lineStyle(3, Phaser.Display.Color.HexStringToColor(color).color, 1).strokeRoundedRect(-w / 2, -hh / 2 - 2, w, hh, 14);
       c.add([bg, t]);
       c.setScale(0);
       (this._bubbles = this._bubbles || []).push(c);
