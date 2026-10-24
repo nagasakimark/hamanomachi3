@@ -30,7 +30,7 @@ export const BASIC_INTRO = {
   lines: [
     ['👂', 'まず、おねがいを きこう。どこに いきたいか きいてね。'],
     ['🧱', 'ブロックを ドラッグ か タップで ならべて、みちあんないを つくろう。'],
-    [h => h('div.rb-block', {}, h('span', {}, 'go straight for'), h('b.rb-num', {}, '2'), h('span', {}, 'block')),
+    [h => h('div.rb-block', {}, h('span', {}, 'go straight for'), h('b.rb-num', {}, '2'), h('span', {}, 'blocks')),
       '「go straight for」の 数字を タップすると、すすむ ブロックの数を かえられるよ！', 'hl'],
     ['▶', '「すすむ！」で あるきだす。まちがえたと おもったら 「■ とめる」で すぐ とめられるよ。'],
     ['★', 'すくない ブロックで クリアすると ★が ふえる！'],

@@ -245,3 +245,11 @@
 .gi-basics .gi-btn { font-size: 34px; font-weight: 700; color: #fff; background: linear-gradient(#4fd37f, #2fb460); border: 0; border-radius: 40px; padding: 12px 60px; box-shadow: 0 7px 0 #1c8f43; }
 .help-btn { position: absolute; top: 14px; right: 14px; z-index: 3; width: 54px; height: 54px; border-radius: 50%; border: 4px solid #fff; background: #ffb703; color: #fff; font: 700 34px/1 var(--font); text-shadow: 0 2px 0 rgba(0,0,0,.25); box-shadow: 0 5px 0 rgba(0,0,0,.25); cursor: pointer; }
 .help-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.gi-basics { padding: 22px 40px 26px; }
+.gi-basics .gi-icon { font-size: 60px; height: 70px; }
+.gi-basics .gi-title { font-size: 42px; margin: 2px 0 12px; }
+.gi-basics .gi-lines { gap: 8px; margin-bottom: 16px; }
+.gi-basics .gi-lines li { font-size: 24px; line-height: 1.3; }
+.gi-basics .gi-i { font-size: 34px; width: 56px; }
+.gi-basics .gi-lines li.hl { padding: 8px 14px; }
+.gi-basics .gi-btn { font-size: 30px; padding: 8px 56px; }

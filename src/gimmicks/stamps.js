@@ -7,8 +7,9 @@ import { sfx } from '../audio/sfx.js';
 import { svgUrl, addArt } from './pickups.js';
 
 const inks = import.meta.glob('../assets/gimmick/ink/*.png', { eager: true, query: '?url', import: 'default' });
-const INK = ['#e8457a', '#e0464a', '#9a5ad0', '#3f86d9', '#ff6f9f', '#e2574a', '#8a5ad0', '#2f9ad9'];
-const stampNo = (map, destId) => Math.max(0, map.graph.destinations().findIndex(d => d.id === destId)) % 8 + 1;
+// 15 different mascot stamps: every place gets its own (a town with more places starts repeating after 15)
+const INK = ['#e8457a', '#e0464a', '#9a5ad0', '#3f86d9', '#ff6f9f', '#e2574a', '#8a5ad0', '#2f9ad9', '#444444', '#2e9d62', '#f0709a', '#a9702c', '#8a63d2', '#2f8fc9', '#e08a2e'];
+const stampNo = (map, destId) => Math.max(0, map.graph.destinations().findIndex(d => d.id === destId)) % INK.length + 1;
 const tilt = id => ((String(id).split('').reduce((a, c) => a + c.charCodeAt(0), 0) % 17) - 8);
 
 // One inked stamp (mask picture coloured with its ink) with the place name.
