@@ -24,6 +24,7 @@ function makePack(map, fileUrls, extra = {}) {
     ...map,
     ...extra,
     imageUrl: fileUrls[map.image],
+    bannerUrl: fileUrls['banner.webp'] || fileUrls['thumb.webp'] || fileUrls[map.image],
     thumbUrl: fileUrls['thumb.webp'] || fileUrls['thumb.png'] || fileUrls[map.image],
     audioUrl: name => (name ? fileUrls['audio/' + name] || SHARED['audio/' + name] || null : null),
     graph: new MapGraph(map),

@@ -51,7 +51,7 @@ export async function missionsScreen({ mapId }) {
   const el = h('div.missions-screen', {},
     topBar(map.name, { back: () => app.go(map.isTest ? 'title' : 'towns') }),
     h('div.missions-body', {},
-      h('div.town-banner', { style: { backgroundImage: `url(${map.imageUrl})` } },
+      h('div.town-banner', { style: { backgroundImage: `url(${map.bannerUrl || map.imageUrl})` } },
         h('div.banner-inner', {}, h('div.banner-stars', {}, `★ ${got} / ${map.missions.length * 3}`),
           gimmickOf(map)?.missionsExtra?.(map),
           btn('secondary free-btn', ['🚶 フリープレイ', h('small', {}, 'いちばん むずかしい！')], () => app.go('play', { mapId: map.id, free: true })),

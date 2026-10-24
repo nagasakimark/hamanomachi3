@@ -6,6 +6,13 @@ import { coinPill, iconBtn, ICONS, showQR, showSettings, starPill } from '../ui/
 import { composeLook, previewCanvas } from '../avatar/compositor.js';
 import { sfx } from '../audio/sfx.js';
 
+// hide scrollbars while cards pop in (the entrance animation briefly overflows)
+export function settle(el, ms = 1200) {
+  el.classList.add('settling');
+  setTimeout(() => el.classList.remove('settling'), ms);
+  return el;
+}
+
 export function topBar(title, { back, extra = [] } = {}) {
   return h('div.topbar', {},
     back ? iconBtn(ICONS.back, 'もどる', back, 'back') : null,
@@ -40,7 +47,7 @@ export async function townsScreen() {
       ),
     );
     card.addEventListener('click', () => {
-      if (locked) { sfx.play('error'); card.animate([{ transform: 'rotate(-2deg)' }, { transform: 'rotate(2deg)' }, { transform: 'none' }], { duration: 250 }); return; }
+      if (locked) { sfx.play('error'); card.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(-3px)' }, { transform: 'none' }], { duration: 250 }); return; }
       sfx.play('press');
       app.go('missions', { mapId: m.id });
     });
@@ -57,7 +64,7 @@ export async function townsScreen() {
         btn('dock wardrobe', [h('span.dock-icon', { html: ICONS.shirt }), 'きせかえ・ショップ'], () => app.go('wardrobe')),
         btn('dock stickers', [h('span.dock-icon', { html: ICONS.sticker }), 'シールちょう'], () => app.go('stickers')),
       ),
-      h('div.towns-row', {}, ...cards),
+      settle(h('div.towns-row', {}, ...cards)),
     ),
   );
   return { el, destroy() { clearInterval(turner); } };

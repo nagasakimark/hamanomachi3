@@ -2,7 +2,7 @@ import { h } from '../ui/dom.js';
 import { app } from '../app.js';
 import { save } from '../progress/save.js';
 import { BADGES } from '../progress/badges.js';
-import { topBar } from './towns.js';
+import { topBar, settle } from './towns.js';
 import { sfx } from '../audio/sfx.js';
 
 export async function stickersScreen() {
@@ -22,7 +22,7 @@ export async function stickersScreen() {
   const el = h('div.stickers-screen', {},
     topBar('シールちょう', { back: () => app.go('towns') }),
     h('div.sb-count', {}, `${got} / ${BADGES.length} まい`),
-    h('div.sticker-grid', {}, ...cards),
+    settle(h('div.sticker-grid', {}, ...cards), 1800),
   );
   return { el };
 }

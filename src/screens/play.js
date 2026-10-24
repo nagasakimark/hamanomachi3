@@ -411,9 +411,13 @@ export async function playScreen({ mapId, missionId, free }) {
   return {
     el,
     async mounted() {
-      mv = new MapView(mapBox, map, { width: mapW, height: mapH, renderScale: R, hero: heroSheet, asker: askerSheet, pet: await petInfo() });
+      // big map pictures take a moment: show a loading card until the map is ready
+      const bar = h('i'), loading = h('div.map-loading', {}, h('div.ml-pin', {}, '📍'), h('div.ml-text', {}, 'マップを よみこみちゅう…'), h('div.ml-bar', {}, bar));
+      mapPanel.append(loading);
+      mv = new MapView(mapBox, map, { width: mapW, height: mapH, renderScale: R, hero: heroSheet, asker: askerSheet, pet: await petInfo(), onProgress: v => { bar.style.width = Math.round(v * 100) + '%'; } });
       mv.speed = s.settings.speed || 1;
       await mv.ready();
+      loading.classList.add('done'); setTimeout(() => loading.remove(), 400);
       ambient = startAmbient(mv, map);
       window.addEventListener('keydown', onKey);
       if (location.search.includes('debug')) window.__play = { win: () => win(editor.program()), encounter: () => maybeEncounter({ force: true }), mission, get gm() { return gm; }, mv, solveAndRun: () => { editor.setProgram(solve(gg, mission.start, mission.destination)); return run(); } };
