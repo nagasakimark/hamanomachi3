@@ -37,8 +37,8 @@ export const BLOCK_DEFS = {
 export const PALETTE = [
   { type: 'straight', n: 1 },
   { type: 'littlebit' },
-  { type: 'right' },
   { type: 'left' },
+  { type: 'right' },
   { type: 'lookLeft' },
   { type: 'lookRight' },
 ];

@@ -6,7 +6,6 @@
 //    bottom, wobble side to side, grow a little as they rise, and some pop on the way up.
 // 2) Character bubbles: the hero, the asker and the pet let out little bubbles now and then
 //    (more when they walk), like the treasure chests do.
-import Phaser from 'phaser';
 import { sfx } from '../audio/sfx.js';
 
 export const ambientOf = map => {
@@ -142,38 +141,9 @@ function startBubbles(mv) {
     },
   });
 
-  const wobble = startWobble(scene);
   return {
-    destroy() { dead = true; cancelAnimationFrame(raf); ro?.disconnect(); cv.remove(); timer.remove(); wobble?.destroy(); },
+    destroy() { dead = true; cancelAnimationFrame(raf); ro?.disconnect(); cv.remove(); timer.remove(); },
   };
-}
-
-// A very gentle "seen through water" ripple over the whole picture: the map drifts by a couple of
-// pixels in slow waves. It is skipped on browsers set to reduce motion and on non-WebGL drawing.
-const WOBBLE = 0.0035; // how far the picture may drift (fraction of the screen); keep it small
-function startWobble(scene) {
-  try {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return null;
-    const cam = scene.cameras.main;
-    if (!cam.postFX || scene.game.renderer.type !== Phaser.WEBGL) return null;
-    const N = 64, tex = scene.textures.createCanvas('water-wobble', N, N);
-    const ctx = tex.getContext(), img = ctx.createImageData(N, N);
-    const paint = t => {
-      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-        const u = x / N, v = y / N;
-        // two slow waves crossing each other (period about 8 and 11 seconds); wraps at the edges
-        const r = 0.5 + 0.25 * Math.sin(6.2832 * (2 * u + 0.12 * t)) + 0.25 * Math.sin(6.2832 * (2 * v + u - 0.09 * t));
-        const i = (y * N + x) * 4;
-        img.data[i] = img.data[i + 1] = img.data[i + 2] = Math.round(r * 255); img.data[i + 3] = 255;
-      }
-      ctx.putImageData(img, 0, 0); tex.refresh();
-    };
-    paint(0);
-    const fx = cam.postFX.addDisplacement('water-wobble', WOBBLE, WOBBLE);
-    const t0 = performance.now();
-    const ev = scene.time.addEvent({ delay: 80, loop: true, callback: () => paint((performance.now() - t0) / 1000) });
-    return { destroy() { ev.remove(); try { cam.postFX.remove(fx); scene.textures.remove('water-wobble'); } catch { /* scene already gone */ } } };
-  } catch { return null; }
 }
 
 // A small bubble on the map: rises, sways, and sometimes pops before it fades.
