@@ -63,6 +63,15 @@ window.addEventListener('pointerdown', () => sfx.unlock(), { once: true });
 }
 document.addEventListener('contextmenu', e => { if (e.target.closest('#stage')) e.preventDefault(); });
 
+// After a new deploy, a browser that still holds the old page asks for files that no longer exist (404).
+// Reload once to pick up the new version instead of showing an error.
+window.addEventListener('vite:preloadError', e => {
+  e.preventDefault();
+  try { if (sessionStorage.getItem('reloaded-for-update')) return; sessionStorage.setItem('reloaded-for-update', '1'); } catch { /* ignore */ }
+  location.reload();
+});
+setTimeout(() => { try { sessionStorage.removeItem('reloaded-for-update'); } catch { /* ignore */ } }, 15000);
+
 (async () => {
   await Promise.all([preloadLayers(), document.fonts?.ready]);
   const params = new URLSearchParams(location.search);
