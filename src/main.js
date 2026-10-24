@@ -81,7 +81,7 @@ setTimeout(() => { try { sessionStorage.removeItem('reloaded-for-update'); } cat
       // every Test play starts the test town fresh, so intros and first-time rewards can be tried again
       const sv = save.get();
       for (const k of ['visited', 'stars', 'stamps', 'chests']) delete sv[k]?.[m.id];
-      delete sv.seen?.['gimmick:' + m.id];
+      for (const k of Object.keys(sv.seen || {})) if (k.startsWith('gimmick:' + m.id)) delete sv.seen[k];
       save.write();
     }
     if (m) return app.go('missions', { mapId: m.id });

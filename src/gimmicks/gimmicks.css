@@ -181,3 +181,36 @@
 .st-open { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; white-space: nowrap; font-family: 'M PLUS Rounded 1c', var(--font); font-weight: 800; font-size: 23px; color: #fff; background: linear-gradient(#ff8ab5, #ff5c93); border: 4px solid #fff; border-radius: 40px; padding: 6px 20px; box-shadow: 0 6px 0 #d63c74; cursor: pointer; }
 .st-open img { width: 38px; }
 .st-open small { background: #fff; color: #ff5c93; border-radius: 20px; padding: 0 12px; font-size: 22px; }
+
+/* ===== power-ups (Mushroom Kingdom) ===== */
+.pw-hud { position: absolute; left: 14px; top: 14px; z-index: 30; display: flex; gap: 8px; padding: 8px 12px; background: #000c; border: 3px solid #fff; border-radius: 10px; pointer-events: none; }
+.pw-cell { display: flex; align-items: center; gap: 4px; font-family: Fredoka, var(--font); font-weight: 700; font-size: 26px; color: #fff; }
+.pw-cell b { min-width: 22px; color: #ffd23f; }
+.pw-cell.zero { opacity: .45; }
+.pw-cell.pop { animation: pwPop .4s ease; }
+@keyframes pwPop { 40% { transform: scale(1.5); } }
+.pw-ico { width: 32px; height: 32px; image-rendering: pixelated; }
+.pw-ico.big { width: 64px; height: 64px; }
+.pw-open { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 8px 16px; font-family: 'DotGothic16', var(--font); font-size: 26px; color: #fff; background: #c8302a; border: 4px solid #000; box-shadow: inset 0 -6px 0 #8c1f1a; cursor: pointer; }
+.pw-open:hover { background: #e0443d; }
+.pw-open .pw-ico { width: 28px; height: 28px; }
+.pw-book { background: #fff7e0; border: 6px solid #000; padding: 24px 32px; min-width: 620px; font-family: 'DotGothic16', var(--font); color: #222; }
+.pw-book h2 { margin: 0 0 12px; text-align: center; }
+.pw-stock { display: flex; justify-content: space-around; text-align: center; margin-bottom: 8px; }
+.pw-stock .pw-cell { flex-direction: column; color: #222; font-size: 20px; }
+.pw-tip { margin: 6px 0 14px; text-align: center; }
+.pw-rows { display: grid; gap: 10px; }
+.pw-row { display: flex; align-items: center; gap: 14px; padding: 8px 12px; background: #fff; border: 3px solid #000; }
+.pw-row:not(.done) .pw-prev { filter: grayscale(1) brightness(.5); }
+.pw-prev canvas { width: 80px; height: 80px; image-rendering: pixelated; }
+.pw-info { flex: 1; font-size: 18px; }
+.pw-bar { height: 12px; margin: 4px 0; background: #ddd; border: 2px solid #000; }
+.pw-bar i { display: block; height: 100%; background: #3fb54a; }
+.pw-close { display: block; margin: 16px auto 0; padding: 8px 60px; font: inherit; font-size: 24px; color: #fff; background: #6f6f6f; border: 4px solid #000; cursor: pointer; }
+.pw-unlock canvas { width: 56px; height: 56px; image-rendering: pixelated; }
+.modal.pw-modal { max-height: 94%; overflow-y: auto; }
+.pw-book { padding: 14px 28px; }
+.pw-row { padding: 4px 12px; gap: 12px; }
+.pw-prev canvas { width: 64px; height: 64px; }
+.pw-rows { gap: 6px; }
+.pw-close { margin-top: 10px; padding: 6px 50px; }

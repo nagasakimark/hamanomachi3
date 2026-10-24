@@ -165,6 +165,10 @@ export const ITEMS = [
   { id: 'hat-craft-iron', slot: 'hat', name: 'てつの かぶと', price: 0, gate: 'craft', tint: '#d6d6d6', layers: [L('hat/helmet/spangenhelm/adult/walk.png', Z.hatFg)] },
   { id: 'hat-craft-gold', slot: 'hat', name: 'きんの かぶと', price: 0, gate: 'craft', tint: '#f6c62c', layers: [L('hat/helmet/spangenhelm/adult/walk.png', Z.hatFg)] },
   { id: 'hat-craft-diamond', slot: 'hat', name: 'ダイヤの かぶと', price: 0, gate: 'craft', tint: '#4ae8d6', layers: [L('hat/helmet/spangenhelm/adult/walk.png', Z.hatFg)] },
+  { id: 'hat-pw-mushroom', slot: 'hat', name: 'キノコの ぼうし', price: 0, gate: 'powerup', layers: [L('hat/custom/pw-mushroom/walk.png', Z.hatFg)] },
+  { id: 'hat-pw-flower', slot: 'hat', name: 'ファイアフラワー', price: 0, gate: 'powerup', layers: [L('hat/custom/pw-flower/walk.png', Z.hatFg)] },
+  { id: 'hat-pw-star', slot: 'hat', name: 'ラッキースター', price: 0, gate: 'powerup', layers: [L('hat/custom/pw-star/walk.png', Z.hatFg)] },
+  { id: 'hat-pw-crown', slot: 'hat', name: 'きんの おうかん', price: 0, gate: 'powerup', layers: [L('hat/custom/pw-crown/walk.png', Z.hatFg)] },
 
   // Glasses
   glasses('round', 'まるめがね', 100, 'glasses/round'),

@@ -24,6 +24,9 @@ function fresh() {
     chests: {},       // mapId -> treasure chests opened
     materials: {},    // crafting material id -> count
     crafted: [],      // crafted item ids
+    powerups: { mushroom: 0, flower: 0, star: 0 }, // stored power-ups (Mushroom Kingdom)
+    powerCollected: { mushroom: 0, flower: 0, star: 0 }, // lifetime totals (unlock book)
+    foesDefeated: 0,
   };
 }
 

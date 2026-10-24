@@ -170,7 +170,8 @@ export async function playScreen({ mapId, missionId, free }) {
     gm?.destroy?.();
     try { gm = createSession(map, mission, { map, g, free }); } catch (e) { console.error('gimmick', e); gm = null; }
     gg = gm?.graph || g;
-    best = gg === g ? mission.best : (solve(gg, mission.start, mission.destination) || []).length || mission.best;
+    const bg = gm?.bestGraph;
+    best = bg ? (solve(bg, mission.start, mission.destination) || []).length || mission.best : gg === g ? mission.best : (solve(gg, mission.start, mission.destination) || []).length || mission.best;
     setMissionUI();
     const st = g.initialState(mission.start);
     mv.reset(mission.start, mission.destination, { marker: tier.hint === 'marker', angle: st.angle });
@@ -210,6 +211,7 @@ export async function playScreen({ mapId, missionId, free }) {
     mv.followPlayer();
     await wait(600);
     const result = simulate(gg, prog, mission.start, mission.destination);
+    let blocked = false;
     for (const step of result.steps) {
       if (!alive) return;
       editor.mark(step.block, 'active');
@@ -217,9 +219,14 @@ export async function playScreen({ mapId, missionId, free }) {
       await say(prog[step.block]);
       await mv.delay(120);
       for (const sub of step.sub) {
-        if (sub.kind === 'move') await mv.walk(sub.path, gm?.onNode ? id => Promise.resolve().then(() => gm.onNode(id, mv, coins)).catch(e => console.error('gimmick', e)) : null);
+        if (sub.kind === 'move') {
+          const out = await mv.walk(sub.path, gm?.onNode ? id => Promise.resolve().then(() => gm.onNode(id, mv, coins)).catch(e => console.error('gimmick', e)) : null,
+            gm?.blockerAt ? (a, b) => { try { return gm.blockerAt(a, b, mv); } catch (e) { console.error('gimmick', e); return null; } } : null);
+          if (out === 'blocked') { blocked = true; break; }
+        }
         else if (sub.kind === 'turn') await mv.turn(sub.from, sub.by);
       }
+      if (blocked) { editor.mark(step.block, 'fail'); break; }
       if (!step.ok) {
         editor.mark(step.block, 'fail');
         await mv.bump();
@@ -229,6 +236,7 @@ export async function playScreen({ mapId, missionId, free }) {
     }
     if (!alive) return;
     runBtn.classList.remove('going');
+    if (blocked) { say('fail'); sfx.play('fail'); return showTryAgain('モンスターが とおせんぼ！ べつの みちを かんがえよう。'); }
     if (result.won) { say('arrive'); return win(prog); }
     if (result.dizzy) {
       await mv.dizzy();

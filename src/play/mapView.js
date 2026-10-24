@@ -263,23 +263,36 @@ export class MapView {
   tween(cfg) { return new Promise(r => this.scene.tweens.add({ ...cfg, onComplete: () => r() })); }
   delay(ms) { return new Promise(r => this.scene.time.delayedCall(ms / this.speed, r)); }
 
-  async walk(path, onNode) {
+  // gate(a, b) may return { x, y, stop: async () => boolean } for something standing on that road:
+  // the hero walks up to it and stop() says whether the way is free. If not, walk() ends early and returns 'blocked'.
+  async walk(path, onNode, gate) {
     const s = this.scene, g = this.pack.graph;
     s.recording = true;
+    let acc = 0, lx = s.player.x, ly = s.player.y;
+    const go = (x, y, dist) => this.tween({
+      targets: s.player, x, y, duration: (dist / this.speedPx()) * 1000, ease: 'Linear',
+      onUpdate: () => {
+        acc += Math.hypot(s.player.x - lx, s.player.y - ly); lx = s.player.x; ly = s.player.y;
+        if (acc > 26) { acc = 0; s.dust.emitParticleAt(s.player.x, s.player.y, 2); sfx.play('step'); }
+      },
+    });
+    let outcome = 'ok';
     for (let i = 1; i < path.length; i++) {
       const a = g.point(path[i - 1]), b = g.point(path[i]);
       const ang = Math.atan2(b.y - a.y, b.x - a.x);
       s.facing = ang;
       s.player.play(`hero-walk-${dirRow(ang)}`, true);
       const dist = Math.hypot(b.x - a.x, b.y - a.y);
-      let acc = 0, lx = s.player.x, ly = s.player.y;
-      await this.tween({
-        targets: s.player, x: b.x, y: b.y, duration: (dist / this.speedPx()) * 1000, ease: 'Linear',
-        onUpdate: () => {
-          acc += Math.hypot(s.player.x - lx, s.player.y - ly); lx = s.player.x; ly = s.player.y;
-          if (acc > 26) { acc = 0; s.dust.emitParticleAt(s.player.x, s.player.y, 2); sfx.play('step'); }
-        },
-      });
+      const blk = gate?.(path[i - 1], path[i]);
+      if (blk) {
+        const toBlk = Math.hypot(blk.x - a.x, blk.y - a.y), stopAt = Math.max(0, toBlk - 46), f = stopAt / dist;
+        await go(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f, stopAt);
+        s.player.stop(); s.player.setFrame(dirRow(ang) * 9);
+        const free = await blk.stop();
+        if (!free) { outcome = 'blocked'; break; }
+        s.player.play(`hero-walk-${dirRow(ang)}`, true);
+        await go(b.x, b.y, dist - stopAt);
+      } else await go(b.x, b.y, dist);
       // draw the walked route
       s.routeG.lineStyle(7, 0xffffff, 0.75).lineBetween(a.x, a.y, b.x, b.y);
       if (onNode) await onNode(path[i]);
@@ -287,6 +300,7 @@ export class MapView {
     s.recording = false;
     s.player.stop();
     s.player.setFrame(dirRow(s.facing) * 9);
+    return outcome;
   }
 
   async turn(from, by) {
