@@ -1329,5 +1329,5 @@ export async function openComposer(opts = {}) {
 }
 
 // Test hook (used by the automated check, harmless otherwise).
-export const _composer = { C, G, generateIntoDoc, projectData: () => { const used = new Set(C.doc.items.map(i => i.lib).filter(Boolean)); const lib = Object.fromEntries(Object.entries(libPlain()).filter(([id]) => used.has(id))); return { format: 'hamanomachi-compose', doc: C.doc, lib }; }, labelRect, traceDoc, addRoad, addNode, addItem, renderToCanvas, importImages, draw, nodeOf };
+export const _composer = { setOverlay, C, G, generateIntoDoc, projectData: () => { const used = new Set(C.doc.items.map(i => i.lib).filter(Boolean)); const lib = Object.fromEntries(Object.entries(libPlain()).filter(([id]) => used.has(id))); return { format: 'hamanomachi-compose', doc: C.doc, lib }; }, labelRect, traceDoc, addRoad, addNode, addItem, renderToCanvas, importImages, draw, nodeOf };
 if (typeof window !== 'undefined') window.__composer = _composer;
