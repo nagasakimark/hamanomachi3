@@ -35,20 +35,22 @@ def plat(cx,cy,rx,ry):
 plat(176,66,50,13); plat(62,140,64,16)
 bg.save(f'{OUT}/battle-bg.png')
 
-# ---------- capture capsule 12x12 (original design) ----------
+# ---------- capture capsule 14x14, symmetric (original design) ----------
 cap=grid([
-"....oooo....",
-"..oottttoo..",
-".ottlttttto.",
-".otlttttttto",
-"ottttttttto.",
-"oooooyyooooo",
-"oooooyyooooo",
-"occcccccccco",
-".ocwwwwwwwco",
-".occwwwwwcco",
-"..oocccccoo.",
-"....oooo....",
+"....oooooo....",
+"..oottttttoo..",
+".otllttttttto.",
+".otltttttttto.",
+"otttttttttttto",
+"ottttooootttto",
+"ooooooyyoooooo",
+"ooooooyyoooooo",
+"occccoooocccco",
+"occcccccccccco",
+".ocwwwwwwwwco.",
+".occwwwwwwcco.",
+"..ooccccccoo..",
+"....oooooo....",
 ],{'o':'#203040','t':'#2fb8a8','l':'#bff3ea','y':'#ffd23f','c':'#d8d2c4','w':'#fbf8ef'})
 cap.save(f'{OUT}/capsule.png')
 

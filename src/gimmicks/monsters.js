@@ -10,8 +10,6 @@ import { jaName, PLACE_JA } from '../data/placeNames.js';
 import { sfx } from '../audio/sfx.js';
 import { composeLook, FRAME } from '../avatar/compositor.js';
 import { loadTex } from './pickups.js';
-import { simulate } from '../engine/engine.js';
-import { solve } from '../engine/solver.js';
 
 const px = import.meta.glob('../assets/gimmick/px/*.png', { eager: true, query: '?url', import: 'default' });
 export const pxUrl = n => px[`../assets/gimmick/px/${n}.png`];
@@ -40,10 +38,10 @@ export const intro = {
 };
 export const introVersion = 'v2';
 
-// Chance that one patch of tall grass stirs up a monster. Simulated pacing (most trips cross 0-2 patches,
-// only first clears count, new monsters are twice as likely): about 15 battles / 60 cleared missions
-// to fill the dex, while the first monster usually turns up within the first few clears.
-export const GRASS_CHANCE = 0.25;
+// Chance that one patch of tall grass stirs up a monster. Grass is not put on the way on purpose, so a
+// student who walks through it on purpose (spending extra blocks) finds monsters much faster. Simulated:
+// about 15 battles fill the dex (new monsters are twice as likely).
+export const GRASS_CHANCE = 0.35;
 export const ENCOUNTER_CHANCE = GRASS_CHANCE;
 const NEED = 3;
 
@@ -173,8 +171,6 @@ export async function battle(pool) {
       scene.classList.add('asking');
       msg.innerHTML = '';
       msg.append(h('span.pk-en', {}, en), h('br'), 'は にほんごで なんて いう？');
-      const url = cur.map.audioUrl?.(cur.audio);
-      if (url) sfx.voice(url);
       const wrong = shuffle(allJa.filter(x => x !== cur.ja)).slice(0, 2);
       const opts = shuffle([cur.ja, ...wrong]);
       menu.replaceChildren(...opts.map(opt => h('button.pk-opt', { onclick: e => pick(e.currentTarget, opt) }, opt)),
@@ -292,6 +288,10 @@ function dexCard(mon, count) {
 }
 
 // The monster dex: a little handheld device.
+export function missionsExtra() {
+  return h('button.pk-dexbtn', { onclick: () => { sfx.play('press'); showDex(); } }, h('img', { src: pxUrl('capsule') }), 'モンスターずかん');
+}
+
 export function showDex() {
   const dex = save.get().dex;
   const got = MONSTERS.filter(x => dex[x.id]).length;
@@ -326,17 +326,6 @@ export function showDex() {
 // map.json: "gimmickData": { "grass": 4, "grassChance": 0.25 }
 const keyOf = (a, b) => (a < b ? a + '|' + b : b + '|' + a);
 
-// The roads walked by the best block program for this mission, so one patch is where the student will go.
-function routeEdges(g, from, to) {
-  try {
-    const prog = solve(g, from, to);
-    if (!prog) return [];
-    const out = [];
-    for (const st of simulate(g, prog, from, to).steps) for (const sub of st.sub) if (sub.kind === 'move') for (let i = 1; i < sub.path.length; i++) out.push([sub.path[i - 1], sub.path[i]]);
-    return out;
-  } catch (e) { return []; }
-}
-
 export function chooseGrass(map, mission, n = 4, rnd = Math.random) {
   const g = map.graph, ends = new Set([mission.start, mission.destination]);
   const ok = ([a, b]) => !ends.has(a) && !ends.has(b);
@@ -346,17 +335,15 @@ export function chooseGrass(map, mission, n = 4, rnd = Math.random) {
     if (seen.has(k) || !g.point(e[0]) || !g.point(e[1]) || !ok(e)) continue;
     seen.add(k); all.push(e);
   }
-  const pick = [];
-  const onRoute = routeEdges(g, mission.start, mission.destination).filter(ok);
-  if (onRoute.length) pick.push(onRoute[Math.floor(rnd() * onRoute.length)]);
-  const rest = all.filter(e => !pick.some(p => keyOf(...p) === keyOf(...e)));
+  // Grass grows anywhere (not on purpose on the way): going through it is the student's choice.
+  const pick = [], rest = all;
   for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
   return pick.concat(rest).slice(0, Math.max(0, n));
 }
 
 export function session(map, mission) {
   const d = map.gimmickData || {};
-  const edges = chooseGrass(map, mission, d.grass ?? 4);
+  const edges = chooseGrass(map, mission, d.grass ?? 5);
   const chance = window.__encounterChance ?? d.grassChance ?? GRASS_CHANCE;   // override is for testing
   const patches = new Map();
   let pending = false;

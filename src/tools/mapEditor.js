@@ -475,7 +475,7 @@ const GIMMICK_NOTES = {
   stamps: 'Stamp rally: the first time a student reaches a place they get its stamp. All stamps = a special hat.',
   treasure: 'Sunken treasure: chests sit on corners. Walking over them gives coins, but detours cost blocks. Mark spots in the Selected tab.',
   crafting: 'Minecraft crafting: materials may appear on corners before a run. Collected ones go to the crafting bench. Mark spots in the Selected tab.',
-  monsters: 'Pokémon town: tall grass grows on some roads (one is always on the shortest route). Each patch walked through has a chance to stir up a monster; it appears after a first-time win. The student translates 3 place names (from any town they have visited) to catch it.',
+  monsters: 'Pokémon town: tall grass grows on random roads (students choose whether to go through it). Each patch walked through has a chance to stir up a monster; it appears after a first-time win. The student translates 3 place names (from any town they have visited) to catch it.',
   blocks: '? blocks give power-ups that are stored. A monster blocks a road each mission and can only be passed by using a stored power-up, otherwise students go round. Mark the roads a monster may stand on in the Selected tab, or mark none and the game picks whole blocks by itself.',
 };
 function gimmickFields(m, num) {
@@ -490,7 +490,7 @@ function gimmickFields(m, num) {
   const spots = m.points.filter(p => p.spot).length;
   if (m.gimmick === 'treasure') out.push(field('Chests per mission', num(gd().count ?? 3, v => { gd().count = v; })), field('Coins per chest', num(gd().coins ?? 15, v => { gd().coins = v; })));
   if (m.gimmick === 'crafting') out.push(field('Chance a spot has a material (0-100%; free play uses a quarter of this)', num(Math.round((gd().chance ?? 0.15) * 100), v => { gd().chance = Math.max(0, Math.min(100, v)) / 100; })));
-  if (m.gimmick === 'monsters') out.push(field('Grass patches per mission', num(gd().grass ?? 4, v => { gd().grass = v; })), field('Encounter chance per patch (%)', num(Math.round((gd().grassChance ?? 0.25) * 100), v => { gd().grassChance = Math.max(0, Math.min(100, v)) / 100; })));
+  if (m.gimmick === 'monsters') out.push(field('Grass patches per mission', num(gd().grass ?? 5, v => { gd().grass = v; })), field('Encounter chance per patch (%)', num(Math.round((gd().grassChance ?? 0.35) * 100), v => { gd().grassChance = Math.max(0, Math.min(100, v)) / 100; })));
   if (m.gimmick === 'blocks') out.push(field('? blocks per mission', num(gd().count ?? 5, v => { gd().count = v; })), field('Monsters per mission', num(gd().closed ?? 1, v => { gd().closed = v; })), h('p.ed-small', {}, (gd().closable || []).length ? `Closable roads marked: ${(gd().closable || []).length}` : 'No closable roads marked: the game closes a whole block on the shortest route by itself.'));
   if (['treasure', 'crafting', 'blocks'].includes(m.gimmick)) out.push(h('p.ed-small', {}, spots ? `Gimmick spots marked: ${spots}` : 'No spots marked: every corner point will be used.'));
   return out;
