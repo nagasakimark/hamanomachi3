@@ -55,8 +55,8 @@ export function session(map, mission) {
       }));
       pk = makePickups(mv, list);
       // closed chests let out a bubble now and then
-      timer = sc.time.addEvent({ delay: 900, loop: true, callback: () => {
-        for (const it of list) if (!pk?.collected().includes(it) && Math.random() < 0.5) { const p = map.graph.point(it.at); bubble(sc, p.x + (Math.random() - 0.5) * 24, p.y - 30); }
+      timer = sc.time.addEvent({ delay: 1500, loop: true, callback: () => {
+        for (const it of list) if (!pk?.collected().includes(it) && Math.random() < 0.4) { const p = map.graph.point(it.at); bubble(sc, p.x + (Math.random() - 0.5) * 24, p.y - 30); }
       } });
     },
     debugItems: () => pk?.items || [],
