@@ -11,8 +11,11 @@ import '@fontsource/m-plus-rounded-1c/700.css';
 import '@fontsource/m-plus-rounded-1c/800.css';
 import { sfx } from './audio/sfx.js';
 import { save } from './progress/save.js';
+import { MONSTERS } from './gimmicks/monsters.js';
 import { preloadLayers } from './avatar/compositor.js';
 import { loadTestMap } from './data/maps.js';
+import { reconcileUnlocks } from './progress/reconcile.js';
+import { showBadges } from './ui/hud.js';
 import { titleScreen } from './screens/title.js';
 import { townsScreen } from './screens/towns.js';
 import { missionsScreen } from './screens/missions.js';
@@ -58,6 +61,8 @@ window.addEventListener('pointerdown', () => sfx.unlock(), { once: true });
       // everything the town gimmicks hand out (rally ribbon, crafted helmets, power-up hats), plus stock to test with
       for (const it of ITEMS) if (it.gate && !d.owned.includes(it.id)) d.owned.push(it.id);
       d.powerups = { mushroom: 20, flower: 20, star: 20 };
+      d.powerCollected = { mushroom: 99, flower: 99, star: 99 }; d.foesDefeated = Math.max(d.foesDefeated || 0, 99);
+      for (const m of MONSTERS) d.dex[m.id] = Math.max(d.dex[m.id] || 0, 1);   // the whole monster dex
       d.materials = { wood: 99, stone: 99, iron: 99, gold: 99, diamond: 99 };
       for (const it of ITEMS) if (it.badge && !d.badges[it.badge]) d.badges[it.badge] = Date.now();
       save.write(); sfx.play('buy');
@@ -78,6 +83,10 @@ setTimeout(() => { try { sessionStorage.removeItem('reloaded-for-update'); } cat
 
 (async () => {
   await Promise.all([preloadLayers(), document.fonts?.ready]);
+  // hand out rewards that earlier progress already earns (the game is updated while students play)
+  let caughtUp = { badges: [] };
+  try { caughtUp = reconcileUnlocks(); } catch (e) { console.error('reconcile', e); }
+  if (caughtUp.badges.length) setTimeout(() => showBadges(caughtUp.badges).catch?.(() => {}), 1200);
   const params = new URLSearchParams(location.search);
   if (params.has('test')) {
     const m = await loadTestMap();

@@ -1,0 +1,1004 @@
+{
+ "format": 1,
+ "id": "bikini-bottom",
+ "name": "Bikini Bottom",
+ "subtitle": "",
+ "order": 3,
+ "unlockStars": 45,
+ "image": "map.webp",
+ "width": 1600,
+ "height": 1130,
+ "points": [
+  {
+   "id": "p1",
+   "x": 254,
+   "y": 173,
+   "type": "normal"
+  },
+  {
+   "id": "p2",
+   "x": 1368,
+   "y": 152,
+   "type": "normal"
+  },
+  {
+   "id": "p3",
+   "x": 1444,
+   "y": 227,
+   "type": "normal"
+  },
+  {
+   "id": "p4",
+   "x": 1444,
+   "y": 892,
+   "type": "normal"
+  },
+  {
+   "id": "p5",
+   "x": 267,
+   "y": 916,
+   "type": "normal"
+  },
+  {
+   "id": "p6",
+   "x": 150,
+   "y": 802,
+   "type": "normal"
+  },
+  {
+   "id": "p7",
+   "x": 150,
+   "y": 279,
+   "type": "normal"
+  },
+  {
+   "id": "p8",
+   "x": 150,
+   "y": 380,
+   "type": "normal"
+  },
+  {
+   "id": "p9",
+   "x": 150,
+   "y": 705,
+   "type": "normal"
+  },
+  {
+   "id": "p10",
+   "x": 1444,
+   "y": 695,
+   "type": "normal"
+  },
+  {
+   "id": "p11",
+   "x": 367,
+   "y": 171,
+   "type": "normal"
+  },
+  {
+   "id": "p12",
+   "x": 363,
+   "y": 382,
+   "type": "normal"
+  },
+  {
+   "id": "p13",
+   "x": 605,
+   "y": 166,
+   "type": "normal"
+  },
+  {
+   "id": "p14",
+   "x": 604,
+   "y": 383,
+   "type": "normal"
+  },
+  {
+   "id": "p15",
+   "x": 821,
+   "y": 162,
+   "type": "normal"
+  },
+  {
+   "id": "p16",
+   "x": 827,
+   "y": 385,
+   "type": "normal"
+  },
+  {
+   "id": "p17",
+   "x": 1035,
+   "y": 158,
+   "type": "normal"
+  },
+  {
+   "id": "p18",
+   "x": 1035,
+   "y": 386,
+   "type": "normal"
+  },
+  {
+   "id": "p19",
+   "x": 1249,
+   "y": 154,
+   "type": "normal"
+  },
+  {
+   "id": "p20",
+   "x": 1250,
+   "y": 388,
+   "type": "normal"
+  },
+  {
+   "id": "p21",
+   "x": 359,
+   "y": 703,
+   "type": "normal"
+  },
+  {
+   "id": "p22",
+   "x": 602,
+   "y": 701,
+   "type": "normal"
+  },
+  {
+   "id": "p23",
+   "x": 759,
+   "y": 384,
+   "type": "normal"
+  },
+  {
+   "id": "p24",
+   "x": 756,
+   "y": 700,
+   "type": "normal"
+  },
+  {
+   "id": "p25",
+   "x": 967,
+   "y": 386,
+   "type": "normal"
+  },
+  {
+   "id": "p26",
+   "x": 917,
+   "y": 699,
+   "type": "normal"
+  },
+  {
+   "id": "p27",
+   "x": 1244,
+   "y": 696,
+   "type": "normal"
+  },
+  {
+   "id": "p28",
+   "x": 427,
+   "y": 703,
+   "type": "normal"
+  },
+  {
+   "id": "p29",
+   "x": 422,
+   "y": 913,
+   "type": "normal"
+  },
+  {
+   "id": "p30",
+   "x": 670,
+   "y": 701,
+   "type": "normal"
+  },
+  {
+   "id": "p31",
+   "x": 728,
+   "y": 906,
+   "type": "normal"
+  },
+  {
+   "id": "p32",
+   "x": 828,
+   "y": 700,
+   "type": "normal"
+  },
+  {
+   "id": "p33",
+   "x": 829,
+   "y": 904,
+   "type": "normal"
+  },
+  {
+   "id": "p34",
+   "x": 1026,
+   "y": 698,
+   "type": "normal"
+  },
+  {
+   "id": "p35",
+   "x": 1034,
+   "y": 900,
+   "type": "normal"
+  },
+  {
+   "id": "p36",
+   "x": 1176,
+   "y": 697,
+   "type": "normal"
+  },
+  {
+   "id": "p37",
+   "x": 1169,
+   "y": 897,
+   "type": "normal"
+  },
+  {
+   "id": "start4",
+   "x": 447,
+   "y": 169,
+   "type": "start",
+   "name": "D",
+   "littlebit": true,
+   "facing": "p13"
+  },
+  {
+   "id": "p38",
+   "x": 1335,
+   "y": 894,
+   "type": "littlebit"
+  },
+  {
+   "id": "p39",
+   "x": 927,
+   "y": 902,
+   "type": "littlebit"
+  },
+  {
+   "id": "start3",
+   "x": 582,
+   "y": 909,
+   "type": "start",
+   "name": "C",
+   "littlebit": true,
+   "facing": "p31"
+  },
+  {
+   "id": "p40",
+   "x": 332,
+   "y": 915,
+   "type": "littlebit"
+  },
+  {
+   "id": "start2",
+   "x": 150,
+   "y": 555,
+   "type": "start",
+   "name": "B",
+   "littlebit": true,
+   "facing": "p8"
+  },
+  {
+   "id": "p41",
+   "x": 288,
+   "y": 381,
+   "type": "littlebit"
+  },
+  {
+   "id": "p42",
+   "x": 485,
+   "y": 383,
+   "type": "littlebit"
+  },
+  {
+   "id": "p43",
+   "x": 501,
+   "y": 702,
+   "type": "littlebit"
+  },
+  {
+   "id": "p44",
+   "x": 1347,
+   "y": 695,
+   "type": "littlebit"
+  },
+  {
+   "id": "p45",
+   "x": 824,
+   "y": 268,
+   "type": "littlebit"
+  },
+  {
+   "id": "p46",
+   "x": 1035,
+   "y": 264,
+   "type": "littlebit"
+  },
+  {
+   "id": "p47",
+   "x": 1250,
+   "y": 277,
+   "type": "littlebit"
+  },
+  {
+   "id": "p48",
+   "x": 361,
+   "y": 536,
+   "type": "littlebit"
+  },
+  {
+   "id": "p49",
+   "x": 758,
+   "y": 491,
+   "type": "littlebit"
+  },
+  {
+   "id": "p50",
+   "x": 1249,
+   "y": 460,
+   "type": "littlebit"
+  },
+  {
+   "id": "p51",
+   "x": 1247,
+   "y": 557,
+   "type": "littlebit"
+  },
+  {
+   "id": "p52",
+   "x": 425,
+   "y": 793,
+   "type": "littlebit"
+  },
+  {
+   "id": "start1",
+   "x": 1444,
+   "y": 537,
+   "type": "start",
+   "name": "A",
+   "littlebit": true,
+   "facing": "p3"
+  },
+  {
+   "id": "p53",
+   "x": 501,
+   "y": 661,
+   "type": "destination",
+   "name": "museum",
+   "audio": "museum.mp3"
+  },
+  {
+   "id": "p54",
+   "x": 1205,
+   "y": 556,
+   "type": "destination",
+   "name": "fire station",
+   "audio": "firestation.mp3"
+  },
+  {
+   "id": "p55",
+   "x": 320,
+   "y": 535,
+   "type": "destination",
+   "name": "temple",
+   "audio": "temple.mp3"
+  },
+  {
+   "id": "p56",
+   "x": 485,
+   "y": 341,
+   "type": "destination",
+   "name": "library",
+   "audio": "library.mp3"
+  },
+  {
+   "id": "p57",
+   "x": 1076,
+   "y": 264,
+   "type": "destination",
+   "name": "hospital",
+   "audio": "hospital.mp3"
+  },
+  {
+   "id": "p58",
+   "x": 799,
+   "y": 491,
+   "type": "destination",
+   "name": "police station",
+   "audio": "policestation.mp3"
+  },
+  {
+   "id": "p59",
+   "x": 1334,
+   "y": 845,
+   "type": "destination",
+   "name": "stadium",
+   "audio": "stadium.mp3"
+  },
+  {
+   "id": "p60",
+   "x": 926,
+   "y": 856,
+   "type": "destination",
+   "name": "supermarket",
+   "audio": "supermarket.mp3"
+  },
+  {
+   "id": "p61",
+   "x": 1347,
+   "y": 655,
+   "type": "destination",
+   "name": "post office",
+   "audio": "postoffice.mp3"
+  },
+  {
+   "id": "p62",
+   "x": 1286,
+   "y": 461,
+   "type": "destination",
+   "name": "convenience store lawson",
+   "audio": "conveniencestorelawson.mp3"
+  },
+  {
+   "id": "p63",
+   "x": 331,
+   "y": 866,
+   "type": "destination",
+   "name": "bookstore",
+   "audio": "bookstore.mp3"
+  },
+  {
+   "id": "p64",
+   "x": 864,
+   "y": 267,
+   "type": "destination",
+   "name": "flower shop",
+   "audio": "flowershop.mp3"
+  },
+  {
+   "id": "p65",
+   "x": 466,
+   "y": 794,
+   "type": "destination",
+   "name": "ramen restaurant",
+   "audio": "ramenrestaurant.mp3"
+  },
+  {
+   "id": "p66",
+   "x": 1287,
+   "y": 277,
+   "type": "destination",
+   "name": "bank",
+   "audio": "bank.mp3"
+  },
+  {
+   "id": "p67",
+   "x": 288,
+   "y": 340,
+   "type": "destination",
+   "name": "tower",
+   "audio": "tower.mp3"
+  }
+ ],
+ "roads": [
+  [
+   "p1",
+   "p11"
+  ],
+  [
+   "p11",
+   "start4"
+  ],
+  [
+   "start4",
+   "p13"
+  ],
+  [
+   "p13",
+   "p15"
+  ],
+  [
+   "p15",
+   "p17"
+  ],
+  [
+   "p17",
+   "p19"
+  ],
+  [
+   "p19",
+   "p2"
+  ],
+  [
+   "p2",
+   "p3"
+  ],
+  [
+   "p10",
+   "p4"
+  ],
+  [
+   "p4",
+   "p38"
+  ],
+  [
+   "p38",
+   "p37"
+  ],
+  [
+   "p37",
+   "p35"
+  ],
+  [
+   "p35",
+   "p39"
+  ],
+  [
+   "p39",
+   "p33"
+  ],
+  [
+   "p33",
+   "p31"
+  ],
+  [
+   "p31",
+   "start3"
+  ],
+  [
+   "start3",
+   "p29"
+  ],
+  [
+   "p29",
+   "p40"
+  ],
+  [
+   "p40",
+   "p5"
+  ],
+  [
+   "p5",
+   "p6"
+  ],
+  [
+   "p6",
+   "p9"
+  ],
+  [
+   "p9",
+   "start2"
+  ],
+  [
+   "start2",
+   "p8"
+  ],
+  [
+   "p8",
+   "p7"
+  ],
+  [
+   "p7",
+   "p1"
+  ],
+  [
+   "p8",
+   "p41"
+  ],
+  [
+   "p41",
+   "p12"
+  ],
+  [
+   "p12",
+   "p42"
+  ],
+  [
+   "p42",
+   "p14"
+  ],
+  [
+   "p23",
+   "p16"
+  ],
+  [
+   "p16",
+   "p25"
+  ],
+  [
+   "p25",
+   "p18"
+  ],
+  [
+   "p18",
+   "p20"
+  ],
+  [
+   "p9",
+   "p21"
+  ],
+  [
+   "p21",
+   "p28"
+  ],
+  [
+   "p28",
+   "p43"
+  ],
+  [
+   "p43",
+   "p22"
+  ],
+  [
+   "p22",
+   "p30"
+  ],
+  [
+   "p24",
+   "p32"
+  ],
+  [
+   "p26",
+   "p34"
+  ],
+  [
+   "p36",
+   "p27"
+  ],
+  [
+   "p27",
+   "p44"
+  ],
+  [
+   "p44",
+   "p10"
+  ],
+  [
+   "p11",
+   "p12"
+  ],
+  [
+   "p13",
+   "p14"
+  ],
+  [
+   "p15",
+   "p45"
+  ],
+  [
+   "p45",
+   "p16"
+  ],
+  [
+   "p17",
+   "p46"
+  ],
+  [
+   "p46",
+   "p18"
+  ],
+  [
+   "p19",
+   "p47"
+  ],
+  [
+   "p47",
+   "p20"
+  ],
+  [
+   "p12",
+   "p48"
+  ],
+  [
+   "p48",
+   "p21"
+  ],
+  [
+   "p14",
+   "p22"
+  ],
+  [
+   "p23",
+   "p49"
+  ],
+  [
+   "p49",
+   "p24"
+  ],
+  [
+   "p25",
+   "p26"
+  ],
+  [
+   "p20",
+   "p50"
+  ],
+  [
+   "p50",
+   "p51"
+  ],
+  [
+   "p51",
+   "p27"
+  ],
+  [
+   "p28",
+   "p52"
+  ],
+  [
+   "p52",
+   "p29"
+  ],
+  [
+   "p30",
+   "p31"
+  ],
+  [
+   "p32",
+   "p33"
+  ],
+  [
+   "p34",
+   "p35"
+  ],
+  [
+   "p36",
+   "p37"
+  ],
+  [
+   "p26",
+   "p32"
+  ],
+  [
+   "p24",
+   "p30"
+  ],
+  [
+   "p34",
+   "p36"
+  ],
+  [
+   "p23",
+   "p14"
+  ],
+  [
+   "p3",
+   "start1"
+  ],
+  [
+   "start1",
+   "p10"
+  ],
+  [
+   "p43",
+   "p53"
+  ],
+  [
+   "p51",
+   "p54"
+  ],
+  [
+   "p48",
+   "p55"
+  ],
+  [
+   "p42",
+   "p56"
+  ],
+  [
+   "p46",
+   "p57"
+  ],
+  [
+   "p49",
+   "p58"
+  ],
+  [
+   "p38",
+   "p59"
+  ],
+  [
+   "p39",
+   "p60"
+  ],
+  [
+   "p44",
+   "p61"
+  ],
+  [
+   "p50",
+   "p62"
+  ],
+  [
+   "p40",
+   "p63"
+  ],
+  [
+   "p45",
+   "p64"
+  ],
+  [
+   "p52",
+   "p65"
+  ],
+  [
+   "p47",
+   "p66"
+  ],
+  [
+   "p41",
+   "p67"
+  ]
+ ],
+ "missions": [
+  {
+   "id": "t1-1",
+   "tier": 1,
+   "start": "start3",
+   "destination": "p60",
+   "best": 3
+  },
+  {
+   "id": "t1-2",
+   "tier": 1,
+   "start": "start3",
+   "destination": "p59",
+   "best": 3
+  },
+  {
+   "id": "t1-3",
+   "tier": 1,
+   "start": "start1",
+   "destination": "p63",
+   "best": 3
+  },
+  {
+   "id": "t1-4",
+   "tier": 1,
+   "start": "start2",
+   "destination": "p67",
+   "best": 4
+  },
+  {
+   "id": "t1-5",
+   "tier": 1,
+   "start": "start1",
+   "destination": "p66",
+   "best": 4
+  },
+  {
+   "id": "t1-6",
+   "tier": 1,
+   "start": "start4",
+   "destination": "p64",
+   "best": 4
+  },
+  {
+   "id": "t2-1",
+   "tier": 2,
+   "start": "start2",
+   "destination": "p64",
+   "best": 4
+  },
+  {
+   "id": "t2-2",
+   "tier": 2,
+   "start": "start4",
+   "destination": "p61",
+   "best": 4
+  },
+  {
+   "id": "t2-3",
+   "tier": 2,
+   "start": "start2",
+   "destination": "p57",
+   "best": 4
+  },
+  {
+   "id": "t2-4",
+   "tier": 2,
+   "start": "start4",
+   "destination": "p59",
+   "best": 4
+  },
+  {
+   "id": "t2-5",
+   "tier": 2,
+   "start": "start4",
+   "destination": "p60",
+   "best": 4
+  },
+  {
+   "id": "t2-6",
+   "tier": 2,
+   "start": "start2",
+   "destination": "p66",
+   "best": 4
+  },
+  {
+   "id": "t3-1",
+   "tier": 3,
+   "start": "start1",
+   "destination": "p67",
+   "best": 4
+  },
+  {
+   "id": "t3-2",
+   "tier": 3,
+   "start": "start2",
+   "destination": "p61",
+   "best": 4
+  },
+  {
+   "id": "t3-3",
+   "tier": 3,
+   "start": "start2",
+   "destination": "p59",
+   "best": 4
+  },
+  {
+   "id": "t3-4",
+   "tier": 3,
+   "start": "start1",
+   "destination": "p65",
+   "best": 4
+  },
+  {
+   "id": "t3-5",
+   "tier": 3,
+   "start": "start2",
+   "destination": "p56",
+   "best": 5
+  },
+  {
+   "id": "t3-6",
+   "tier": 3,
+   "start": "start1",
+   "destination": "p54",
+   "best": 5
+  },
+  {
+   "id": "t4-1",
+   "tier": 4,
+   "start": "start3",
+   "destination": "p67",
+   "best": 5
+  },
+  {
+   "id": "t4-2",
+   "tier": 4,
+   "start": "start2",
+   "destination": "p54",
+   "best": 5
+  },
+  {
+   "id": "t4-3",
+   "tier": 4,
+   "start": "start2",
+   "destination": "p62",
+   "best": 5
+  },
+  {
+   "id": "t4-4",
+   "tier": 4,
+   "start": "start1",
+   "destination": "p56",
+   "best": 5
+  },
+  {
+   "id": "t4-5",
+   "tier": 4,
+   "start": "start4",
+   "destination": "p65",
+   "best": 5
+  },
+  {
+   "id": "t4-6",
+   "tier": 4,
+   "start": "start1",
+   "destination": "p53",
+   "best": 5
+  }
+ ],
+ "imageScale": 2,
+ "gimmick": "treasure",
+ "gimmickData": {}
+}

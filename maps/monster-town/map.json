@@ -1,0 +1,940 @@
+{
+ "format": 1,
+ "id": "monster-town",
+ "name": "Monster Town",
+ "subtitle": "",
+ "order": 6,
+ "unlockStars": 150,
+ "image": "map.webp",
+ "width": 1600,
+ "height": 1130,
+ "points": [
+  {
+   "id": "p1",
+   "x": 149,
+   "y": 100,
+   "type": "normal"
+  },
+  {
+   "id": "p2",
+   "x": 1444,
+   "y": 100,
+   "type": "normal"
+  },
+  {
+   "id": "p3",
+   "x": 1444,
+   "y": 1030,
+   "type": "normal"
+  },
+  {
+   "id": "p4",
+   "x": 149,
+   "y": 1030,
+   "type": "normal"
+  },
+  {
+   "id": "p5",
+   "x": 149,
+   "y": 340,
+   "type": "normal"
+  },
+  {
+   "id": "p6",
+   "x": 1444,
+   "y": 320,
+   "type": "normal"
+  },
+  {
+   "id": "p7",
+   "x": 149,
+   "y": 593,
+   "type": "normal"
+  },
+  {
+   "id": "p8",
+   "x": 1444,
+   "y": 520,
+   "type": "normal"
+  },
+  {
+   "id": "p9",
+   "x": 149,
+   "y": 743,
+   "type": "normal"
+  },
+  {
+   "id": "p10",
+   "x": 1444,
+   "y": 760,
+   "type": "normal"
+  },
+  {
+   "id": "p11",
+   "x": 398,
+   "y": 343,
+   "type": "normal"
+  },
+  {
+   "id": "p12",
+   "x": 826,
+   "y": 100,
+   "type": "normal"
+  },
+  {
+   "id": "p13",
+   "x": 826,
+   "y": 320,
+   "type": "normal"
+  },
+  {
+   "id": "p14",
+   "x": 1110,
+   "y": 100,
+   "type": "normal"
+  },
+  {
+   "id": "p15",
+   "x": 1130,
+   "y": 320,
+   "type": "normal"
+  },
+  {
+   "id": "p16",
+   "x": 398,
+   "y": 593,
+   "type": "normal"
+  },
+  {
+   "id": "p17",
+   "x": 667,
+   "y": 330,
+   "type": "normal"
+  },
+  {
+   "id": "p18",
+   "x": 667,
+   "y": 560,
+   "type": "normal"
+  },
+  {
+   "id": "p19",
+   "x": 384,
+   "y": 743,
+   "type": "normal"
+  },
+  {
+   "id": "p20",
+   "x": 675,
+   "y": 742,
+   "type": "normal"
+  },
+  {
+   "id": "p21",
+   "x": 1212,
+   "y": 760,
+   "type": "normal"
+  },
+  {
+   "id": "p22",
+   "x": 452,
+   "y": 742,
+   "type": "normal"
+  },
+  {
+   "id": "p23",
+   "x": 452,
+   "y": 1030,
+   "type": "normal"
+  },
+  {
+   "id": "p24",
+   "x": 607,
+   "y": 742,
+   "type": "normal"
+  },
+  {
+   "id": "p25",
+   "x": 605,
+   "y": 1030,
+   "type": "normal"
+  },
+  {
+   "id": "p26",
+   "x": 931,
+   "y": 741,
+   "type": "normal"
+  },
+  {
+   "id": "p27",
+   "x": 931,
+   "y": 1030,
+   "type": "normal"
+  },
+  {
+   "id": "p28",
+   "x": 1240,
+   "y": 1030,
+   "type": "normal"
+  },
+  {
+   "id": "p29",
+   "x": 1212,
+   "y": 520,
+   "type": "normal"
+  },
+  {
+   "id": "p30",
+   "x": 470,
+   "y": 343,
+   "type": "normal"
+  },
+  {
+   "id": "p31",
+   "x": 470,
+   "y": 99,
+   "type": "normal"
+  },
+  {
+   "id": "start4",
+   "x": 1274,
+   "y": 100,
+   "type": "start",
+   "name": "D",
+   "littlebit": true,
+   "facing": "p14"
+  },
+  {
+   "id": "start2",
+   "x": 1170,
+   "y": 1030,
+   "type": "start",
+   "name": "B",
+   "littlebit": true,
+   "facing": "p32"
+  },
+  {
+   "id": "p32",
+   "x": 1081,
+   "y": 1030,
+   "type": "littlebit"
+  },
+  {
+   "id": "p33",
+   "x": 749,
+   "y": 1028,
+   "type": "littlebit"
+  },
+  {
+   "id": "p34",
+   "x": 281,
+   "y": 1030,
+   "type": "littlebit"
+  },
+  {
+   "id": "p35",
+   "x": 149,
+   "y": 529,
+   "type": "littlebit"
+  },
+  {
+   "id": "start3",
+   "x": 149,
+   "y": 431,
+   "type": "start",
+   "name": "C",
+   "littlebit": true,
+   "facing": "p35"
+  },
+  {
+   "id": "p36",
+   "x": 317,
+   "y": 341,
+   "type": "littlebit"
+  },
+  {
+   "id": "p37",
+   "x": 533,
+   "y": 576,
+   "type": "littlebit"
+  },
+  {
+   "id": "p38",
+   "x": 1342,
+   "y": 759,
+   "type": "littlebit"
+  },
+  {
+   "id": "p39",
+   "x": 667,
+   "y": 420,
+   "type": "littlebit"
+  },
+  {
+   "id": "p41",
+   "x": 1062,
+   "y": 533,
+   "type": "littlebit"
+  },
+  {
+   "id": "p42",
+   "x": 885,
+   "y": 546,
+   "type": "littlebit"
+  },
+  {
+   "id": "p43",
+   "x": 1087,
+   "y": 750,
+   "type": "littlebit"
+  },
+  {
+   "id": "p45",
+   "x": 1058,
+   "y": 320,
+   "type": "littlebit"
+  },
+  {
+   "id": "p46",
+   "x": 1375,
+   "y": 319,
+   "type": "littlebit"
+  },
+  {
+   "id": "start1",
+   "x": 317,
+   "y": 100,
+   "type": "start",
+   "name": "A",
+   "littlebit": true,
+   "facing": "p1"
+  },
+  {
+   "id": "p47",
+   "x": 1082,
+   "y": 980,
+   "type": "destination",
+   "name": "dam",
+   "audio": "dam.mp3"
+  },
+  {
+   "id": "p48",
+   "x": 279,
+   "y": 977,
+   "type": "destination",
+   "name": "factory",
+   "audio": "factory.mp3"
+  },
+  {
+   "id": "p49",
+   "x": 1376,
+   "y": 284,
+   "type": "destination",
+   "name": "supermarket",
+   "audio": "supermarket.mp3"
+  },
+  {
+   "id": "p50",
+   "x": 750,
+   "y": 985,
+   "type": "destination",
+   "name": "planetarium",
+   "audio": "planetarium.mp3"
+  },
+  {
+   "id": "p51",
+   "x": 317,
+   "y": 299,
+   "type": "destination",
+   "name": "temple",
+   "audio": "temple.mp3"
+  },
+  {
+   "id": "p52",
+   "x": 189,
+   "y": 529,
+   "type": "destination",
+   "name": "gas station",
+   "audio": "gasstation.mp3"
+  },
+  {
+   "id": "p53",
+   "x": 1339,
+   "y": 722,
+   "type": "destination",
+   "name": "flower shop",
+   "audio": "flowershop.mp3"
+  },
+  {
+   "id": "p54",
+   "x": 1089,
+   "y": 704,
+   "type": "destination",
+   "name": "convenience store 7/11",
+   "audio": "conveniencestore711.mp3"
+  },
+  {
+   "id": "p55",
+   "x": 532,
+   "y": 530,
+   "type": "destination",
+   "name": "airport",
+   "audio": "airport.mp3"
+  },
+  {
+   "id": "p56",
+   "x": 1060,
+   "y": 487,
+   "type": "destination",
+   "name": "department store",
+   "audio": "departmentstore.mp3"
+  },
+  {
+   "id": "p57",
+   "x": 524,
+   "y": 183,
+   "type": "destination",
+   "name": "bookstore",
+   "audio": "bookstore.mp3"
+  },
+  {
+   "id": "p58",
+   "x": 713,
+   "y": 417,
+   "type": "destination",
+   "name": "sushi restaurant",
+   "audio": "sushirestaurant.mp3"
+  },
+  {
+   "id": "p59",
+   "x": 887,
+   "y": 589,
+   "type": "destination",
+   "name": "soba restaurant",
+   "audio": "sobarestaurant.mp3"
+  },
+  {
+   "id": "p60",
+   "x": 1301,
+   "y": 981,
+   "type": "destination",
+   "name": "tonkatsu restaurant",
+   "audio": "tonkatsurestaurant.mp3"
+  },
+  {
+   "id": "p61",
+   "x": 1058,
+   "y": 278,
+   "type": "destination",
+   "name": "castella shop",
+   "audio": "castellashop.mp3"
+  },
+  {
+   "id": "p62",
+   "x": 472,
+   "y": 184,
+   "type": "littlebit"
+  },
+  {
+   "id": "p63",
+   "x": 1299,
+   "y": 1029,
+   "type": "littlebit"
+  }
+ ],
+ "roads": [
+  [
+   "p12",
+   "p14"
+  ],
+  [
+   "p14",
+   "start4"
+  ],
+  [
+   "start4",
+   "p2"
+  ],
+  [
+   "p2",
+   "p6"
+  ],
+  [
+   "p6",
+   "p8"
+  ],
+  [
+   "p8",
+   "p10"
+  ],
+  [
+   "p10",
+   "p3"
+  ],
+  [
+   "p3",
+   "p63"
+  ],
+  [
+   "p63",
+   "p28"
+  ],
+  [
+   "p28",
+   "start2"
+  ],
+  [
+   "start2",
+   "p32"
+  ],
+  [
+   "p32",
+   "p27"
+  ],
+  [
+   "p27",
+   "p33"
+  ],
+  [
+   "p33",
+   "p25"
+  ],
+  [
+   "p25",
+   "p23"
+  ],
+  [
+   "p23",
+   "p34"
+  ],
+  [
+   "p34",
+   "p4"
+  ],
+  [
+   "p9",
+   "p7"
+  ],
+  [
+   "p7",
+   "p35"
+  ],
+  [
+   "p35",
+   "start3"
+  ],
+  [
+   "start3",
+   "p5"
+  ],
+  [
+   "p5",
+   "p1"
+  ],
+  [
+   "p5",
+   "p36"
+  ],
+  [
+   "p36",
+   "p11"
+  ],
+  [
+   "p7",
+   "p16"
+  ],
+  [
+   "p16",
+   "p37"
+  ],
+  [
+   "p37",
+   "p18"
+  ],
+  [
+   "p9",
+   "p19"
+  ],
+  [
+   "p19",
+   "p22"
+  ],
+  [
+   "p22",
+   "p24"
+  ],
+  [
+   "p24",
+   "p20"
+  ],
+  [
+   "p20",
+   "p26"
+  ],
+  [
+   "p21",
+   "p38"
+  ],
+  [
+   "p38",
+   "p10"
+  ],
+  [
+   "p12",
+   "p13"
+  ],
+  [
+   "p14",
+   "p15"
+  ],
+  [
+   "p11",
+   "p16"
+  ],
+  [
+   "p17",
+   "p39"
+  ],
+  [
+   "p39",
+   "p18"
+  ],
+  [
+   "p16",
+   "p19"
+  ],
+  [
+   "p18",
+   "p20"
+  ],
+  [
+   "p22",
+   "p23"
+  ],
+  [
+   "p24",
+   "p25"
+  ],
+  [
+   "p26",
+   "p27"
+  ],
+  [
+   "p4",
+   "p9"
+  ],
+  [
+   "p29",
+   "p21"
+  ],
+  [
+   "p29",
+   "p41"
+  ],
+  [
+   "p41",
+   "p42"
+  ],
+  [
+   "p42",
+   "p18"
+  ],
+  [
+   "p29",
+   "p8"
+  ],
+  [
+   "p26",
+   "p43"
+  ],
+  [
+   "p43",
+   "p21"
+  ],
+  [
+   "p17",
+   "p13"
+  ],
+  [
+   "p11",
+   "p30"
+  ],
+  [
+   "p30",
+   "p17"
+  ],
+  [
+   "p30",
+   "p62"
+  ],
+  [
+   "p62",
+   "p31"
+  ],
+  [
+   "p13",
+   "p45"
+  ],
+  [
+   "p45",
+   "p15"
+  ],
+  [
+   "p15",
+   "p46"
+  ],
+  [
+   "p46",
+   "p6"
+  ],
+  [
+   "p31",
+   "start1"
+  ],
+  [
+   "start1",
+   "p1"
+  ],
+  [
+   "p32",
+   "p47"
+  ],
+  [
+   "p34",
+   "p48"
+  ],
+  [
+   "p46",
+   "p49"
+  ],
+  [
+   "p33",
+   "p50"
+  ],
+  [
+   "p36",
+   "p51"
+  ],
+  [
+   "p35",
+   "p52"
+  ],
+  [
+   "p38",
+   "p53"
+  ],
+  [
+   "p43",
+   "p54"
+  ],
+  [
+   "p37",
+   "p55"
+  ],
+  [
+   "p41",
+   "p56"
+  ],
+  [
+   "p39",
+   "p58"
+  ],
+  [
+   "p42",
+   "p59"
+  ],
+  [
+   "p45",
+   "p61"
+  ],
+  [
+   "p31",
+   "p12"
+  ],
+  [
+   "p62",
+   "p57"
+  ],
+  [
+   "p21",
+   "p28"
+  ],
+  [
+   "p63",
+   "p60"
+  ]
+ ],
+ "missions": [
+  {
+   "id": "t1-1",
+   "tier": 1,
+   "start": "start2",
+   "destination": "p50",
+   "best": 3
+  },
+  {
+   "id": "t1-2",
+   "tier": 1,
+   "start": "start2",
+   "destination": "p48",
+   "best": 3
+  },
+  {
+   "id": "t1-3",
+   "tier": 1,
+   "start": "start2",
+   "destination": "p60",
+   "best": 4
+  },
+  {
+   "id": "t1-4",
+   "tier": 1,
+   "start": "start4",
+   "destination": "p57",
+   "best": 4
+  },
+  {
+   "id": "t1-5",
+   "tier": 1,
+   "start": "start3",
+   "destination": "p55",
+   "best": 5
+  },
+  {
+   "id": "t1-6",
+   "tier": 1,
+   "start": "start1",
+   "destination": "p52",
+   "best": 5
+  },
+  {
+   "id": "t2-1",
+   "tier": 2,
+   "start": "start3",
+   "destination": "p47",
+   "best": 5
+  },
+  {
+   "id": "t2-2",
+   "tier": 2,
+   "start": "start3",
+   "destination": "p54",
+   "best": 5
+  },
+  {
+   "id": "t2-3",
+   "tier": 2,
+   "start": "start3",
+   "destination": "p60",
+   "best": 5
+  },
+  {
+   "id": "t2-4",
+   "tier": 2,
+   "start": "start4",
+   "destination": "p49",
+   "best": 6
+  },
+  {
+   "id": "t2-5",
+   "tier": 2,
+   "start": "start4",
+   "destination": "p61",
+   "best": 6
+  },
+  {
+   "id": "t2-6",
+   "tier": 2,
+   "start": "start1",
+   "destination": "p51",
+   "best": 6
+  },
+  {
+   "id": "t3-1",
+   "tier": 3,
+   "start": "start3",
+   "destination": "p53",
+   "best": 5
+  },
+  {
+   "id": "t3-2",
+   "tier": 3,
+   "start": "start2",
+   "destination": "p54",
+   "best": 6
+  },
+  {
+   "id": "t3-3",
+   "tier": 3,
+   "start": "start3",
+   "destination": "p58",
+   "best": 6
+  },
+  {
+   "id": "t3-4",
+   "tier": 3,
+   "start": "start4",
+   "destination": "p51",
+   "best": 6
+  },
+  {
+   "id": "t3-5",
+   "tier": 3,
+   "start": "start3",
+   "destination": "p61",
+   "best": 6
+  },
+  {
+   "id": "t3-6",
+   "tier": 3,
+   "start": "start1",
+   "destination": "p48",
+   "best": 6
+  },
+  {
+   "id": "t4-1",
+   "tier": 4,
+   "start": "start4",
+   "destination": "p55",
+   "best": 7
+  },
+  {
+   "id": "t4-2",
+   "tier": 4,
+   "start": "start3",
+   "destination": "p57",
+   "best": 7
+  },
+  {
+   "id": "t4-3",
+   "tier": 4,
+   "start": "start1",
+   "destination": "p49",
+   "best": 7
+  },
+  {
+   "id": "t4-4",
+   "tier": 4,
+   "start": "start1",
+   "destination": "p50",
+   "best": 7
+  },
+  {
+   "id": "t4-5",
+   "tier": 4,
+   "start": "start4",
+   "destination": "p56",
+   "best": 7
+  },
+  {
+   "id": "t4-6",
+   "tier": 4,
+   "start": "start4",
+   "destination": "p59",
+   "best": 7
+  }
+ ],
+ "imageScale": 2,
+ "gimmick": "monsters",
+ "ambient": ""
+}

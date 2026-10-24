@@ -28,9 +28,10 @@ class TownScene extends Phaser.Scene {
     this.map = this.add.image(0, 0, 'map').setOrigin(0, 0);
     this.map.setScale(1 / (this.ctl.pack.imageScale || 1)); // sharper pictures keep the map's own size
     this.mw = this.map.displayWidth; this.mh = this.map.displayHeight;
-    this.fit = Math.min(W / this.mw, H / this.mh) * R * 0.98;
+    // The map fills its whole panel (no border): zoom to cover, and the camera never shows past the map's edge.
+    this.fit = Math.max(W / this.mw, H / this.mh) * R;
     const cam = this.cameras.main;
-    cam.setBounds(-40, -40, this.mw + 80, this.mh + 80);
+    cam.setBounds(0, 0, this.mw, this.mh);
     cam.setZoom(this.fit);
     cam.centerOn(this.mw / 2, this.mh / 2);
     this.makeTextures();

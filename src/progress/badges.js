@@ -1,3 +1,4 @@
+import { itemById } from '../avatar/items.js';
 // Stickers for the sticker book. check() runs after every win (and after
 // shopping) and returns newly earned stickers.
 import { save } from './save.js';
@@ -29,7 +30,7 @@ const rules = {
   littlebit: s => s.stats.littlebitWins >= 5,
   free: s => s.stats.freeWins >= 10,
   stars50: () => save.totalStars() >= 50,
-  shopper: s => s.owned.length >= 1,
+  shopper: s => s.owned.some(id => { const it = itemById(id); return !it || it.price > 0; }),   // bought something (town rewards don't count)
   stylist: s => s.owned.length >= 8,
   expert: s => MAPS.some(m => !m.isTest && m.missions.length && m.missions.every(ms => (s.stars[m.id]?.[ms.id] || 0) >= 3)),
   dizzy: s => s.stats.dizzy >= 1,
