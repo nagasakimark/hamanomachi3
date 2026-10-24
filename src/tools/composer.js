@@ -1255,9 +1255,12 @@ async function useInEditor(trace) {
   if (trace && !C.doc.items.some(i => i.type === 'place')) issues.push('there are no places yet');
   if (trace && !C.doc.items.some(i => i.type === 'bus')) issues.push('there are no bus stops yet');
   if (issues.length && !confirm(`Heads up: ${issues.join(' and ')}. Continue anyway?`)) return;
-  const c = await renderToCanvas(1);
+  // Draw the picture at 2x so buildings and the background stay sharp in the game
+  // (roads and places keep the normal coordinates; the editor writes "imageScale").
+  const k = Math.max(1, Math.min(2, 4096 / Math.max(C.doc.w, C.doc.h)));
+  const c = await renderToCanvas(k);
   const dataUrl = c.toDataURL('image/png');
-  const ok = await onUse({ dataUrl, width: C.doc.w, height: C.doc.h, name: C.doc.name, trace: trace ? traceDoc(C.doc) : null });
+  const ok = await onUse({ dataUrl, imageScale: k, width: C.doc.w, height: C.doc.h, name: C.doc.name, trace: trace ? traceDoc(C.doc) : null });
   if (ok !== false) closeComposer();
 }
 

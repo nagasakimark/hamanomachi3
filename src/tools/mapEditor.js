@@ -32,6 +32,10 @@ const S = {
   dirty: false,
 };
 
+// A picture can be sharper than the map is wide ("imageScale" 2 = twice as many pixels).
+// Points, roads and the game always use the map's own size (width x height).
+const imgW = () => S.image.width / (S.map.imageScale || 1);
+const imgH = () => S.image.height / (S.map.imageScale || 1);
 function blankMap() {
   return { format: 1, id: 'newtown', name: 'New Town', subtitle: '', order: 2, unlockStars: 20, image: 'map.png', width: 0, height: 0, points: [], roads: [], missions: [] };
 }
@@ -75,9 +79,10 @@ root.append(menu, h('div.ed-main', {}, toolbar, h('div.ed-canvas-wrap', {}, canv
 // this receives the result and loads it like any other map.
 function openCompose() {
   openComposer({
-    onUse: async ({ dataUrl, name, trace }) => {
+    onUse: async ({ dataUrl, name, trace, imageScale }) => {
       if (!confirmLose()) return false;
       const m = blankMap();
+      if (imageScale && imageScale !== 1) m.imageScale = imageScale;
       if (name) { m.name = name; m.id = name.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || m.id; }
       if (trace) { m.points = trace.points; m.roads = trace.roads; }
       await loadState(m, dataUrl, 'map.png', {});
@@ -280,8 +285,9 @@ function resize() {
 function fitView() {
   if (!S.image) return;
   const r = canvas.parentElement.getBoundingClientRect();
-  const z = Math.min((r.width - 40) / S.image.width, (r.height - 40) / S.image.height);
-  S.view = { z, x: (r.width - S.image.width * z) / 2, y: (r.height - S.image.height * z) / 2 };
+  const iw = imgW(), ih = imgH();
+  const z = Math.min((r.width - 40) / iw, (r.height - 40) / ih);
+  S.view = { z, x: (r.width - iw * z) / 2, y: (r.height - ih * z) / 2 };
 }
 function draw() {
   const r = canvas.parentElement.getBoundingClientRect();
@@ -294,7 +300,7 @@ function draw() {
   const { x, y, z } = S.view;
   ctx.save();
   ctx.translate(x, y); ctx.scale(z, z);
-  ctx.drawImage(S.image, 0, 0);
+  ctx.drawImage(S.image, 0, 0, imgW(), imgH());
   const lw = 1 / z;
   // roads
   S.map.roads.forEach(([a, b], i) => {
@@ -696,7 +702,7 @@ function dataUrlToBytes(d) { const b = atob(d.split(',')[1]); const u = new Uint
 function setImage(data) {
   return new Promise(res => {
     const img = new Image();
-    img.onload = () => { S.image = img; S.map.width = img.width; S.map.height = img.height; res(); };
+    img.onload = () => { S.image = img; S.map.width = Math.round(img.width / (S.map.imageScale || 1)); S.map.height = Math.round(img.height / (S.map.imageScale || 1)); res(); };
     img.src = data;
   });
 }
@@ -720,8 +726,8 @@ function autosave() {
 }
 
 async function thumbBytes() {
-  const w = 480, k = w / S.image.width;
-  const c = document.createElement('canvas'); c.width = w; c.height = Math.round(S.image.height * k);
+  const w = 480, k = w / imgW();
+  const c = document.createElement('canvas'); c.width = w; c.height = Math.round(imgH() * k);
   c.getContext('2d').drawImage(S.image, 0, 0, c.width, c.height);
   return dataUrlToBytes(c.toDataURL('image/png'));
 }
