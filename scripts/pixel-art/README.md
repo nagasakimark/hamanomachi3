@@ -4,7 +4,7 @@ All town-gimmick art is original and made by these scripts (Python 3 + Pillow), 
 
 - `mon.py <out>` — the 8 pixel-art monsters (`src/assets/gimmick/px/mon*.png`).
 - `px2.py <out>` — battle background, capture capsule, block-world blocks and ingots, ? blocks, bricks, coins.
-- `ink.py src <out> <layers>` — turns the kawaii mascots in `src/` into rubber-stamp ink masks, and draws the stamp-rally ribbon avatar layer.
+- `ink.py src <out> <layers>` — turns the 15 kawaii mascots in `src/` into rubber-stamp ink masks, and draws the stamp-rally ribbon avatar layer.
 
 ```
 python3 scripts/pixel-art/mon.py src/assets/gimmick/px

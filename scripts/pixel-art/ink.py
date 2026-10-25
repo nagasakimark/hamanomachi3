@@ -1,11 +1,11 @@
 # Usage: python3 ink.py scripts/pixel-art/src src/assets/gimmick/ink src/avatar/layers
-# Turn the 8 kawaii mascot pictures into rubber-stamp ink masks (alpha only),
+# Turn the 15 kawaii mascot pictures into rubber-stamp ink masks (alpha only),
 # and draw the stamp-rally ribbon as an avatar layer (LPC walk sheet layout).
 from PIL import Image, ImageDraw, ImageFilter
 import random, sys, colorsys
 SRC, OUT, LAYERS = sys.argv[1], sys.argv[2], sys.argv[3]
 R = random.Random(3)
-for n in range(1, 9):
+for n in range(1, 16):
     im = Image.open(f'{SRC}/stamp{n}.png').convert('RGBA').resize((200, 200))
     canvas = Image.new('RGBA', (240, 240), (0, 0, 0, 0)); canvas.paste(im, (20, 20), im)
     px = canvas.load(); out = Image.new('L', (240, 240), 0); o = out.load()
